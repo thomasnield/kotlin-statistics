@@ -11,11 +11,35 @@ fun Iterable<Double>.median() = toList().let { list ->
         (list[middle - 1] + list[middle]) / 2.0
 }
 fun Sequence<Double>.median() = asIterable().median()
-fun Array<out Double>.median() = asIterable().median()
-fun DoubleArray.median() = asIterable().median()
 
+fun Array<out Double>.median() = let { array ->
+    val listSize = array.size
+    val middle = listSize / 2
 
+    if (listSize % 2 == 1)
+        array[middle]
+    else
+        (array[middle - 1] + array[middle]) / 2.0
+}
 
+fun DoubleArray.median() = let { array ->
+    val listSize = array.size
+    val middle = listSize / 2
+
+    if (listSize % 2 == 1)
+        array[middle]
+    else
+        (array[middle - 1] + array[middle]) / 2.0
+}
+
+/**
+ * Returns the difference between the `average()` and the `median()`.
+ * A positive difference indicates a positive skew, and negative indicates a negative skew
+ */
+fun DoubleArray.skew() = let { it.average() - it.median() }
+fun Iterable<Double>.skew() = let { it.average() - it.median() }
+fun Sequence<Double>.skew() = toList().let { it.average() - it.median() }
+fun Array<out Double>.skew() = toDoubleArray().skew()
 
 fun Iterable<Double>.variance() = toList().toDoubleArray().let {
     val avg = it.average()
