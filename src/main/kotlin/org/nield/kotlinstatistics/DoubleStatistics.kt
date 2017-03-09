@@ -34,12 +34,12 @@ fun DoubleArray.median() = let { array ->
 
 /**
  * Returns the difference between the `average()` and the `median()`.
- * A positive difference indicates a positive skew, and negative indicates a negative skew
+ * A positive difference indicates a positive skewDifference, and negative indicates a negative skewDifference
  */
-fun DoubleArray.skew() = let { it.average() - it.median() }
-fun Iterable<Double>.skew() = let { it.average() - it.median() }
-fun Sequence<Double>.skew() = toList().let { it.average() - it.median() }
-fun Array<out Double>.skew() = toDoubleArray().skew()
+fun DoubleArray.skewDifference() = let { it.average() - it.median() }
+fun Iterable<Double>.skewDifference() = let { it.average() - it.median() }
+fun Sequence<Double>.skewDifference() = toList().let { it.average() - it.median() }
+fun Array<out Double>.skewDifference() = toDoubleArray().skewDifference()
 
 fun Iterable<Double>.variance() = toList().toDoubleArray().let {
     val avg = it.average()

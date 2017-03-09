@@ -10,4 +10,5 @@ class DoubleStatisticsTest {
 
     @Test
     fun testMedian2() = assertTrue(arrayOf(1.0, 3.0, 4.0, 5.0).median() == 3.5)
+
 }
