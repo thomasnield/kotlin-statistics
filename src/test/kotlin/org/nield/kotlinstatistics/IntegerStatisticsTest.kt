@@ -9,16 +9,33 @@ import org.junit.Test
 class IntegerStatisticsTest {
 
     @Test
-    fun testMedian1() = listOf(1, 9, 10).median() shouldEqualTo 9.0
+    fun testMedianList() = listOf(1, 9, 10).median() shouldEqualTo 9.0
 
     @Test
-    fun testMedian2() = sequenceOf(1, 4, 5, 90).median() shouldEqualTo 4.5
+    fun testMedianSequence() = sequenceOf(1, 4, 5, 90).median() shouldEqualTo 4.5
 
     @Test
-    fun testRange1() = listOf(2, 1, 10).range() shouldEqualTo 9
+    fun testMedianArray() = arrayOf(1, 11, 19).median() shouldEqualTo 11.0
+
 
     @Test
-    fun testRange2() = (1..30).range() shouldEqualTo 29
+    fun testVarianceList() = listOf(2, 3, 4).variance() shouldEqualTo 0.66666666666666666666666666666667
+
+    @Test
+    fun testVarianceSequence() = sequenceOf(1, 4, 6, 10).variance() shouldEqualTo 10.6875
+
+    @Test
+    fun testVarianceArray() = arrayOf(0, 5, 7).variance() shouldEqualTo 8.6666666666666666666666666666667
+
+
+    @Test
+    fun testStdDeviationList() = listOf(2, 3, 4).standardDeviation() shouldEqualTo 0.81649658092772603273242802490197
+
+    @Test
+    fun testStdDeviationSequence() = sequenceOf(0, 5, 7).standardDeviation() shouldEqualTo 2.9439202887759489515880142423198
+
+    @Test
+    fun testStdDeviationArray() = arrayOf(1, 4, 6, 10).standardDeviation() shouldEqualTo 3.2691742076555051641777364878947
 
 }
 
