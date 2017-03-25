@@ -10,6 +10,7 @@ buildscript {
 apply plugin: "kotlin"
 repositories {
   mavenCentral()
+  jcenter()
 }
 
 dependencies {
@@ -19,5 +20,6 @@ dependencies {
 dependencies {
 
     testCompile 'junit:junit:4.12'
+    testCompile "org.amshove.kluent:kluent:1.16"
 }
 
