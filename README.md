@@ -34,7 +34,7 @@ dependencies {
 </dependency>
 ```
 
-## Getting Started
+## Basic Operators
 
 There are a number of extension function operators that support `Int`, `Long`, `Double`, `Float`, `BigDecimal` and `Short` numeric types, for both Sequences, Arrays, primitive arrays, and Iterables:
 
@@ -46,7 +46,7 @@ There are a number of extension function operators that support `Int`, `Long`, `
 * `variance()`
 * `standardDeviation()`
 
-Usage Example: 
+Here is an example of using the `median()` extension function against a `Sequence` of Doubles:
 
 ```kotlin
 val median = sequenceOf(1.0, 3.0, 5.0).median() 
@@ -62,7 +62,7 @@ There are also simple but powerful `xxxBy()` operators that allow you slice thes
 * `varianceBy()`
 * `standardDeviationBy()`
 
-Usage Example: 
+Below, we slice a sequence of `Item` objects by their lengths and get the averages and standard deviations by each length.
 
 ```kotlin
 class Item(val name: String, val value: Double)
@@ -165,6 +165,7 @@ CategoryAndSection(category=ABZ, section=2)=5.1
 CategoryAndSection(category=ABR, section=2)=1.1
 ```
 
+# Road Map
 
 
 Before doing a Maven release, I am looking to add these operators and more:
