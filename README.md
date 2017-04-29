@@ -104,7 +104,7 @@ Averages by lengths: {5=6.8, 4=5.733333333333334, 7=6.8}
 Std Devs by lengths: {5=2.1416504538945342, 4=2.619584360585134, 7=0.0}
 ```
 
-## Aggregating on Multiple Properties Using Data Classes
+## Slicing Aggregations Using Data Classes
 
 You can slice on multiple fields using data classes with the `xxxBy()` operators as well. This is similar to using a GROUP BY on multiple fields in SQL:
 
