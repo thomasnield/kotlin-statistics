@@ -151,6 +151,7 @@ averageDefectByCategoryAndSection.entries.forEach { println(it) }
 **OUTPUT:**
 
 ```
+Counts by Category and Section
 CategoryAndSection(category=ABR, section=3)=4
 CategoryAndSection(category=ABZ, section=4)=2
 CategoryAndSection(category=ZBN, section=1)=3
