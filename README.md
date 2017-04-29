@@ -37,7 +37,7 @@ dependencies {
 
 ## Basic Operators
 
-There are a number of extension function operators that support `Int`, `Long`, `Double`, `Float`, `BigDecimal` and `Short` numeric types, for both Sequences, Arrays, primitive arrays, and Iterables:
+There are a number of extension function operators that support `Int`, `Long`, `Double`, `Float`, `BigDecimal` and `Short` numeric types for Sequences, Arrays, and Iterables:
 
 * `sum()`
 * `average()`
