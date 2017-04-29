@@ -1,11 +1,13 @@
 package org.nield.kotlinstatistics
 
 fun <T> Sequence<T>.mode() = countBy()
-        .sortedByDescending { it.second }
+        .entries
+        .asSequence()
+        .sortedByDescending { it.value }
         .toList().let { list ->
             list.asSequence()
-                    .takeWhile { list[0].second == it.second }
-                    .map { it.first }
+                    .takeWhile { list[0].value == it.value }
+                    .map { it.key }
         }
 
 fun <T> Iterable<T>.mode() = asSequence().mode()
@@ -17,20 +19,22 @@ fun LongArray.mode() = asIterable().mode()
 fun FloatArray.mode() = asIterable().mode()
 fun DoubleArray.mode() = asIterable().mode()
 
+//AGGREGATION OPERATORS
+
 /**
- * Emits each distinct value with the number counts it appeared
+ * Groups each distinct value with the number counts it appeared
  */
-fun <T> Sequence<T>.countBy() =
-        groupBy { it }
-        .entries.asSequence()
-        .map { it.key to it.value.count() }
-
-
+fun <T> Sequence<T>.countBy() = groupApply({ it }, {it.count()})
+/**
+ * Groups each distinct value with the number counts it appeared
+ */
 fun <T> Iterable<T>.countBy() = asSequence().countBy()
+/**
+ * Groups each distinct key with the number counts it appeared
+ */
+inline fun <T,K> Sequence<T>.countBy(crossinline keySelector: (T) -> K) = groupApply(keySelector) { it.count() }
+/**
+ * Groups each distinct key with the number counts it appeared
+ */
+inline fun <T,K> Iterable<T>.countBy(crossinline keySelector: (T) -> K) = asSequence().countBy(keySelector)
 
-fun <T,R> Sequence<T>.countBy(selector: (T) -> R) =
-        groupBy { selector(it) }
-                .entries.asSequence()
-                .map { it.key to it.value.count() }
-
-fun <T,R> Iterable<T>.countBy(selector: (T) -> R) = asSequence().countBy(selector)

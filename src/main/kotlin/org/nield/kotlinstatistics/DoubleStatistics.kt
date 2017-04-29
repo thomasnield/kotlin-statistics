@@ -32,15 +32,6 @@ fun DoubleArray.median() = let { array ->
         (array[middle - 1] + array[middle]) / 2.0
 }
 
-/**
- * Returns the difference between the `average()` and the `median()`.
- * A positive difference indicates a positive skewDifference, and negative indicates a negative skewDifference
- */
-fun DoubleArray.skewDifference() = let { it.average() - it.median() }
-fun Iterable<Double>.skewDifference() = let { it.average() - it.median() }
-fun Sequence<Double>.skewDifference() = toList().let { it.average() - it.median() }
-fun Array<out Double>.skewDifference() = toDoubleArray().skewDifference()
-
 fun Iterable<Double>.variance() = toList().toDoubleArray().let {
     val avg = it.average()
     asSequence().map { (it - avg).let { it * it } }.average()
@@ -50,9 +41,18 @@ fun Array<out Double>.variance() = asIterable().variance()
 fun DoubleArray.variance() = asIterable().variance()
 
 
-
-
 fun Iterable<Double>.standardDeviation() = variance().let { Math.sqrt(it) }
 fun Sequence<Double>.standardDeviation() = asIterable().standardDeviation()
 fun Array<out Double>.standardDeviation() = asIterable().standardDeviation()
 fun DoubleArray.standardDeviation() = asIterable().standardDeviation()
+
+
+
+// AGGREGATION OPERATORS
+
+inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
+        groupApply(keySelector, doubleMapper) { it.sum() }
+
+inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
+        asSequence().sumBy(keySelector, doubleMapper)
+
