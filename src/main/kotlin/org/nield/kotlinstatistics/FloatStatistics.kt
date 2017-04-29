@@ -56,3 +56,38 @@ inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinlin
 inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().sumBy(keySelector, floatMapper)
 
+inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        groupApply(keySelector, floatMapper) { it.average() }
+
+inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        asSequence().averageBy(keySelector, floatMapper)
+
+inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        groupApply(keySelector, floatMapper) { it.min() }
+
+inline fun <T,K> Iterable<T>.minBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        asSequence().minBy(keySelector, floatMapper)
+
+inline fun <T,K> Sequence<T>.maxBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        groupApply(keySelector, floatMapper) { it.max() }
+
+inline fun <T,K> Iterable<T>.maxBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        asSequence().maxBy(keySelector, floatMapper)
+
+inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        groupApply(keySelector, floatMapper) { it.median() }
+
+inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        asSequence().medianBy(keySelector, floatMapper)
+
+inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        groupApply(keySelector, floatMapper) { it.variance() }
+
+inline fun <T,K> Iterable<T>.varianceby(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        asSequence().varianceBy(keySelector, floatMapper)
+
+inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        groupApply(keySelector, floatMapper) { it.standardDeviation() }
+
+inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        asSequence().standardDeviationBy(keySelector, floatMapper)

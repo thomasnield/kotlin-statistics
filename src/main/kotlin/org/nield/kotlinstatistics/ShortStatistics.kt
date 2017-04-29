@@ -55,3 +55,39 @@ inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinlin
         asSequence().sumBy(keySelector, shortMapper)
 
 
+inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        groupApply(keySelector, shortMapper) { it.average() }
+
+inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        asSequence().averageBy(keySelector, shortMapper)
+
+inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        groupApply(keySelector, shortMapper) { it.min() }
+
+inline fun <T,K> Iterable<T>.minBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        asSequence().minBy(keySelector, shortMapper)
+
+inline fun <T,K> Sequence<T>.maxBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        groupApply(keySelector, shortMapper) { it.max() }
+
+inline fun <T,K> Iterable<T>.maxBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        asSequence().maxBy(keySelector, shortMapper)
+
+inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        groupApply(keySelector, shortMapper) { it.median() }
+
+inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        asSequence().medianBy(keySelector, shortMapper)
+
+inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        groupApply(keySelector, shortMapper) { it.variance() }
+
+inline fun <T,K> Iterable<T>.varianceby(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        asSequence().varianceBy(keySelector, shortMapper)
+
+inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        groupApply(keySelector, shortMapper) { it.standardDeviation() }
+
+inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+        asSequence().standardDeviationBy(keySelector, shortMapper)
+

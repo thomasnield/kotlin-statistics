@@ -51,3 +51,38 @@ inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinlin
 inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().sumBy(keySelector, bigDecimalMapper)
 
+inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        groupApply(keySelector, bigDecimalMapper) { it.average() }
+
+inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        asSequence().averageBy(keySelector, bigDecimalMapper)
+
+inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        groupApply(keySelector, bigDecimalMapper) { it.min() }
+
+inline fun <T,K> Iterable<T>.minBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        asSequence().minBy(keySelector, bigDecimalMapper)
+
+inline fun <T,K> Sequence<T>.maxBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        groupApply(keySelector, bigDecimalMapper) { it.max() }
+
+inline fun <T,K> Iterable<T>.maxBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        asSequence().maxBy(keySelector, bigDecimalMapper)
+
+inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        groupApply(keySelector, bigDecimalMapper) { it.median() }
+
+inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        asSequence().medianBy(keySelector, bigDecimalMapper)
+
+inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        groupApply(keySelector, bigDecimalMapper) { it.variance() }
+
+inline fun <T,K> Iterable<T>.varianceby(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        asSequence().varianceBy(keySelector, bigDecimalMapper)
+
+inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        groupApply(keySelector, bigDecimalMapper) { it.standardDeviation() }
+
+inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        asSequence().standardDeviationBy(keySelector, bigDecimalMapper)
