@@ -1,8 +1,8 @@
 ![](http://i.imgur.com/ONh78s7.png) 
 # Kotlin Statistics
-Math and statistical extensions for Kotlin
+### Math and statistical extensions for Kotlin
 
-This library will contain helpful extension functions to perform exploratory and production statistics and math operations.
+This library contains helpful extension functions to perform exploratory and production statistics in a Kotlin-idiomatic way.
 
 ## Build Instructions
 
