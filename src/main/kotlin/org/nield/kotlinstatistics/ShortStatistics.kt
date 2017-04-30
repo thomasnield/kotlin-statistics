@@ -82,7 +82,7 @@ inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossin
 inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
         groupApply(keySelector, shortMapper) { it.variance() }
 
-inline fun <T,K> Iterable<T>.varianceby(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
+inline fun <T,K> Iterable<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
         asSequence().varianceBy(keySelector, shortMapper)
 
 inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline shortMapper: (T) -> Short) =
