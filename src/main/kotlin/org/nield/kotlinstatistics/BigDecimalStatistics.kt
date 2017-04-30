@@ -1,6 +1,10 @@
 package org.nield.kotlinstatistics
 
+import jdk.nashorn.internal.runtime.JSType.toDouble
 import java.math.BigDecimal
+import java.math.BigDecimal.ROUND_HALF_UP
+
+
 
 fun Sequence<BigDecimal>.sum() = fold(BigDecimal.ZERO) { x,y -> x + y }!!
 fun Iterable<BigDecimal>.sum() = fold(BigDecimal.ZERO) { x,y -> x + y }!!
@@ -38,10 +42,15 @@ fun Iterable<BigDecimal>.variance() = toList().let {
 fun Sequence<BigDecimal>.variance() = asIterable().variance()
 fun Array<out BigDecimal>.variance() = asIterable().variance()
 
-fun Iterable<BigDecimal>.standardDeviation() = variance().let { Math.sqrt(it.toDouble()) }
+fun Iterable<BigDecimal>.standardDeviation() = variance().sqrt()
 fun Sequence<BigDecimal>.standardDeviation() = asIterable().standardDeviation()
 fun Array<out BigDecimal>.standardDeviation() = asIterable().standardDeviation()
 
+
+fun BigDecimal.sqrt(): BigDecimal {
+    val x = BigDecimal(Math.sqrt(toDouble()))
+    return x.add(BigDecimal(subtract(x.multiply(x)).toDouble() / (x.toDouble() * 2.0)))
+}
 
 // AGGREGATION OPERATORS
 
