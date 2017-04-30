@@ -15,7 +15,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 dependencies {
-        compile 'com.github.thomasnield:kotlin-statistics:-SNAPSHOT'
+    compile 'com.github.thomasnield:kotlin-statistics:-SNAPSHOT'
 }
 ```
 
@@ -35,7 +35,7 @@ dependencies {
 </dependency>
 ```
 
-## Basic Operators
+## Overview
 
 There are a number of extension function operators that support `Int`, `Long`, `Double`, `Float`, `BigDecimal` and `Short` numeric types for Sequences, Arrays, and Iterables:
 
@@ -56,6 +56,7 @@ println(median) // prints "3.0"
 
 There are also simple but powerful `xxxBy()` operators that allow you slice these statistical operators on a given key:
 
+* `countBy()`
 * `sumBy()`
 * `averageBy()`
 * `minBy()`
@@ -104,6 +105,9 @@ Sums by lengths: {5=20.4, 4=17.200000000000003, 7=6.8}
 Averages by lengths: {5=6.8, 4=5.733333333333334, 7=6.8}
 Std Devs by lengths: {5=2.1416504538945342, 4=2.619584360585134, 7=0.0}
 ```
+
+These slicing operators are backed by a common `groupApply()` function, which can be used to implement other slicing operators easily. 
+
 
 ## Slicing Aggregations Using Data Classes
 
@@ -170,7 +174,7 @@ CategoryAndSection(category=ABR, section=2)=1.1
 # Road Map
 
 
-Before doing a Maven release, I am looking to add these operators and more:
+Before doing a Maven release, I am looking to add these operators and more. Please contribute any PR's with these and other ideas, and help this library grow!
 
 * `weightedAverage()`
 * `percentile()`
