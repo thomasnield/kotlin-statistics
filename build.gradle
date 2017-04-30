@@ -15,11 +15,8 @@ repositories {
 
 dependencies {
   compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.+'
+  compile 'org.apache.commons:commons-math:2.2'
+
+  testCompile 'junit:junit:4.12'
+  testCompile "org.amshove.kluent:kluent:1.16"
 }
-
-dependencies {
-
-    testCompile 'junit:junit:4.12'
-    testCompile "org.amshove.kluent:kluent:1.16"
-}
-
