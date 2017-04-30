@@ -39,13 +39,21 @@ dependencies {
 
 There are a number of extension function operators that support `Int`, `Long`, `Double`, `Float`, `BigDecimal` and `Short` numeric types for Sequences, Arrays, and Iterables:
 
+* `descriptiveStatistics`
 * `sum()`
 * `average()`
 * `min()`
 * `max()`
 * `mode()`
+* `median()`
+* `percentile()`
 * `variance()`
 * `standardDeviation()`
+* `geometricMean()`
+* `sumOfSquares()`
+* `normalize()`
+* `kurtosis`
+* `skewness`
 
 Here is an example of using the `median()` extension function against a `Sequence` of Doubles:
 
@@ -54,9 +62,10 @@ val median = sequenceOf(1.0, 3.0, 5.0).median()
 println(median) // prints "3.0"
 ```
 
+
 ## Slicing Operators
 
-There are also simple but powerful `xxxBy()` operators that allow you slice these statistical operators on a given key:
+There are also simple but powerful `xxxBy()` operators that allow you slice many of these statistical operators on a given key:
 
 * `countBy()`
 * `sumBy()`
@@ -177,12 +186,5 @@ Key(category=ABR, section=2)=1.1
 
 
 Before doing a Maven release, I am looking to add these operators and more. Please contribute any PR's with these and other ideas, and help this library grow!
-
-* `weightedAverage()`
-* `percentile()`
-* `quartile()`
-* `weightedMedian()`
-* `trimmedAverage()`
-* `zScore()`
 
 

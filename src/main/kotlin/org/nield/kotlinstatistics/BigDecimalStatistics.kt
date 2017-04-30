@@ -1,10 +1,8 @@
 package org.nield.kotlinstatistics
 
-import jdk.nashorn.internal.runtime.JSType.toDouble
+import org.apache.commons.math.stat.StatUtils
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 import java.math.BigDecimal
-import java.math.BigDecimal.ROUND_HALF_UP
-
-
 
 fun Sequence<BigDecimal>.sum() = fold(BigDecimal.ZERO) { x,y -> x + y }!!
 fun Iterable<BigDecimal>.sum() = fold(BigDecimal.ZERO) { x,y -> x + y }!!
@@ -14,43 +12,47 @@ fun Sequence<BigDecimal>.average() = toList().let { list ->
 }
 fun Iterable<BigDecimal>.average() = asSequence().average()
 
-fun Iterable<BigDecimal>.median() = toList().let { list ->
-    val listSize = list.size
-    val middle = listSize / 2
 
-    if (listSize % 2 == 1)
-        list[middle]
-    else
-        (list[middle - 1] + list[middle]) / BigDecimal.valueOf(2.0)
-}
-fun Sequence<BigDecimal>.median() = asIterable().median()
+val Iterable<BigDecimal>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
+val Sequence<BigDecimal>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
+val Array<out BigDecimal>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
 
-fun Array<out BigDecimal>.median() = let { array ->
-    val listSize = array.size
-    val middle = listSize / 2
+fun Iterable<BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun Sequence<BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun Array<out BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
 
-    if (listSize % 2 == 1)
-        array[middle]
-    else
-        (array[middle - 1] + array[middle]) / BigDecimal.valueOf(2.0)
-}
+fun Iterable<BigDecimal>.median() = percentile(50.0)
+fun Sequence<BigDecimal>.median() = percentile(50.0)
+fun Array<out BigDecimal>.median() = percentile(50.0)
 
-fun Iterable<BigDecimal>.variance() = toList().let {
-    val avg = it.average()
-    asSequence().map { (it - avg).let { it * it } }.average()
-}
-fun Sequence<BigDecimal>.variance() = asIterable().variance()
-fun Array<out BigDecimal>.variance() = asIterable().variance()
+fun Iterable<BigDecimal>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList() .toDoubleArray(), percentile)
+fun Sequence<BigDecimal>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList() .toDoubleArray(), percentile)
+fun Array<out BigDecimal>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray() , percentile)
 
-fun Iterable<BigDecimal>.standardDeviation() = variance().sqrt()
-fun Sequence<BigDecimal>.standardDeviation() = asIterable().standardDeviation()
-fun Array<out BigDecimal>.standardDeviation() = asIterable().standardDeviation()
+fun Iterable<BigDecimal>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
+fun Sequence<BigDecimal>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
+fun Array<out BigDecimal>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
 
+fun Iterable<BigDecimal>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
+fun Sequence<BigDecimal>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
+fun Array<out BigDecimal>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
 
-fun BigDecimal.sqrt(): BigDecimal {
-    val x = BigDecimal(Math.sqrt(toDouble()))
-    return x.add(BigDecimal(subtract(x.multiply(x)).toDouble() / (x.toDouble() * 2.0)))
-}
+fun Iterable<BigDecimal>.standardDeviation() = descriptiveStatistics.standardDeviation
+fun Sequence<BigDecimal>.standardDeviation() = descriptiveStatistics.standardDeviation
+fun Array<out BigDecimal>.standardDeviation() = descriptiveStatistics.standardDeviation
+
+fun Iterable<BigDecimal>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
+fun Sequence<BigDecimal>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
+fun Array<out BigDecimal>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
+
+val Iterable<BigDecimal>.kurtosis get() = descriptiveStatistics.kurtosis
+val Sequence<BigDecimal>.kurtosis get() = descriptiveStatistics.kurtosis
+val Array<out BigDecimal>.kurtosis get() = descriptiveStatistics.kurtosis
+
+val Iterable<BigDecimal>.skewness get() = descriptiveStatistics.skewness
+val Sequence<BigDecimal>.skewness get() = descriptiveStatistics.skewness
+val Array<out BigDecimal>.skewness get() = descriptiveStatistics.skewness
+
 
 // AGGREGATION OPERATORS
 

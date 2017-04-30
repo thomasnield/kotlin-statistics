@@ -3,6 +3,10 @@ package org.nield.kotlinstatistics
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 
+val Iterable<Double>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
+val Sequence<Double>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
+val Array<out Double>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
+val DoubleArray.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
 
 fun Iterable<Double>.geometricMean() = StatUtils.geometricMean(toList().toDoubleArray())
 fun Sequence<Double>.geometricMean() = StatUtils.geometricMean(toList().toDoubleArray())
@@ -29,15 +33,26 @@ fun Sequence<Double>.sumOfSquares() = StatUtils.sumSq(toList().toDoubleArray())
 fun Array<out Double>.sumOfSquares() = StatUtils.sumSq(toDoubleArray())
 fun DoubleArray.sumOfSquares() = StatUtils.sumSq(this)
 
-fun Iterable<Double>.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
-fun Sequence<Double>.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
-fun Array<out Double>.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
-fun DoubleArray.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
+fun Iterable<Double>.standardDeviation() = descriptiveStatistics.standardDeviation
+fun Sequence<Double>.standardDeviation() = descriptiveStatistics.standardDeviation
+fun Array<out Double>.standardDeviation() = descriptiveStatistics.standardDeviation
+fun DoubleArray.standardDeviation() = descriptiveStatistics.standardDeviation
 
 fun Iterable<Double>.normalize() = StatUtils.normalize(toList().toDoubleArray())
 fun Sequence<Double>.normalize() = StatUtils.normalize(toList().toDoubleArray())
 fun Array<out Double>.normalize() = StatUtils.normalize(toDoubleArray())
 fun DoubleArray.normalize() = StatUtils.normalize(this)
+
+val Iterable<Double>.kurtosis get() = descriptiveStatistics.kurtosis
+val Sequence<Double>.kurtosis get() = descriptiveStatistics.kurtosis
+val Array<out Double>.kurtosis get() = descriptiveStatistics.kurtosis
+val DoubleArray.kurtosis get() = descriptiveStatistics.kurtosis
+
+val Iterable<Double>.skewness get() = descriptiveStatistics.skewness
+val Sequence<Double>.skewness get() = descriptiveStatistics.skewness
+val Array<out Double>.skewness get() = descriptiveStatistics.skewness
+val DoubleArray.skewness get() = descriptiveStatistics.skewness
+
 
 // AGGREGATION OPERATORS
 

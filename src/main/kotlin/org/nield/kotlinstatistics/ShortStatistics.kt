@@ -1,50 +1,58 @@
 package org.nield.kotlinstatistics
 
+import org.apache.commons.math.stat.StatUtils
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 
-fun Iterable<Short>.median(): Double = toList().let { list ->
-    val listSize = list.size
-    val middle = listSize / 2
+val Iterable<Short>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
+val Sequence<Short>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
+val Array<out Short>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
+val ShortArray.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
 
-    if (listSize % 2 == 1)
-        list[middle].toDouble()
-    else
-        (list[middle - 1] + list[middle]) / 2.0
-}
-fun Sequence<Short>.median() = asIterable().median()
+fun Iterable<Short>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
+fun Sequence<Short>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
+fun Array<out Short>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
+fun ShortArray.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
 
-fun Array<out Short>.median() = let { array ->
-    val listSize = array.size
-    val middle = listSize / 2
+fun Iterable<Short>.median() = percentile(50.0)
+fun Sequence<Short>.median() = percentile(50.0)
+fun Array<out Short>.median() = percentile(50.0)
+fun ShortArray.median() = percentile(50.0)
 
-    if (listSize % 2 == 1)
-        array[middle].toDouble()
-    else
-        (array[middle - 1] + array[middle]) / 2.0
-}
+fun Iterable<Short>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
+fun Sequence<Short>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
+fun Array<out Short>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray() , percentile)
+fun ShortArray.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
 
-fun ShortArray.median() = let { array ->
-    val listSize = array.size
-    val middle = listSize / 2
+fun Iterable<Short>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun Sequence<Short>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun Array<out Short>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun ShortArray.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 
-    if (listSize % 2 == 1)
-        array[middle].toDouble()
-    else
-        (array[middle - 1] + array[middle]) / 2.0
-}
+fun Iterable<Short>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun Sequence<Short>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun Array<out Short>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun ShortArray.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 
-fun Iterable<Short>.variance() = toList().toShortArray().let {
-    val avg = it.average()
-    asSequence().map { (it - avg).let { it * it } }.average()
-}
-fun Sequence<Short>.variance() = asIterable().variance()
-fun Array<out Short>.variance() = asIterable().variance()
-fun ShortArray.variance() = asIterable().variance()
+fun Iterable<Short>.standardDeviation() = descriptiveStatistics.standardDeviation
+fun Sequence<Short>.standardDeviation() = descriptiveStatistics.standardDeviation
+fun Array<out Short>.standardDeviation() = descriptiveStatistics.standardDeviation
+fun ShortArray.standardDeviation() = descriptiveStatistics.standardDeviation
 
+fun Iterable<Short>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun Sequence<Short>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun Array<out Short>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun ShortArray.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 
-fun Iterable<Short>.standardDeviation() = variance().let { Math.sqrt(it) }
-fun Sequence<Short>.standardDeviation() = asIterable().standardDeviation()
-fun Array<out Short>.standardDeviation() = asIterable().standardDeviation()
-fun ShortArray.standardDeviation() = asIterable().standardDeviation()
+val Iterable<Short>.kurtosis get() = descriptiveStatistics.kurtosis
+val Sequence<Short>.kurtosis get() = descriptiveStatistics.kurtosis
+val Array<out Short>.kurtosis get() = descriptiveStatistics.kurtosis
+val ShortArray.kurtosis get() = descriptiveStatistics.kurtosis
+
+val Iterable<Short>.skewness get() = descriptiveStatistics.skewness
+val Sequence<Short>.skewness get() = descriptiveStatistics.skewness
+val Array<out Short>.skewness get() = descriptiveStatistics.skewness
+val ShortArray.skewness get() = descriptiveStatistics.skewness
+
 
 
 // AGGREGATION OPERATORS
