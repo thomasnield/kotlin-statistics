@@ -35,7 +35,7 @@ dependencies {
 </dependency>
 ```
 
-## Overview
+## Basic Operators
 
 There are a number of extension function operators that support `Int`, `Long`, `Double`, `Float`, `BigDecimal` and `Short` numeric types for Sequences, Arrays, and Iterables:
 
@@ -53,6 +53,8 @@ Here is an example of using the `median()` extension function against a `Sequenc
 val median = sequenceOf(1.0, 3.0, 5.0).median() 
 println(median) // prints "3.0"
 ```
+
+## Slicing Operators
 
 There are also simple but powerful `xxxBy()` operators that allow you slice these statistical operators on a given key:
 
@@ -109,7 +111,7 @@ Std Devs by lengths: {5=2.1416504538945342, 4=2.619584360585134, 7=0.0}
 These slicing operators are backed by a common `groupApply()` function, which can be used to implement other slicing operators easily. 
 
 
-## Slicing Aggregations Using Data Classes
+## Slicing Using Data Classes
 
 You can slice on multiple fields using data classes with the `xxxBy()` operators as well. This is similar to using a GROUP BY on multiple fields in SQL:
 
@@ -136,18 +138,18 @@ val products = listOf(Product(1, "Rayzeon", "ABR", 3, 1.1),
         )
 
 // Data Class for Grouping
-data class CategoryAndSection(val category: String, val section: Int)
+data class Key(val category: String, val section: Int)
 
 // Get Count by Category and Section
 val countByCategoryAndSection =
-        products.countBy { CategoryAndSection(it.category, it.section) }
+        products.countBy { Key(it.category, it.section) }
 
 println("Counts by Category and Section")
 countByCategoryAndSection.entries.forEach { println(it) }
 
 // Get Average Defect Rate by Category and Section
 val averageDefectByCategoryAndSection =
-        products.averageBy(keySelector = { CategoryAndSection(it.category, it.section) }, doubleMapper = { it.defectRate })
+        products.averageBy(keySelector = { Key(it.category, it.section) }, doubleMapper = { it.defectRate })
 
 println("\nAverage Defect Rate by Category and Section")
 averageDefectByCategoryAndSection.entries.forEach { println(it) }
@@ -157,18 +159,18 @@ averageDefectByCategoryAndSection.entries.forEach { println(it) }
 
 ```
 Counts by Category and Section
-CategoryAndSection(category=ABR, section=3)=4
-CategoryAndSection(category=ABZ, section=4)=2
-CategoryAndSection(category=ZBN, section=1)=3
-CategoryAndSection(category=ABZ, section=2)=1
-CategoryAndSection(category=ABR, section=2)=1
+Key(category=ABR, section=3)=4
+Key(category=ABZ, section=4)=2
+Key(category=ZBN, section=1)=3
+Key(category=ABZ, section=2)=1
+Key(category=ABR, section=2)=1
 
 Average Defect Rate by Category and Section
-CategoryAndSection(category=ABR, section=3)=1.4000000000000001
+Key(category=ABR, section=3)=1.4000000000000001
 CategoryAndSection(category=ABZ, section=4)=1.9500000000000002
-CategoryAndSection(category=ZBN, section=1)=2.1333333333333333
-CategoryAndSection(category=ABZ, section=2)=5.1
-CategoryAndSection(category=ABR, section=2)=1.1
+Key(category=ZBN, section=1)=2.1333333333333333
+Key(category=ABZ, section=2)=5.1
+Key(category=ABR, section=2)=1.1
 ```
 
 # Road Map
