@@ -4,6 +4,8 @@
 
 This library contains helpful extension functions to perform exploratory and production statistics in a Kotlin-idiomatic way.
 
+**NOTE:** This library is being refactored as a DSL around [Apache Commons Math](http://commons.apache.org/proper/commons-math/userguide/stat.html). This development is happening on the `apache-commons-math-refactor` branch. Please feel free to contribute. 
+
 ## Build Instructions
 
 Until I get this released into Maven Central, you can use Maven or Gradle with JitPack to directly build a snapshot as a dependency.
