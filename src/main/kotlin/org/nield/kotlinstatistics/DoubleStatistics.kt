@@ -1,52 +1,39 @@
 package org.nield.kotlinstatistics
 
-
-fun Iterable<Double>.median() = toList().let { list ->
-    val listSize = list.size
-    val middle = listSize / 2
-
-    if (listSize % 2 == 1)
-        list[middle]
-    else
-        (list[middle - 1] + list[middle]) / 2.0
-}
-fun Sequence<Double>.median() = asIterable().median()
-
-fun Array<out Double>.median() = let { array ->
-    val listSize = array.size
-    val middle = listSize / 2
-
-    if (listSize % 2 == 1)
-        array[middle]
-    else
-        (array[middle - 1] + array[middle]) / 2.0
-}
-
-fun DoubleArray.median() = let { array ->
-    val listSize = array.size
-    val middle = listSize / 2
-
-    if (listSize % 2 == 1)
-        array[middle]
-    else
-        (array[middle - 1] + array[middle]) / 2.0
-}
-
-fun Iterable<Double>.variance() = toList().toDoubleArray().let {
-    val avg = it.average()
-    asSequence().map { (it - avg).let { it * it } }.average()
-}
-fun Sequence<Double>.variance() = asIterable().variance()
-fun Array<out Double>.variance() = asIterable().variance()
-fun DoubleArray.variance() = asIterable().variance()
+import org.apache.commons.math.stat.StatUtils
+import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 
 
-fun Iterable<Double>.standardDeviation() = variance().let { Math.sqrt(it) }
-fun Sequence<Double>.standardDeviation() = asIterable().standardDeviation()
-fun Array<out Double>.standardDeviation() = asIterable().standardDeviation()
-fun DoubleArray.standardDeviation() = asIterable().standardDeviation()
+fun Iterable<Double>.median() = percentile(50.0)
+fun Sequence<Double>.median() = percentile(50.0)
+fun Array<out Double>.median() = percentile(50.0)
+fun DoubleArray.median() = percentile(50.0)
+
+fun Iterable<Double>.percentile(percentile: Double) = StatUtils.percentile(toList().toDoubleArray(), percentile)
+fun Sequence<Double>.percentile(percentile: Double) = StatUtils.percentile(toList().toDoubleArray(), percentile)
+fun Array<out Double>.percentile(percentile: Double) = StatUtils.percentile(toDoubleArray(), percentile)
+fun DoubleArray.percentile(percentile: Double) = StatUtils.percentile(this, percentile)
+
+fun Iterable<Double>.variance() = StatUtils.variance(toList().toDoubleArray())
+fun Sequence<Double>.variance() = StatUtils.variance(toList().toDoubleArray())
+fun Array<out Double>.variance() = StatUtils.variance(toDoubleArray())
+fun DoubleArray.variance() = StatUtils.variance(this)
+
+fun Iterable<Double>.sumOfSquares() = StatUtils.sumSq(toList().toDoubleArray())
+fun Sequence<Double>.sumOfSquares() = StatUtils.sumSq(toList().toDoubleArray())
+fun Array<out Double>.sumOfSquares() = StatUtils.sumSq(toDoubleArray())
+fun DoubleArray.sumOfSquares() = StatUtils.sumSq(this)
+
+fun Iterable<Double>.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
+fun Sequence<Double>.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
+fun Array<out Double>.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
+fun DoubleArray.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
 
 
+fun Iterable<Double>.normalize() = DescriptiveStatistics().apply { forEach { addValue(it) }}
+fun Sequence<Double>.normalize() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
+fun Array<out Double>.normalize() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
+fun DoubleArray.normalize() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
 
 // AGGREGATION OPERATORS
 

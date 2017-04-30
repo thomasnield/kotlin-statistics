@@ -3,7 +3,6 @@ package org.nield.kotlinstatistics
 import junit.framework.Assert.assertTrue
 import org.amshove.kluent.shouldEqualTo
 import org.junit.Test
-import java.math.BigDecimal
 
 class DoubleStatisticsTest {
 

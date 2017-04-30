@@ -1,7 +1,7 @@
 package org.nield.kotlinstatistics
 
 
-fun Iterable<Long>.median(): Double = toList().let { list ->
+fun Iterable<Long>.median(): Double = sorted().toList().let { list ->
     val listSize = list.size
     val middle = listSize / 2
 
@@ -10,7 +10,7 @@ fun Iterable<Long>.median(): Double = toList().let { list ->
     else
         (list[middle - 1] + list[middle]) / 2.0
 }
-fun Sequence<Long>.median() = asIterable().median()
+fun Sequence<Long>.median() = sorted().asIterable().median()
 
 fun Array<out Long>.median() = let { array ->
     val listSize = array.size
