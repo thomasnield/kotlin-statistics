@@ -55,6 +55,14 @@ val IntArray.skewness get() = descriptiveStatistics.skewness
 
 
 // AGGREGATION OPERATORS
+
+inline fun <T,K> Sequence<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
+        groupApply(keySelector, intMapper) { it.descriptiveStatistics }
+
+inline fun <T,K> Iterable<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
+        asSequence().descriptiveStatisticsBy(keySelector, intMapper)
+
+
 inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
         groupApply(keySelector, intMapper) { it.sum() }
 
@@ -96,3 +104,4 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
         asSequence().standardDeviationBy(keySelector, intMapper)
+

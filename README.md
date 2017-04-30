@@ -72,10 +72,12 @@ There are also simple but powerful `xxxBy()` operators that allow you slice many
 * `countBy()`
 * `sumBy()`
 * `averageBy()`
+* `geometricMeanBy()`
 * `minBy()`
 * `maxBy()`
 * `varianceBy()`
 * `standardDeviationBy()`
+* `descriptiveStatisticsBy()`
 
 Below, we slice a sequence of `Item` objects by their lengths and get the averages and standard deviations by each length.
 

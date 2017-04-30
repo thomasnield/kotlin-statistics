@@ -56,6 +56,12 @@ val DoubleArray.skewness get() = descriptiveStatistics.skewness
 
 // AGGREGATION OPERATORS
 
+inline fun <T,K> Sequence<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
+        groupApply(keySelector, doubleMapper) { it.descriptiveStatistics }
+
+inline fun <T,K> Iterable<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
+        asSequence().descriptiveStatisticsBy(keySelector, doubleMapper)
+
 inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
         groupApply(keySelector, doubleMapper) { it.sum() }
 
@@ -103,3 +109,9 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
         asSequence().standardDeviationBy(keySelector, doubleMapper)
+
+inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
+        groupApply(keySelector, doubleMapper) { it.geometricMean() }
+
+inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
+        asSequence().geometricMeanBy(keySelector, doubleMapper)

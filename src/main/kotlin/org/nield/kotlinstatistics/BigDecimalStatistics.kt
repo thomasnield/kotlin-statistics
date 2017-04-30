@@ -56,6 +56,13 @@ val Array<out BigDecimal>.skewness get() = descriptiveStatistics.skewness
 
 // AGGREGATION OPERATORS
 
+inline fun <T,K> Sequence<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        groupApply(keySelector, bigDecimalMapper) { it.descriptiveStatistics }
+
+inline fun <T,K> Iterable<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        asSequence().descriptiveStatisticsBy(keySelector, bigDecimalMapper)
+
+
 inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.sum() }
 
@@ -97,3 +104,10 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().standardDeviationBy(keySelector, bigDecimalMapper)
+
+
+inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        groupApply(keySelector, bigDecimalMapper) { it.geometricMean() }
+
+inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
+        asSequence().geometricMeanBy(keySelector, bigDecimalMapper)

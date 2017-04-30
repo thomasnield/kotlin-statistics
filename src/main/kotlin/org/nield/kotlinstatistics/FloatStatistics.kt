@@ -1,5 +1,7 @@
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import org.nield.kotlinstatistics.descriptiveStatistics
+import org.nield.kotlinstatistics.geometricMean
 import org.nield.kotlinstatistics.groupApply
 
 val Iterable<Float>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
@@ -54,6 +56,12 @@ val FloatArray.skewness get() = descriptiveStatistics.skewness
 
 
 // AGGREGATION OPERATORS
+inline fun <T,K> Sequence<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
+        groupApply(keySelector, longMapper) { it.descriptiveStatistics }
+
+inline fun <T,K> Iterable<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
+        asSequence().descriptiveStatisticsBy(keySelector, longMapper)
+
 
 inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         groupApply(keySelector, floatMapper) { it.sum() }
@@ -96,3 +104,10 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().standardDeviationBy(keySelector, floatMapper)
+
+
+inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        groupApply(keySelector, floatMapper) { it.geometricMean() }
+
+inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
+        asSequence().geometricMeanBy(keySelector, floatMapper)

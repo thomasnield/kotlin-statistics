@@ -56,6 +56,14 @@ val LongArray.skewness get() = descriptiveStatistics.skewness
 
 
 // AGGREGATION OPERATORS
+
+inline fun <T,K> Sequence<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
+        groupApply(keySelector, longMapper) { it.descriptiveStatistics }
+
+inline fun <T,K> Iterable<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
+        asSequence().descriptiveStatisticsBy(keySelector, longMapper)
+
+
 inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
         groupApply(keySelector, longMapper) { it.sum() }
 
@@ -99,3 +107,9 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
         asSequence().standardDeviationBy(keySelector, longMapper)
 
+
+inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
+        groupApply(keySelector, longMapper) { it.geometricMean() }
+
+inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
+        asSequence().geometricMeanBy(keySelector, longMapper)
