@@ -167,7 +167,7 @@ Key(category=ABR, section=2)=1
 
 Average Defect Rate by Category and Section
 Key(category=ABR, section=3)=1.4000000000000001
-CategoryAndSection(category=ABZ, section=4)=1.9500000000000002
+Key(category=ABZ, section=4)=1.9500000000000002
 Key(category=ZBN, section=1)=2.1333333333333333
 Key(category=ABZ, section=2)=5.1
 Key(category=ABR, section=2)=1.1
