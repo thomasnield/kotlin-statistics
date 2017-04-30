@@ -4,6 +4,11 @@ import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 
 
+fun Iterable<Double>.geometricMean() = StatUtils.geometricMean(toList().toDoubleArray())
+fun Sequence<Double>.geometricMean() = StatUtils.geometricMean(toList().toDoubleArray())
+fun Array<out Double>.geometricMean() = StatUtils.geometricMean(toDoubleArray())
+fun DoubleArray.geometricMean() = StatUtils.geometricMean(this)
+
 fun Iterable<Double>.median() = percentile(50.0)
 fun Sequence<Double>.median() = percentile(50.0)
 fun Array<out Double>.median() = percentile(50.0)
@@ -29,11 +34,10 @@ fun Sequence<Double>.standardDeviation() = DescriptiveStatistics().apply { forEa
 fun Array<out Double>.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
 fun DoubleArray.standardDeviation() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
 
-
-fun Iterable<Double>.normalize() = DescriptiveStatistics().apply { forEach { addValue(it) }}
-fun Sequence<Double>.normalize() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
-fun Array<out Double>.normalize() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
-fun DoubleArray.normalize() = DescriptiveStatistics().apply { forEach { addValue(it) }}.standardDeviation
+fun Iterable<Double>.normalize() = StatUtils.normalize(toList().toDoubleArray())
+fun Sequence<Double>.normalize() = StatUtils.normalize(toList().toDoubleArray())
+fun Array<out Double>.normalize() = StatUtils.normalize(toDoubleArray())
+fun DoubleArray.normalize() = StatUtils.normalize(this)
 
 // AGGREGATION OPERATORS
 
@@ -66,6 +70,12 @@ inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossin
 
 inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
         asSequence().medianBy(keySelector, doubleMapper)
+
+inline fun <T,K> Sequence<T>.percentileBy(percentile: Double, crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
+        groupApply(keySelector, doubleMapper) { it.percentile(percentile) }
+
+inline fun <T,K> Iterable<T>.percentileBy(percentile: Double, crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
+        asSequence().percentileBy(percentile, keySelector, doubleMapper)
 
 inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
         groupApply(keySelector, doubleMapper) { it.variance() }
