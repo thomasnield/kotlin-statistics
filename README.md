@@ -175,7 +175,6 @@ Before doing a Maven release, I am looking to add these operators and more:
 * `weightedAverage()`
 * `percentile()`
 * `quartile()`
-* `median()`
 * `weightedMedian()`
 * `trimmedAverage()`
 * `zScore()`
