@@ -55,6 +55,18 @@ val Array<out Double>.skewness get() = descriptiveStatistics.skewness
 val DoubleArray.skewness get() = descriptiveStatistics.skewness
 
 
+// REGRESSION
+
+fun Sequence<Pair<Double, Double>>.simpleRegression() = simpleRegression({it.first},{it.second})
+fun Iterable<Pair<Double, Double>>.simpleRegression() = simpleRegression({it.first},{it.second})
+inline fun <T> Iterable<T>.simpleRegression(crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) = asSequence().simpleRegression(xSelector, ySelector)
+inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double): SimpleRegression {
+    val r = SimpleRegression()
+    forEach { r.addData(xSelector(it), ySelector(it)) }
+    return r
+}
+
+
 // AGGREGATION OPERATORS
 
 inline fun <T,K> Sequence<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
@@ -117,12 +129,5 @@ inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
         asSequence().geometricMeanBy(keySelector, doubleMapper)
 
-
-fun Sequence<Pair<Double, Double>>.simpleRegression() = simpleRegression({it.first},{it.second})
-fun Iterable<Pair<Double, Double>>.simpleRegression() = simpleRegression({it.first},{it.second})
-inline fun <T> Iterable<T>.simpleRegression(crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) = asSequence().simpleRegression(xSelector, ySelector)
-inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double): SimpleRegression {
-    val r = SimpleRegression()
-    forEach { r.addData(xSelector(it), ySelector(it)) }
-    return r
-}
+inline fun <T,K> Sequence<T>.simpleRegressionBy(crossinline keySelector: (T) -> K, crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) =
+        groupApply(keySelector, { it.simpleRegression(xSelector, ySelector) })
