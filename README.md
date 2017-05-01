@@ -221,8 +221,8 @@ fun main(args: Array<String>) {
                 SaleDate(LocalDate.of(2017,1,3), 1020),
                 SaleDate(LocalDate.of(2017,1,4), 907),
                 SaleDate(LocalDate.of(2017,1,5), 805),
-                SaleDate(LocalDate.of(2017,1,5), 2809),
-                SaleDate(LocalDate.of(2017,1,5), 2600)
+                SaleDate(LocalDate.of(2017,1,6), 2809),
+                SaleDate(LocalDate.of(2017,1,7), 2600)
             ).simpleRegression(
                 xSelector = { it.date.dayOfYear.toDouble() },
                 ySelector = { it.sales.toDouble() }
