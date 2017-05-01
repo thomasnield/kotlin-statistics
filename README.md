@@ -186,9 +186,3 @@ Key(category=ABZ, section=2)=5.1
 Key(category=ABR, section=2)=1.1
 ```
 
-# Road Map
-
-
-Before doing a Maven release, I am looking to add these operators and more. Please contribute any PR's with these and other ideas, and help this library grow!
-
-
