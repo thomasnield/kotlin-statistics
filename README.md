@@ -1,4 +1,4 @@
-![](http://i.imgur.com/ONh78s7.png) 
+![](http://i.imgur.com/v3FqiEA.png) 
 # Kotlin Statistics
 ### Math and statistical extensions for Kotlin
 
