@@ -54,6 +54,7 @@ There are a number of extension function operators that support `Int`, `Long`, `
 * `geometricMean()`
 * `sumOfSquares()`
 * `normalize()`
+* `simpleRegression()`
 * `kurtosis`
 * `skewness`
 
@@ -78,6 +79,7 @@ There are also simple but powerful `xxxBy()` operators that allow you slice many
 * `varianceBy()`
 * `standardDeviationBy()`
 * `descriptiveStatisticsBy()`
+* `simpleRegressionBy()`
 
 Below, we slice a sequence of `Item` objects by their lengths and get the averages and standard deviations by each length.
 
