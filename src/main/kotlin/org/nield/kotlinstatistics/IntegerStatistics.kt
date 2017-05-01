@@ -104,4 +104,3 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
         asSequence().standardDeviationBy(keySelector, intMapper)
-

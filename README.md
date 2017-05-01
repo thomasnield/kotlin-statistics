@@ -186,3 +186,47 @@ Key(category=ABZ, section=2)=5.1
 Key(category=ABR, section=2)=1.1
 ```
 
+
+## Linear Regression
+
+Linear regression is being implemented as well. You can get a `SimpleRegression` on a `Sequence` or `Iterable`, for instance.
+
+```kotlin
+fun main(args: Array<String>) {
+    val r = sequenceOf(
+            1.0 to 3.0,
+            2.0 to 6.0,
+            3.0 to 9.0
+        ).simpleRegression()
+
+    //prints the slope "3.0"
+    println(r.slope)
+}
+```
+
+You can also select the `x` and `y` on any type `T`. Currently, `x` and `y` must be a `Double`.
+
+```kotlin
+import java.time.LocalDate
+
+fun main(args: Array<String>) {
+
+    class SaleDate(val date: LocalDate, val sales: Int)
+
+    val r = sequenceOf(
+                SaleDate(LocalDate.of(2017,1,1), 1080),
+                SaleDate(LocalDate.of(2017,1,2), 2010),
+                SaleDate(LocalDate.of(2017,1,3), 1020),
+                SaleDate(LocalDate.of(2017,1,4), 907),
+                SaleDate(LocalDate.of(2017,1,5), 805),
+                SaleDate(LocalDate.of(2017,1,5), 2809),
+                SaleDate(LocalDate.of(2017,1,5), 2600)
+            ).simpleRegression(
+                xSelector = { it.date.dayOfMonth.toDouble()},
+                ySelector = {it.sales.toDouble()}
+            )
+
+    //print slope of regression
+    println(r.slope)
+}
+```

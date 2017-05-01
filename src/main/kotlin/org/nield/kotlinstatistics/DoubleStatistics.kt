@@ -2,6 +2,7 @@ package org.nield.kotlinstatistics
 
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import org.apache.commons.math.stat.regression.SimpleRegression
 
 val Iterable<Double>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
 val Sequence<Double>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
@@ -115,3 +116,13 @@ inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 
 inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline doubleMapper: (T) -> Double) =
         asSequence().geometricMeanBy(keySelector, doubleMapper)
+
+
+fun Sequence<Pair<Double, Double>>.simpleRegression() = simpleRegression({it.first},{it.second})
+fun Iterable<Pair<Double, Double>>.simpleRegression() = simpleRegression({it.first},{it.second})
+inline fun <T> Iterable<T>.simpleRegression(crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) = asSequence().simpleRegression(xSelector, ySelector)
+inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double): SimpleRegression {
+    val r = SimpleRegression()
+    forEach { r.addData(xSelector(it), ySelector(it)) }
+    return r
+}

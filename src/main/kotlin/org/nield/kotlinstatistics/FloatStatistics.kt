@@ -1,8 +1,10 @@
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import org.apache.commons.math.stat.regression.SimpleRegression
 import org.nield.kotlinstatistics.descriptiveStatistics
 import org.nield.kotlinstatistics.geometricMean
 import org.nield.kotlinstatistics.groupApply
+import org.nield.kotlinstatistics.simpleRegression
 
 val Iterable<Float>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
 val Sequence<Float>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
@@ -111,3 +113,10 @@ inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 
 inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().geometricMeanBy(keySelector, floatMapper)
+
+
+fun Sequence<Pair<Float, Float>>.simpleRegression() = simpleRegression({it.first.toDouble()},{it.second.toDouble()})
+
+inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Float, crossinline ySelector: (T) -> Float) =
+        map { xSelector(it).toDouble() to ySelector(it).toDouble() }
+                .simpleRegression()
