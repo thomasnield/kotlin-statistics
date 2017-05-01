@@ -189,7 +189,7 @@ Key(category=ABR, section=2)=1.1
 
 ## Linear Regression
 
-Linear regression is being implemented as well. You can get a `SimpleRegression` on a `Sequence` or `Iterable`, for instance.
+Linear regression is being implemented as well. You can get a `SimpleRegression` on a `Sequence` or `Iterable` emitting `Double` pairs, for instance.
 
 ```kotlin
 fun main(args: Array<String>) {
@@ -204,7 +204,7 @@ fun main(args: Array<String>) {
 }
 ```
 
-You can also select the `x` and `y` on any type `T`. Currently, `x` and `y` must be a `Double`.
+You can also select the `x` and `y` on any arbitrary type `T`. Currently, `x` and `y` must be mapped to a `Double`. Below, we plot a regression against sale numbers across calendar dates:
 
 ```kotlin
 import java.time.LocalDate
@@ -222,8 +222,8 @@ fun main(args: Array<String>) {
                 SaleDate(LocalDate.of(2017,1,5), 2809),
                 SaleDate(LocalDate.of(2017,1,5), 2600)
             ).simpleRegression(
-                xSelector = { it.date.dayOfMonth.toDouble()},
-                ySelector = {it.sales.toDouble()}
+                xSelector = { it.date.dayOfYear.toDouble() },
+                ySelector = { it.sales.toDouble() }
             )
 
     //print slope of regression
