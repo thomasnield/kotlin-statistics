@@ -214,8 +214,8 @@ import java.time.LocalDate
 fun main(args: Array<String>) {
 
     class SaleDate(val date: LocalDate, val sales: Int)
-
-    val r = sequenceOf(
+    
+    val salesDates = listOf(
                 SaleDate(LocalDate.of(2017,1,1), 1080),
                 SaleDate(LocalDate.of(2017,1,2), 2010),
                 SaleDate(LocalDate.of(2017,1,3), 1020),
@@ -223,12 +223,14 @@ fun main(args: Array<String>) {
                 SaleDate(LocalDate.of(2017,1,5), 805),
                 SaleDate(LocalDate.of(2017,1,6), 2809),
                 SaleDate(LocalDate.of(2017,1,7), 2600)
-            ).simpleRegression(
+            )
+
+    val regression = salesDates.simpleRegression(
                 xSelector = { it.date.dayOfYear.toDouble() },
                 ySelector = { it.sales.toDouble() }
             )
 
     //print slope of regression
-    println(r.slope)
+    println(regression.slope)
 }
 ```
