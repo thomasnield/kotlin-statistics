@@ -188,6 +188,83 @@ Key(category=ABZ, section=2)=5.1
 Key(category=ABR, section=2)=1.1
 ```
 
+## Aggregating Multiple Fields
+
+Using the Kotlin `let()` operator, it is easy to take a collection of items and aggregate multiple fields into another "summary" object. Below, we take a collection `Email` objects and find the distribution of instances of `subject` and `sender`. 
+
+```kotlin
+package org.nield.kotlinstatistics
+
+fun main(args: Array<String>) {
+
+    class Email(val subject: String, val sender: String)
+
+    val data = listOf(
+            Email("I make u offer", "princeofnigeria2000@aol.com"),
+            Email("Congratulations!", "lotterybacklog@gmail.com"),
+            Email("Your Inheritance is waiting!", "lotterybacklog@gmail.com"),
+            Email("Hey", "jessica47@gmail.com")
+    )
+
+    data class FieldDistributions(val subject: Map<String,Int>, val sender: Map<String,Int>)
+
+    val distributions = data.let {
+        FieldDistributions(
+                subject = it.countBy { it.subject },
+                sender = it.countBy { it.sender }
+        )
+    }
+
+    println(distributions)
+}
+
+```
+
+**OUTPUT:**
+
+```
+FieldDistributions(subject={I make u offer=1, Congratulations!=1, Your Inheritance is waiting!=1, Hey=1}, sender={princeofnigeria2000@aol.com=1, lotterybacklog@gmail.com=2, jessica47@gmail.com=1})
+```
+
+You can also do various transformations for each field, such as splitting words and lowercasing them before getting a distribution.
+
+```kotlin
+package org.nield.kotlinstatistics
+
+fun main(args: Array<String>) {
+
+    class Email(val subject: String, val sender: String)
+
+    val data = listOf(
+            Email("I make u offer", "princeofnigeria2000@aol.com"),
+            Email("Congratulations!", "lotterybacklog@gmail.com"),
+            Email("Your Inheritance offer is waiting!", "princeofnigeria2000@aol.com"),
+            Email("Hey", "jessica47@gmail.com")
+    )
+
+    data class FieldDistributions(val subjectWords: Map<String,Int>, val sender: Map<String,Int>)
+
+    val distributions = data.let {
+        FieldDistributions(
+                subjectWords = it.asSequence()
+                        .flatMap { it.subject.split(Regex(" ")).asSequence() }
+                        .filter { it.isNotEmpty() }
+                        .map { it.toLowerCase() }
+                        .countBy(),
+                sender = it.countBy { it.sender.toLowerCase() }
+        )
+    }
+
+    println(distributions)
+}
+
+```
+
+**OUTPUT:**
+
+```
+FieldDistributions(subjectWords={i=1, make=1, u=1, offer=2, congratulations!=1, your=1, inheritance=1, is=1, waiting!=1, hey=1}, sender={princeofnigeria2000@aol.com=2, lotterybacklog@gmail.com=1, jessica47@gmail.com=1})
+```
 
 ## Linear Regression
 
