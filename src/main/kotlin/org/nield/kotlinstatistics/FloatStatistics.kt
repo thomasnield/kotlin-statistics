@@ -1,15 +1,11 @@
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
-import org.apache.commons.math.stat.regression.SimpleRegression
-import org.nield.kotlinstatistics.descriptiveStatistics
-import org.nield.kotlinstatistics.geometricMean
-import org.nield.kotlinstatistics.groupApply
-import org.nield.kotlinstatistics.simpleRegression
+import org.nield.kotlinstatistics.*
 
-val Iterable<Float>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
-val Sequence<Float>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
-val Array<out Float>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
-val FloatArray.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }
+val Iterable<Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
+val Sequence<Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
+val Array<out Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
+val FloatArray.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 
 fun Iterable<Float>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 fun Sequence<Float>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
@@ -115,7 +111,7 @@ inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
         asSequence().geometricMeanBy(keySelector, floatMapper)
 
 
-fun Sequence<Pair<Float, Float>>.simpleRegression() = simpleRegression({it.first.toDouble()},{it.second.toDouble()})
+fun Sequence<Pair<Float, Float>>.simpleRegression() = simpleRegression({it.first},{it.second})
 
 inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Float, crossinline ySelector: (T) -> Float) =
         map { xSelector(it).toDouble() to ySelector(it).toDouble() }

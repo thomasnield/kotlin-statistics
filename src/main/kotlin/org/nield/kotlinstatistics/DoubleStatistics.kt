@@ -4,10 +4,10 @@ import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math.stat.regression.SimpleRegression
 
-val Iterable<Double>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
-val Sequence<Double>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
-val Array<out Double>.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
-val DoubleArray.descriptiveStatistics get() = DescriptiveStatistics().apply { forEach { addValue(it) } }
+val Iterable<Double>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
+val Sequence<Double>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
+val Array<out Double>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
+val DoubleArray.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
 
 fun Iterable<Double>.geometricMean() = StatUtils.geometricMean(toList().toDoubleArray())
 fun Sequence<Double>.geometricMean() = StatUtils.geometricMean(toList().toDoubleArray())
