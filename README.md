@@ -314,6 +314,6 @@ fun main(args: Array<String>) {
 
 ## Related Projects
 
-[Apache Commons Math](http://commons.apache.org/proper/commons-math/) - Math and statistical Java library
-[Koma](https://github.com/kyonifer/koma) - Scientific computing library for Kotlin
-[Krangl](https://github.com/holgerbrandl/krangl) - Tabular data wrangling library for Kotlin
+* [Apache Commons Math](http://commons.apache.org/proper/commons-math/) - Math and statistical Java library
+* [Koma](https://github.com/kyonifer/koma) - Scientific computing library for Kotlin
+* [Krangl](https://github.com/holgerbrandl/krangl) - Tabular data wrangling library for Kotlin
