@@ -104,3 +104,16 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
         asSequence().standardDeviationBy(keySelector, intMapper)
+
+inline fun <T> List<T>.intBinBy(bucketSize: Int,
+                                   crossinline intMapper: (T) -> Int,
+                                   rangeStart: Int? = null): BinModel<List<Int>, Int> {
+    val ints = map(intMapper)
+    val min = rangeStart?:ints.min()
+
+    return ints.binBy(bucketSize = bucketSize,
+            rangeStart = min,
+            incrementer = { it + 1 },
+            mapper = { it }
+    )
+}

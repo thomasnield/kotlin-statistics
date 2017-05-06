@@ -134,14 +134,16 @@ inline fun <T,K> Sequence<T>.simpleRegressionBy(crossinline keySelector: (T) -> 
 
 // Bin Operators
 //TODO - Having issues with pure number implementations
-inline fun <T> List<T>.doubleBinBy(bucketSize: Double, crossinline doubleMapper: (T) -> Double, rangeStart: Double? = null)  {
+inline fun <T> List<T>.doubleBinBy(bucketSize: Double,
+                                   scaleIncrement: Double,
+                                   crossinline doubleMapper: (T) -> Double,
+                                   rangeStart: Double? = null): BinModel<List<Double>, Double> {
     val doubles = map(doubleMapper)
     val min = rangeStart?:doubles.min()
-    val increment = bucketSize
 
-    doubles.binBy(bucketSize = 1,
+    return doubles.binBy(bucketSize = (bucketSize / scaleIncrement).toInt(),
             rangeStart = min,
-            incrementer = { it + increment },
+            incrementer = { it + scaleIncrement },
             mapper = { it }
             )
 }
