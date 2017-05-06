@@ -1,5 +1,7 @@
 package org.nield.kotlinstatistics
 
+import java.util.concurrent.atomic.AtomicBoolean
+
 class Bin<out T,in C: Comparable<C>>(val range: ClosedRange<in C>, val value: T) {
     operator fun contains(key: C) = key in range
     override fun toString(): String {
@@ -16,44 +18,35 @@ class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<
 }
 
 inline fun <T, C: Comparable<C>> List<T>.binBy(bucketSize: Int,
-                                                  crossinline incrementer: (C) -> C,
-                                                   crossinline mapper: (T) -> C,
-                                                   rangeStart: C? = null
-                                                  ): BinModel<List<T>, C> {
+                                               crossinline incrementer: (C) -> C,
+                                               crossinline mapper: (T) -> C,
+                                               rangeStart: C? = null
+): BinModel<List<T>, C> {
 
     val groupedByC = asSequence().groupBy(mapper)
-    val maxC = groupedByC.keys.max()!!
     val minC = rangeStart?:groupedByC.keys.min()!!
+    val maxC = groupedByC.keys.max()!!
 
-    val fullSpan = generateSequence(minC) { incrementer(it) }
-            .takeWhile { it <= maxC }
-            .toList()
+    val buckets = mutableListOf<ClosedRange<C>>().apply {
+        var currentRangeStart = minC
+        var currentRangeEnd = minC
 
-    var currentRangeStart = minC
-    var currentRangeEnd = maxC
-    val buckets = mutableListOf<ClosedRange<C>>()
-
-    fullSpan.forEachIndexed { i,c ->
-
-        if (i > 0 && (i % bucketSize) == 0) {
-            buckets.add(currentRangeStart..currentRangeEnd)
-            currentRangeStart = c
-        }
-        currentRangeEnd = c
-        if (c == maxC) {
-            buckets.add(currentRangeStart..currentRangeEnd)
+        val initial = AtomicBoolean(true)
+        while (currentRangeEnd < maxC) {
+            repeat(if (initial.getAndSet(false)) bucketSize - 1 else bucketSize) { currentRangeEnd = incrementer(currentRangeEnd) }
+            add(currentRangeStart..currentRangeEnd)
+            currentRangeStart = incrementer(currentRangeEnd)
         }
     }
 
-    val getBucket = { c: C ->
-        buckets.find { c in it }!!
-    }
-
-    return fullSpan
-            .map { it to (groupedByC[it]?:listOf()) }
-            .groupBy({getBucket(it.first)},{it.second})
-            .entries.asSequence()
-            .map { Bin(it.key, it.value.flatten()) }
+    return buckets.asSequence()
+            .map { it to mutableListOf<T>() }
+            .map { bucketWithList ->
+                groupedByC.entries.asSequence()
+                        .filter { it.key in bucketWithList.first }
+                        .forEach { bucketWithList.second.addAll(it.value) }
+                bucketWithList
+            }.map { Bin(it.first, it.second) }
             .toList()
             .let(::BinModel)
 }
