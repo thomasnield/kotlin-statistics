@@ -131,3 +131,17 @@ inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 
 inline fun <T,K> Sequence<T>.simpleRegressionBy(crossinline keySelector: (T) -> K, crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) =
         groupApply(keySelector, { it.simpleRegression(xSelector, ySelector) })
+
+// Bin Operators
+//TODO - Having issues with pure number implementations
+inline fun <T> List<T>.doubleBinBy(bucketSize: Double, crossinline doubleMapper: (T) -> Double, rangeStart: Double? = null)  {
+    val doubles = map(doubleMapper)
+    val min = rangeStart?:doubles.min()
+    val increment = bucketSize
+
+    doubles.binBy(bucketSize = 1,
+            rangeStart = min,
+            incrementer = { it + increment },
+            mapper = { it }
+            )
+}
