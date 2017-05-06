@@ -1,14 +1,25 @@
 package org.nield.kotlinstatistics
 
-class Bin<out T,in C: Comparable<C>>(val range: ClosedRange<in C>, val item: T)
+class Bin<out T,in C: Comparable<C>>(val range: ClosedRange<in C>, val value: T) {
+    operator fun contains(key: C) = key in range
+    override fun toString(): String {
+        return "Bin(range=$range, value=$value)"
+    }
+}
 
-class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>)
+class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<Bin<T,C>> by bins {
+    operator fun get(key: C) = bins.find { key in it.range }
+    operator fun contains(key: C) = bins.any { key in it.range }
+    override fun toString(): String {
+        return "BinModel(bins=$bins)"
+    }
+}
 
 inline fun <T, C: Comparable<C>> List<T>.binBy(bucketSize: Int,
-                                                  crossinline mapper: (T) -> C,
                                                   crossinline incrementer: (C) -> C,
-                                                  rangeStart: C? = null
-                                                  ): Map<ClosedRange<C>, List<T>> {
+                                                   crossinline mapper: (T) -> C,
+                                                   rangeStart: C? = null
+                                                  ): BinModel<List<T>, C> {
 
     val groupedByC = asSequence().groupBy(mapper)
     val maxC = groupedByC.keys.max()!!
@@ -16,28 +27,33 @@ inline fun <T, C: Comparable<C>> List<T>.binBy(bucketSize: Int,
 
     val fullSpan = generateSequence(minC) { incrementer(it) }
             .takeWhile { it <= maxC }
+            .toList()
 
-    var index = 0
     var currentRangeStart = minC
     var currentRangeEnd = maxC
     val buckets = mutableListOf<ClosedRange<C>>()
 
-    fullSpan.forEach { c ->
-        if ((index > 0 && (index % bucketSize) == 0) || c == maxC) {
+    fullSpan.forEachIndexed { i,c ->
+
+        if (i > 0 && (i % bucketSize) == 0) {
             buckets.add(currentRangeStart..currentRangeEnd)
             currentRangeStart = c
         }
         currentRangeEnd = c
-        index++
+        if (c == maxC) {
+            buckets.add(currentRangeStart..currentRangeEnd)
+        }
     }
-    println(buckets)
 
-    val getBucket = { c: C ->  buckets.find { c in it }!! }
+    val getBucket = { c: C ->
+        buckets.find { c in it }!!
+    }
 
     return fullSpan
             .map { it to (groupedByC[it]?:listOf()) }
             .groupBy({getBucket(it.first)},{it.second})
             .entries.asSequence()
-            .map { it.key to it.value.flatten() }
-            .toMap()
+            .map { Bin(it.key, it.value.flatten()) }
+            .toList()
+            .let(::BinModel)
 }
