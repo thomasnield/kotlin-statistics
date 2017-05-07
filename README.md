@@ -188,6 +188,42 @@ Key(category=ABZ, section=2)=5.1
 Key(category=ABR, section=2)=1.1
 ```
 
+## Grouping by Ranges/Bins/Buckets
+
+You can also group by ranges (or known in statistics as "bins", "buckets", or a "histogram"). This functionality is still a work-in-progress to have all statistical functions applicable. 
+
+currently you can group any `T` items into bins composed of `Comparable` ranges. Below, we group up items by yearly quarters by mapping each item to a `Month`, and then setting the `bucketSize` to 3. We also have to provide an `incrementer` so the model knows how to build the bins incrementally. 
+
+```kotlin
+
+import java.time.LocalDate
+
+fun main(args: Array<String>) {
+
+    data class Sale(val accountId: Int, val date: LocalDate, val value: Double)
+
+    val sales = listOf(
+            Sale(1, LocalDate.of(2016,12,3), 180.0),
+            Sale(2, LocalDate.of(2016, 7, 4), 140.2),
+            Sale(3, LocalDate.of(2016, 6, 3), 111.4),
+            Sale(4, LocalDate.of(2016, 1, 5), 192.7),
+            Sale(5, LocalDate.of(2016, 5, 4), 137.9),
+            Sale(6, LocalDate.of(2016, 3, 6), 125.6),
+            Sale(7, LocalDate.of(2016, 12,4), 164.3),
+            Sale(8, LocalDate.of(2016, 7,11), 144.2)
+            )
+
+    //bucket by quarter
+    val byQuarter = sales.binBy(
+            mapper = { it.date.month },
+            bucketSize = 3,
+            incrementer = { it.plus(1L) }
+    )
+
+    byQuarter.forEach(::println)
+}
+```
+
 ## Aggregating Multiple Fields
 
 Using the Kotlin `let()` operator, it is easy to take a collection of items and aggregate multiple fields into another "summary" object. Below, we take a collection `Email` objects and find the distribution of instances of `subject` and `sender`. 
