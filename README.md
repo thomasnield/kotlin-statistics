@@ -224,6 +224,15 @@ fun main(args: Array<String>) {
 }
 ```
 
+**OUTPUT:**
+
+```
+Bin(range=JANUARY..MARCH, value=[Sale(accountId=4, date=2016-01-05, value=192.7), Sale(accountId=6, date=2016-03-06, value=125.6)])
+Bin(range=APRIL..JUNE, value=[Sale(accountId=3, date=2016-06-03, value=111.4), Sale(accountId=5, date=2016-05-04, value=137.9)])
+Bin(range=JULY..SEPTEMBER, value=[Sale(accountId=2, date=2016-07-04, value=140.2), Sale(accountId=8, date=2016-07-11, value=144.2)])
+Bin(range=OCTOBER..DECEMBER, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
+```
+
 ## Aggregating Multiple Fields
 
 Using the Kotlin `let()` operator, it is easy to take a collection of items and aggregate multiple fields into another "summary" object. Below, we take a collection `Email` objects and find the distribution of instances of `subject` and `sender`. 
