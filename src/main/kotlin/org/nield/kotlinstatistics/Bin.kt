@@ -17,11 +17,12 @@ class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<
     }
 }
 
-inline fun <T, C: Comparable<C>> List<T>.binBy(bucketSize: Int,
+inline fun <T, C: Comparable<C>, G> List<T>.binBy(bucketSize: Int,
                                                crossinline incrementer: (C) -> C,
                                                crossinline mapper: (T) -> C,
+                                               crossinline groupOp: (List<T>) -> G,
                                                rangeStart: C? = null
-): BinModel<List<T>, C> {
+): BinModel<G, C> {
 
     val groupedByC = asSequence().groupBy(mapper)
     val minC = rangeStart?:groupedByC.keys.min()!!
@@ -46,7 +47,7 @@ inline fun <T, C: Comparable<C>> List<T>.binBy(bucketSize: Int,
                         .filter { it.key in bucketWithList.first }
                         .forEach { bucketWithList.second.addAll(it.value) }
                 bucketWithList
-            }.map { Bin(it.first, it.second) }
+            }.map { Bin(it.first, groupOp(it.second)) }
             .toList()
             .let(::BinModel)
 }
