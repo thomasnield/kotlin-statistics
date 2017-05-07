@@ -17,6 +17,11 @@ class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<
     }
 }
 
+inline fun <T, C: Comparable<C>> List<T>.binBy(bucketSize: Int,
+                                                  crossinline incrementer: (C) -> C,
+                                                  crossinline mapper: (T) -> C,
+                                                  rangeStart: C? = null) = binBy(bucketSize, incrementer, mapper, { it }, rangeStart)
+
 inline fun <T, C: Comparable<C>, G> List<T>.binBy(bucketSize: Int,
                                                crossinline incrementer: (C) -> C,
                                                crossinline mapper: (T) -> C,
