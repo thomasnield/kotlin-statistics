@@ -17,19 +17,19 @@ class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<
     }
 }
 
-inline fun <T, C: Comparable<C>> List<T>.binBy(bucketSize: Int,
-                                                  crossinline incrementer: (C) -> C,
-                                                  crossinline mapper: (T) -> C,
-                                                  rangeStart: C? = null) = binBy(bucketSize, incrementer, mapper, { it }, rangeStart)
+inline fun <T, C: Comparable<C>> List<T>.binByComparable(bucketIncrements: Int,
+                                                         crossinline incrementer: (C) -> C,
+                                                         crossinline binMapper: (T) -> C,
+                                                         rangeStart: C? = null) = binByComparable(bucketIncrements, incrementer, binMapper, { it }, rangeStart)
 
-inline fun <T, C: Comparable<C>, G> List<T>.binBy(bucketSize: Int,
-                                               crossinline incrementer: (C) -> C,
-                                               crossinline mapper: (T) -> C,
-                                               crossinline groupOp: (List<T>) -> G,
-                                               rangeStart: C? = null
+inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(bucketIncrements: Int,
+                                                            crossinline incrementer: (C) -> C,
+                                                            crossinline binMapper: (T) -> C,
+                                                            crossinline groupOp: (List<T>) -> G,
+                                                            rangeStart: C? = null
 ): BinModel<G, C> {
 
-    val groupedByC = asSequence().groupBy(mapper)
+    val groupedByC = asSequence().groupBy(binMapper)
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
@@ -39,7 +39,7 @@ inline fun <T, C: Comparable<C>, G> List<T>.binBy(bucketSize: Int,
 
         val initial = AtomicBoolean(true)
         while (currentRangeEnd < maxC) {
-            repeat(if (initial.getAndSet(false)) bucketSize - 1 else bucketSize) { currentRangeEnd = incrementer(currentRangeEnd) }
+            repeat(if (initial.getAndSet(false)) bucketIncrements - 1 else bucketIncrements) { currentRangeEnd = incrementer(currentRangeEnd) }
             add(currentRangeStart..currentRangeEnd)
             currentRangeStart = incrementer(currentRangeEnd)
         }

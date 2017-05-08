@@ -214,7 +214,7 @@ fun main(args: Array<String>) {
             )
 
     //bucket by quarter
-    val byQuarter = sales.binBy(
+    val byQuarter = sales.binByComparable(
             mapper = { it.date.month },
             bucketSize = 3,
             incrementer = { it.plus(1L) }

@@ -105,162 +105,32 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
         asSequence().standardDeviationBy(keySelector, intMapper)
 
-inline fun <T,R> Iterable<T>.intBinBy(bucketSize: Int,
-                                   crossinline intMapper: (T) -> Int,
-                                   crossinline groupOp: (List<Int>) -> R,
-                                   rangeStart: Int? = null): BinModel<R, Int> {
-    val ints = map(intMapper)
-    val min = rangeStart?:ints.min()
 
-    return ints.binBy(bucketSize = bucketSize,
-            rangeStart = min,
-            incrementer = { it + 1 },
-            mapper = { it },
-            groupOp = groupOp
-    )
-}
+// Bin Operators
+//abstraction for Int-based bins
 
+inline fun <T> List<T>.binByInt(
+        binSize: Int,
+        crossinline intBinMapper: (T) -> Int,
+        rangeStart: Int? = null
 
-inline fun <T> Sequence<T>.descriptiveStatisticsBinBy(bucketSize: Int,
-                                                      crossinline intMapper: (T) -> Int,
-                                                      rangeStart: Int? = null) = toList().descriptiveStatisticsBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.descriptiveStatisticsBinBy(bucketSize: Int,
-                                                      crossinline intMapper: (T) -> Int,
-                                                      rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.descriptiveStatistics }
+) = binByComparable(
+        bucketIncrements = binSize,
+        incrementer = { it + 1 },
+        binMapper = intBinMapper,
+        rangeStart = rangeStart
 )
 
+inline fun <T,R> List<T>.binByInt(
+        binSize: Int,
+        crossinline intBinMapper: (T) -> Int,
+        crossinline groupOp: (List<T>) -> R,
+        rangeStart: Int? = null
 
-inline fun <T> Sequence<T>.sumBinBy(bucketSize: Int,
-                                    
-                                    crossinline intMapper: (T) -> Int,
-                                    rangeStart: Int? = null) = toList().sumBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.sumBinBy(bucketSize: Int,
-                                    crossinline intMapper: (T) -> Int,
-                                    rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.sum() }
-)
-
-inline fun <T> Sequence<T>.averageBinBy(bucketSize: Int,
-                                        crossinline intMapper: (T) -> Int,
-                                        rangeStart: Int? = null) = toList().averageBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.averageBinBy(bucketSize: Int,
-                                        
-                                        crossinline intMapper: (T) -> Int,
-                                        rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.average() }
-)
-
-
-
-inline fun <T> Sequence<T>.minBinBy(bucketSize: Int,
-                                    crossinline intMapper: (T) -> Int,
-                                    rangeStart: Int? = null) = toList().minBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.minBinBy(bucketSize: Int,
-                                    crossinline intMapper: (T) -> Int,
-                                    rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.min() }
-)
-
-
-inline fun <T> Sequence<T>.maxBinBy(bucketSize: Int,
-                                    crossinline intMapper: (T) -> Int,
-                                    rangeStart: Int? = null) = toList().maxBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.maxBinBy(bucketSize: Int,
-                                    crossinline intMapper: (T) -> Int,
-                                    rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.max() }
-)
-
-
-inline fun <T> Sequence<T>.medianBinBy(bucketSize: Int,
-                                       crossinline intMapper: (T) -> Int,
-                                       rangeStart: Int? = null) = toList().medianBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.medianBinBy(bucketSize: Int,
-                                       crossinline intMapper: (T) -> Int,
-                                       rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.median() }
-)
-
-inline fun <T> Sequence<T>.percentileBinBy(percentile: Double,
-                                           bucketSize: Int,
-                                           crossinline intMapper: (T) -> Int,
-                                           rangeStart: Int? = null) = toList().percentileBinBy(percentile,bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.percentileBinBy(percentile: Double,
-                                           bucketSize: Int,
-                                           crossinline intMapper: (T) -> Int,
-                                           rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.percentile(percentile) }
-)
-
-
-
-inline fun <T> Sequence<T>.varianceBinBy(bucketSize: Int,
-                                         
-                                         crossinline intMapper: (T) -> Int,
-                                         rangeStart: Int? = null) = toList().varianceBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.varianceBinBy(bucketSize: Int,
-                                         
-                                         crossinline intMapper: (T) -> Int,
-                                         rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.variance() }
-)
-
-
-inline fun <T> Sequence<T>.standardDeviationBinBy(bucketSize: Int,
-                                                  crossinline intMapper: (T) -> Int,
-                                                  rangeStart: Int? = null) = toList().standardDeviationBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.standardDeviationBinBy(bucketSize: Int,
-                                                  crossinline intMapper: (T) -> Int,
-                                                  rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.standardDeviation() }
-)
-
-inline fun <T> Sequence<T>.geometricMeanBinBy(bucketSize: Int,
-                                              crossinline intMapper: (T) -> Int,
-                                              rangeStart: Int? = null) = toList().geometricMeanBinBy(bucketSize,intMapper, rangeStart)
-
-inline fun <T> Iterable<T>.geometricMeanBinBy(bucketSize: Int,
-                                              crossinline intMapper: (T) -> Int,
-                                              rangeStart: Int? = null) = intBinBy(
-        bucketSize = bucketSize,
-        intMapper = intMapper,
-        rangeStart = rangeStart,
-        groupOp = { it.geometricMean() }
+) = binByComparable(
+    bucketIncrements = binSize,
+    incrementer = { it + 1 },
+    binMapper = intBinMapper,
+    rangeStart = rangeStart,
+    groupOp = groupOp
 )
