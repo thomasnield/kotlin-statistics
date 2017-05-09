@@ -2,6 +2,7 @@ package org.nield.kotlinstatistics
 
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import java.util.concurrent.atomic.AtomicBoolean
 
 val Iterable<Int>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 val Sequence<Int>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
@@ -106,31 +107,42 @@ inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) ->
         asSequence().standardDeviationBy(keySelector, intMapper)
 
 
-// Bin Operators
-//abstraction for Int-based bins
+// bin operators
 
-inline fun <T> List<T>.binByInt(
-        binSize: Int,
-        crossinline intBinMapper: (T) -> Int,
-        rangeStart: Int? = null
+inline fun <T> List<T>.binByInt(binSize: Int,
+                                 crossinline binMapper: (T) -> Int,
+                                 rangeStart: Int? = null
+): BinModel<List<T>, Int> = binByInt(binSize, binMapper, { it }, rangeStart)
 
-) = binByComparable(
-        bucketIncrements = binSize,
-        incrementer = { it + 1 },
-        binMapper = intBinMapper,
-        rangeStart = rangeStart
-)
+inline fun <T, G> List<T>.binByInt(binSize: Int,
+                                    crossinline binMapper: (T) -> Int,
+                                    crossinline groupOp: (List<T>) -> G,
+                                    rangeStart: Int? = null
+): BinModel<G, Int> {
 
-inline fun <T,R> List<T>.binByInt(
-        binSize: Int,
-        crossinline intBinMapper: (T) -> Int,
-        crossinline groupOp: (List<T>) -> R,
-        rangeStart: Int? = null
+    val groupedByC = asSequence().groupBy(binMapper)
+    val minC = rangeStart?:groupedByC.keys.min()!!
+    val maxC = groupedByC.keys.max()!!
 
-) = binByComparable(
-    bucketIncrements = binSize,
-    incrementer = { it + 1 },
-    binMapper = intBinMapper,
-    rangeStart = rangeStart,
-    groupOp = groupOp
-)
+    val buckets = mutableListOf<ClosedRange<Int>>().apply {
+        var currentRangeStart = minC
+        var currentRangeEnd = minC
+        val isFirst = AtomicBoolean(true)
+        while  (currentRangeEnd < maxC) {
+            currentRangeEnd = currentRangeStart + binSize - (if (isFirst.getAndSet(false)) 0 else 1)
+            add(currentRangeStart..currentRangeEnd)
+            currentRangeStart = currentRangeEnd + 1
+        }
+    }
+
+    return buckets.asSequence()
+            .map { it to mutableListOf<T>() }
+            .map { bucketWithList ->
+                groupedByC.entries.asSequence()
+                        .filter { it.key in bucketWithList.first }
+                        .forEach { bucketWithList.second.addAll(it.value) }
+                bucketWithList
+            }.map { Bin(it.first, groupOp(it.second)) }
+            .toList()
+            .let(::BinModel)
+}

@@ -2,6 +2,7 @@ package org.nield.kotlinstatistics
 
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import java.util.concurrent.atomic.AtomicBoolean
 
 val Iterable<Long>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 val Sequence<Long>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
@@ -113,3 +114,45 @@ inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 
 inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
         asSequence().geometricMeanBy(keySelector, longMapper)
+
+
+
+// bin operators
+
+inline fun <T> List<T>.binByLong(binSize: Long,
+                                       crossinline binMapper: (T) -> Long,
+                                       rangeStart: Long? = null
+): BinModel<List<T>, Long> = binByLong(binSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> List<T>.binByLong(binSize: Long,
+                                    crossinline binMapper: (T) -> Long,
+                                    crossinline groupOp: (List<T>) -> G,
+                                    rangeStart: Long? = null
+): BinModel<G, Long> {
+
+    val groupedByC = asSequence().groupBy(binMapper)
+    val minC = rangeStart?:groupedByC.keys.min()!!
+    val maxC = groupedByC.keys.max()!!
+
+    val buckets = mutableListOf<ClosedRange<Long>>().apply {
+        var currentRangeStart = minC
+        var currentRangeEnd = minC
+        val isFirst = AtomicBoolean(true)
+        while  (currentRangeEnd < maxC) {
+            currentRangeEnd = currentRangeStart + binSize - (if (isFirst.getAndSet(false)) 0L else 1L)
+            add(currentRangeStart..currentRangeEnd)
+            currentRangeStart = currentRangeEnd + 1L
+        }
+    }
+
+    return buckets.asSequence()
+            .map { it to mutableListOf<T>() }
+            .map { bucketWithList ->
+                groupedByC.entries.asSequence()
+                        .filter { it.key in bucketWithList.first }
+                        .forEach { bucketWithList.second.addAll(it.value) }
+                bucketWithList
+            }.map { Bin(it.first, groupOp(it.second)) }
+            .toList()
+            .let(::BinModel)
+}

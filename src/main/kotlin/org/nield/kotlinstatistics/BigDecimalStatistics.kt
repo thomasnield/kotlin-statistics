@@ -117,18 +117,18 @@ inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 
 inline fun <T> List<T>.binByBigDecimal(binSize: BigDecimal,
                                        gapSize: BigDecimal,
-                                       crossinline bigDecimalBinMapper: (T) -> BigDecimal,
+                                       crossinline binMapper: (T) -> BigDecimal,
                                        rangeStart: BigDecimal? = null
-): BinModel<List<T>, BigDecimal> = binByBigDecimal(binSize, gapSize, bigDecimalBinMapper, { it }, rangeStart)
+): BinModel<List<T>, BigDecimal> = binByBigDecimal(binSize, gapSize, binMapper, { it }, rangeStart)
 
 inline fun <T, G> List<T>.binByBigDecimal(bucketSize: BigDecimal,
                                           gapSize: BigDecimal,
-                                          crossinline bigDecimalBinMapper: (T) -> BigDecimal,
+                                          crossinline binMapper: (T) -> BigDecimal,
                                           crossinline groupOp: (List<T>) -> G,
                                           rangeStart: BigDecimal? = null
 ): BinModel<G, BigDecimal> {
 
-    val groupedByC = asSequence().groupBy(bigDecimalBinMapper)
+    val groupedByC = asSequence().groupBy(binMapper)
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 

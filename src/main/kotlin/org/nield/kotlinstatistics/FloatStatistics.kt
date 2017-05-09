@@ -1,6 +1,8 @@
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 import org.nield.kotlinstatistics.*
+import java.math.BigDecimal
+import java.util.concurrent.atomic.AtomicBoolean
 
 val Iterable<Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 val Sequence<Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
@@ -116,3 +118,49 @@ fun Sequence<Pair<Float, Float>>.simpleRegression() = simpleRegression({it.first
 inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Float, crossinline ySelector: (T) -> Float) =
         map { xSelector(it).toDouble() to ySelector(it).toDouble() }
                 .simpleRegression()
+
+
+
+// Bin Operators
+
+inline fun <T> List<T>.binByFloat(binSize: Float,
+                                   gapSize: Float,
+                                   crossinline binMapper: (T) -> Float,
+                                   rangeStart: Float? = null
+): BinModel<List<T>, Float> = binByFloat(binSize, gapSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> List<T>.binByFloat(bucketSize: Float,
+                                      gapSize: Float,
+                                      crossinline binMapper: (T) -> Float,
+                                      crossinline groupOp: (List<T>) -> G,
+                                      rangeStart: Float? = null
+): BinModel<G, Float> {
+
+    val groupedByC = asSequence().groupBy { BigDecimal.valueOf(binMapper(it).toDouble()) }
+    val minC = rangeStart?.toDouble()?.let(BigDecimal::valueOf) ?:groupedByC.keys.min()!!
+    val maxC = groupedByC.keys.max()!!
+
+    val buckets = mutableListOf<ClosedFloatingPointRange<Float>>().apply {
+        var currentRangeStart = minC
+        var currentRangeEnd = minC
+        val isFirst = AtomicBoolean(true)
+        val bucketSizeBigDecimal = BigDecimal.valueOf(bucketSize.toDouble())
+        val gapSizeBigDecimal = BigDecimal.valueOf(gapSize.toDouble())
+        while  (currentRangeEnd < maxC) {
+            currentRangeEnd = currentRangeStart + bucketSizeBigDecimal - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSizeBigDecimal
+            add(currentRangeStart.toFloat()..currentRangeEnd.toFloat())
+            currentRangeStart = currentRangeEnd + gapSizeBigDecimal
+        }
+    }
+
+    return buckets.asSequence()
+            .map { it to mutableListOf<T>() }
+            .map { bucketWithList ->
+                groupedByC.entries.asSequence()
+                        .filter { it.key.toFloat() in bucketWithList.first }
+                        .forEach { bucketWithList.second.addAll(it.value) }
+                bucketWithList
+            }.map { Bin(it.first, groupOp(it.second)) }
+            .toList()
+            .let(::BinModel)
+}

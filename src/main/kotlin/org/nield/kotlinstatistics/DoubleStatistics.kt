@@ -3,6 +3,8 @@ package org.nield.kotlinstatistics
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math.stat.regression.SimpleRegression
+import java.math.BigDecimal
+import java.util.concurrent.atomic.AtomicBoolean
 
 val Iterable<Double>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
 val Sequence<Double>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
@@ -133,3 +135,45 @@ inline fun <T,K> Sequence<T>.simpleRegressionBy(crossinline keySelector: (T) -> 
         groupApply(keySelector, { it.simpleRegression(xSelector, ySelector) })
 
 // Bin Operators
+
+inline fun <T> List<T>.binByDouble(binSize: Double,
+                                   gapSize: Double,
+                                   crossinline binMapper: (T) -> Double,
+                                   rangeStart: Double? = null
+): BinModel<List<T>, Double> = binByDouble(binSize, gapSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> List<T>.binByDouble(bucketSize: Double,
+                                      gapSize: Double,
+                                      crossinline binMapper: (T) -> Double,
+                                      crossinline groupOp: (List<T>) -> G,
+                                      rangeStart: Double? = null
+): BinModel<G, Double> {
+
+    val groupedByC = asSequence().groupBy { BigDecimal.valueOf(binMapper(it)) }
+    val minC = rangeStart?.let(BigDecimal::valueOf)?:groupedByC.keys.min()!!
+    val maxC = groupedByC.keys.max()!!
+
+    val buckets = mutableListOf<ClosedRange<Double>>().apply {
+        var currentRangeStart = minC
+        var currentRangeEnd = minC
+        val isFirst = AtomicBoolean(true)
+        val bucketSizeBigDecimal = BigDecimal.valueOf(bucketSize)
+        val gapSizeBigDecimal = BigDecimal.valueOf(gapSize)
+        while  (currentRangeEnd < maxC) {
+            currentRangeEnd = currentRangeStart + bucketSizeBigDecimal - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSizeBigDecimal
+            add(currentRangeStart.toDouble()..currentRangeEnd.toDouble())
+            currentRangeStart = currentRangeEnd + gapSizeBigDecimal
+        }
+    }
+
+    return buckets.asSequence()
+            .map { it to mutableListOf<T>() }
+            .map { bucketWithList ->
+                groupedByC.entries.asSequence()
+                        .filter { it.key.toDouble() in bucketWithList.first }
+                        .forEach { bucketWithList.second.addAll(it.value) }
+                bucketWithList
+            }.map { Bin(it.first, groupOp(it.second)) }
+            .toList()
+            .let(::BinModel)
+}
