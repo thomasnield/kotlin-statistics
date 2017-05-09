@@ -216,7 +216,7 @@ fun main(args: Array<String>) {
     //bucket by quarter
     val byQuarter = sales.binByComparable(
             binMapper = { it.date.month },
-            bucketSize = 3,
+            bucketIncrements = 3,
             incrementer = { it.plus(1L) }
     )
 
@@ -233,7 +233,48 @@ Bin(range=JULY..SEPTEMBER, value=[Sale(accountId=2, date=2016-07-04, value=140.2
 Bin(range=OCTOBER..DECEMBER, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
 ```
 
-There are also specialized bin operators that deal with numeric rangs for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by ranges of 20.0 for the `value`. 
+If you want to perform a mathematical aggregation on a certain property for each item (rather than group up the items into a `List` for a given bin), provide a `groupOp` argument specifying how to calculate a value  on each grouping. Below, we find the sum of values by quarter. 
+
+```kotlin
+import java.time.LocalDate
+
+fun main(args: Array<String>) {
+
+    data class Sale(val accountId: Int, val date: LocalDate, val value: Double)
+
+    val sales = listOf(
+            Sale(1, LocalDate.of(2016,12,3), 180.0),
+            Sale(2, LocalDate.of(2016, 7, 4), 140.2),
+            Sale(3, LocalDate.of(2016, 6, 3), 111.4),
+            Sale(4, LocalDate.of(2016, 1, 5), 192.7),
+            Sale(5, LocalDate.of(2016, 5, 4), 137.9),
+            Sale(6, LocalDate.of(2016, 3, 6), 125.6),
+            Sale(7, LocalDate.of(2016, 12,4), 164.3),
+            Sale(8, LocalDate.of(2016, 7,11), 144.2)
+    )
+
+    //bucket by quarter
+    val totalValueByQuarter = sales.binByComparable(
+            binMapper = { it.date.month },
+            bucketIncrements = 3,
+            incrementer = { it.plus(1L) },
+            groupOp = { it.map(Sale::value).sum() }
+    )
+
+    totalValueByQuarter.forEach(::println)
+}
+```
+
+**OUTPUT:**
+
+```
+Bin(range=JANUARY..MARCH, value=318.29999999999995)
+Bin(range=APRIL..JUNE, value=249.3)
+Bin(range=JULY..SEPTEMBER, value=284.4)
+Bin(range=OCTOBER..DECEMBER, value=344.3)
+```
+
+There are also specialized bin operators that deal with numeric ranges for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by increments of 20.0 for the `value`. 
 
 ```kotlin
 
