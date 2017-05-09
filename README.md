@@ -188,7 +188,7 @@ Key(category=ABZ, section=2)=5.1
 Key(category=ABR, section=2)=1.1
 ```
 
-## Grouping by Ranges/Bins/Buckets
+## Slicing by Ranges/Bins/Buckets
 
 You can also group by ranges (or known in statistics as "bins", "buckets", or a "histogram"). This functionality is still a work-in-progress to have all statistical functions applicable. 
 
