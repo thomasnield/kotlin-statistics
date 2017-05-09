@@ -215,7 +215,7 @@ fun main(args: Array<String>) {
 
     //bucket by quarter
     val byQuarter = sales.binByComparable(
-            mapper = { it.date.month },
+            binMapper = { it.date.month },
             bucketSize = 3,
             incrementer = { it.plus(1L) }
     )
@@ -231,6 +231,49 @@ Bin(range=JANUARY..MARCH, value=[Sale(accountId=4, date=2016-01-05, value=192.7)
 Bin(range=APRIL..JUNE, value=[Sale(accountId=3, date=2016-06-03, value=111.4), Sale(accountId=5, date=2016-05-04, value=137.9)])
 Bin(range=JULY..SEPTEMBER, value=[Sale(accountId=2, date=2016-07-04, value=140.2), Sale(accountId=8, date=2016-07-11, value=144.2)])
 Bin(range=OCTOBER..DECEMBER, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
+```
+
+There are also specialized bin operators that deal with numeric rangs for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by ranges of 20.0 for the `value`. 
+
+```kotlin
+
+import java.time.LocalDate
+
+fun main(args: Array<String>) {
+
+    data class Sale(val accountId: Int, val date: LocalDate, val value: Double)
+
+    val sales = listOf(
+            Sale(1, LocalDate.of(2016,12,3), 180.0),
+            Sale(2, LocalDate.of(2016, 7, 4), 140.2),
+            Sale(3, LocalDate.of(2016, 6, 3), 111.4),
+            Sale(4, LocalDate.of(2016, 1, 5), 192.7),
+            Sale(5, LocalDate.of(2016, 5, 4), 137.9),
+            Sale(6, LocalDate.of(2016, 3, 6), 125.6),
+            Sale(7, LocalDate.of(2016, 12,4), 164.3),
+            Sale(8, LocalDate.of(2016, 7,11), 144.2)
+            )
+
+    //bucket by double ranges
+    val binned = sales.binByDouble(
+            binMapper = { it.value },
+            binSize = 20.0,
+            gapSize = .01,
+            rangeStart = 100.0
+    )
+
+    binned.forEach(::println)
+}
+```
+
+**OUTPUT:**
+
+```
+Bin(range=100.0..120.0, value=[Sale(accountId=3, date=2016-06-03, value=111.4)])
+Bin(range=120.01..140.0, value=[Sale(accountId=5, date=2016-05-04, value=137.9), Sale(accountId=6, date=2016-03-06, value=125.6)])
+Bin(range=140.01..160.0, value=[Sale(accountId=2, date=2016-07-04, value=140.2), Sale(accountId=8, date=2016-07-11, value=144.2)])
+Bin(range=160.01..180.0, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
+Bin(range=180.01..200.0, value=[Sale(accountId=4, date=2016-01-05, value=192.7)])
 ```
 
 ## Aggregating Multiple Fields
