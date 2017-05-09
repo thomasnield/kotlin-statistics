@@ -190,7 +190,7 @@ Key(category=ABR, section=2)=1.1
 
 ## Slicing by Ranges/Bins/Buckets
 
-You can also group by ranges (or known in statistics as "bins", "buckets", or a "histogram"). This functionality is still a work-in-progress to have all statistical functions applicable. 
+You can also group by ranges (or known in statistics as "bins", "buckets", or a "histogram"). 
 
 currently you can group any `T` items into bins composed of `Comparable` ranges. Below, we group up items by yearly quarters by mapping each item to a `Month`, and then setting the `bucketSize` to 3. We also have to provide an `incrementer` so the model knows how to build the bins incrementally. 
 
