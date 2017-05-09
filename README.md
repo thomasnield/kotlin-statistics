@@ -4,7 +4,6 @@
 
 This library contains helpful extension functions to perform exploratory and production statistics in a Kotlin-idiomatic way.
 
-**NOTE:** This library is a DSL around [Apache Commons Math](http://commons.apache.org/proper/commons-math/userguide/stat.html). Please feel free to contribute.
 
 ## Build Instructions
 
