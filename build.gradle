@@ -8,6 +8,7 @@ buildscript {
 }
 
 apply plugin: "kotlin"
+
 repositories {
   mavenCentral()
   jcenter()
@@ -19,4 +20,75 @@ dependencies {
 
   testCompile 'junit:junit:4.12'
   testCompile "org.amshove.kluent:kluent:1.16"
+}
+
+apply plugin: "kotlin"
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+
+task javadocJar(type: Jar) {
+  classifier = 'javadoc'
+  from javadoc
+}
+
+task sourcesJar(type: Jar) {
+  classifier = 'sources'
+  from sourceSets.main.allSource
+}
+
+artifacts {
+  archives javadocJar, sourcesJar
+}
+
+signing {
+  sign configurations.archives
+}
+
+group = "org.nield"
+archivesBaseName = "kotlinstatistics"
+version = "0.0.1"
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'kotlin-statistics'
+        packaging 'jar'
+        // optionally artifactId can be defined here
+        description 'Statistical and analytical extensions for Kotlin'
+        url 'https://github.com/thomasnield/RxKotlinFX'
+
+        scm {
+          connection 'scm:git:git://github.com/thomasnield/kotlin-statistics.git'
+          developerConnection 'scm:git:git@github.com:thomasnield/kotlin-statistics.git'
+          url 'https://github.com/thomasnield/kotlin-statistics'
+        }
+
+        licenses {
+          license {
+            name 'The Apache License, Version 2.0'
+            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+          }
+        }
+        developers {
+          developer {
+            id 'thomasnield'
+            name 'Thomas Nield'
+            email 'thomasnield@live.com'
+          }
+        }
+      }
+    }
+  }
 }
