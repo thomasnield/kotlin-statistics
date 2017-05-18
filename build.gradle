@@ -70,9 +70,9 @@ uploadArchives {
         url 'https://github.com/thomasnield/RxKotlinFX'
 
         scm {
-          connection 'scm:git:git://github.com/thomasnield/kotlin-statistics.git'
+          connection 'scm:git://github.com/thomasnield/kotlin-statistics.git'
           developerConnection 'scm:git:git@github.com:thomasnield/kotlin-statistics.git'
-          url 'https://github.com/thomasnield/kotlin-statistics'
+            url 'https://github.com/thomasnield/kotlin-statistics'
         }
 
         licenses {
