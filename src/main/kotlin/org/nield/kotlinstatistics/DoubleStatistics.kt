@@ -2,7 +2,6 @@ package org.nield.kotlinstatistics
 
 import org.apache.commons.math.stat.StatUtils
 import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
-import org.apache.commons.math.stat.regression.SimpleRegression
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -58,14 +57,15 @@ val DoubleArray.skewness get() = descriptiveStatistics.skewness
 
 
 // REGRESSION
+typealias ASR = org.apache.commons.math.stat.regression.SimpleRegression
 
 fun Sequence<Pair<Double, Double>>.simpleRegression() = simpleRegression({it.first},{it.second})
 fun Iterable<Pair<Double, Double>>.simpleRegression() = simpleRegression({it.first},{it.second})
 inline fun <T> Iterable<T>.simpleRegression(crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) = asSequence().simpleRegression(xSelector, ySelector)
 inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double): SimpleRegression {
-    val r = SimpleRegression()
+    val r = ASR()
     forEach { r.addData(xSelector(it), ySelector(it)) }
-    return r
+    return ApacheSimpleRegression(r)
 }
 
 
