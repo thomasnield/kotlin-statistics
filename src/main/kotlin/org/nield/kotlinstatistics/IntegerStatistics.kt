@@ -129,7 +129,7 @@ inline fun <T, G> List<T>.binByInt(binSize: Int,
         var currentRangeEnd = minC
         val isFirst = AtomicBoolean(true)
         while  (currentRangeEnd < maxC) {
-            currentRangeEnd = currentRangeStart + binSize - (if (isFirst.getAndSet(false)) 0 else 1)
+            currentRangeEnd = currentRangeStart + binSize - 1
             add(currentRangeStart..currentRangeEnd)
             currentRangeStart = currentRangeEnd + 1
         }
