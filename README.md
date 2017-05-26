@@ -4,7 +4,7 @@
 
 This library contains helpful extension functions to perform exploratory and production statistics in a Kotlin-idiomatic way. 
 
-[Read the introductory blog post here](http://tomstechnicalblog.blogspot.com/2017/05/introducing-kotlin-statistics.html).
+[Read the introductory blog post here](http://tomstechnicalblog.blogspot.com/2017/05/introducing-kotlin-statistics.html)
 
 ## Build Instructions
 
