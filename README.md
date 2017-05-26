@@ -7,7 +7,28 @@ This library contains helpful extension functions to perform exploratory and pro
 
 ## Build Instructions
 
-Until I get this released into Maven Central, you can use Maven or Gradle with JitPack to directly build a snapshot as a dependency.
+You can use Gradle or Maven to pull the latest release from Maven.
+
+**Gradle**
+
+```
+dependencies {
+    compile 'org.nield:kotlinstatistics:0.1.0'
+}
+```
+
+**Maven**
+
+```
+<dependency>
+    <groupId>io.reactivex.rxjava2</groupId>
+    <artifactId>rxkotlin</artifactId>
+    <version>2.0.3</version>
+</dependency>
+```
+
+
+You can also use Maven or Gradle with JitPack to directly build a snapshot as a dependency.
 
 **Gradle**
 
