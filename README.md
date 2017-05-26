@@ -75,8 +75,8 @@ There are a number of extension function operators that support `Int`, `Long`, `
 * sumOfSquares()
 * normalize()
 * simpleRegression()
-* kurtosis`
-* skewness`
+* kurtosis
+* skewness
 
 Here is an example of using the `median()` extension function against a `Sequence` of Doubles:
 
