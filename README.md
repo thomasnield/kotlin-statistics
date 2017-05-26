@@ -21,9 +21,9 @@ dependencies {
 
 ```
 <dependency>
-    <groupId>io.reactivex.rxjava2</groupId>
-    <artifactId>rxkotlin</artifactId>
-    <version>2.0.3</version>
+    <groupId>org.nield</groupId>
+    <artifactId>kotlinstatistics</artifactId>
+    <version>0.1.0</version>
 </dependency>
 ```
 
