@@ -1,13 +1,34 @@
 ![](http://i.imgur.com/v3FqiEA.png) 
 # Kotlin Statistics
-### Math and statistical extensions for Kotlin
+### Idiomatic math and statistical extensions for Kotlin
 
-This library contains helpful extension functions to perform exploratory and production statistics in a Kotlin-idiomatic way.
+This library contains helpful extension functions to perform exploratory and production statistics in a Kotlin-idiomatic way. 
 
 
 ## Build Instructions
 
-Until I get this released into Maven Central, you can use Maven or Gradle with JitPack to directly build a snapshot as a dependency.
+You can use Gradle or Maven to pull the latest release from Maven.
+
+**Gradle**
+
+```
+dependencies {
+    compile 'org.nield:kotlinstatistics:0.1.0'
+}
+```
+
+**Maven**
+
+```
+<dependency>
+    <groupId>org.nield</groupId>
+    <artifactId>kotlinstatistics</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+
+You can also use Maven or Gradle with JitPack to directly build a snapshot as a dependency.
 
 **Gradle**
 
@@ -40,22 +61,22 @@ dependencies {
 
 There are a number of extension function operators that support `Int`, `Long`, `Double`, `Float`, `BigDecimal` and `Short` numeric types for Sequences, Arrays, and Iterables:
 
-* `descriptiveStatistics`
-* `sum()`
-* `average()`
-* `min()`
-* `max()`
-* `mode()`
-* `median()`
-* `percentile()`
-* `variance()`
-* `standardDeviation()`
-* `geometricMean()`
-* `sumOfSquares()`
-* `normalize()`
-* `simpleRegression()`
-* `kurtosis`
-* `skewness`
+* descriptiveStatistics
+* sum()
+* average()
+* min()
+* max()
+* mode()
+* median()
+* percentile()
+* variance()
+* standardDeviation()
+* geometricMean()
+* sumOfSquares()
+* normalize()
+* simpleRegression()
+* kurtosis
+* skewness
 
 Here is an example of using the `median()` extension function against a `Sequence` of Doubles:
 
@@ -69,16 +90,16 @@ println(median) // prints "3.0"
 
 There are also simple but powerful `xxxBy()` operators that allow you slice many of these statistical operators on a given key:
 
-* `countBy()`
-* `sumBy()`
-* `averageBy()`
-* `geometricMeanBy()`
-* `minBy()`
-* `maxBy()`
-* `varianceBy()`
-* `standardDeviationBy()`
-* `descriptiveStatisticsBy()`
-* `simpleRegressionBy()`
+* countBy()
+* sumBy()
+* averageBy()
+* geometricMeanBy()
+* minBy()
+* maxBy()
+* varianceBy()
+* standardDeviationBy()
+* descriptiveStatisticsBy()
+* simpleRegressionBy()
 
 Below, we slice a sequence of `Item` objects by their lengths and get the averages and standard deviations by each length.
 

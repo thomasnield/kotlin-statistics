@@ -3,7 +3,7 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.+'
+    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.1.2-4'
   }
 }
 
@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-  compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.+'
+  compile 'org.jetbrains.kotlin:kotlin-stdlib:1.1.2-4'
   compile 'org.apache.commons:commons-math:2.2'
 
   testCompile 'junit:junit:4.12'
@@ -47,7 +47,7 @@ signing {
 
 group = "org.nield"
 archivesBaseName = "kotlinstatistics"
-version = "0.0.1"
+version = "0.1.0"
 
 uploadArchives {
   repositories {
@@ -67,7 +67,7 @@ uploadArchives {
         packaging 'jar'
         // optionally artifactId can be defined here
         description 'Statistical and analytical extensions for Kotlin'
-        url 'https://github.com/thomasnield/RxKotlinFX'
+        url 'https://github.com/thomasnield/kotlin-statistics'
 
         scm {
           connection 'scm:git://github.com/thomasnield/kotlin-statistics.git'
