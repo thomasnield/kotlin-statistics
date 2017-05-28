@@ -416,6 +416,76 @@ fun main(args: Array<String>) {
 FieldDistributions(subjectWords={i=1, make=1, u=1, offer=2, congratulations!=1, your=1, inheritance=1, is=1, waiting!=1, hey=1}, sender={princeofnigeria2000@aol.com=2, lotterybacklog@gmail.com=1, jessica47@gmail.com=1})
 ```
 
+Here is another example. Here i a data set of white blood cell counts for a sample of patients: 
+
+```kotlin
+import java.time.LocalDate
+
+
+data class Patient(val firstName: String,
+                   val lastName: String,
+                   val gender: Gender,
+                   val birthday: LocalDate,
+                   val whiteBloodCellCount: Int)
+
+val patients = listOf(
+        Patient("John", "Simone", Gender.MALE, LocalDate.of(1989, 1, 7), 4500),
+        Patient("Sarah", "Marley", Gender.FEMALE, LocalDate.of(1970, 2, 5), 6700),
+        Patient("Jessica", "Arnold", Gender.FEMALE, LocalDate.of(1980, 3, 9), 3400),
+        Patient("Sam", "Beasley", Gender.MALE, LocalDate.of(1981, 4, 17), 8800),
+        Patient("Dan", "Forney", Gender.MALE, LocalDate.of(1985, 9, 13), 5400),
+        Patient("Lauren", "Michaels", Gender.FEMALE, LocalDate.of(1975, 8, 21), 5000),
+        Patient("Michael", "Erlich", Gender.MALE, LocalDate.of(1985, 12, 17), 4100),
+        Patient("Jason", "Miles", Gender.MALE, LocalDate.of(1991, 11, 1), 3900),
+        Patient("Rebekah", "Earley", Gender.FEMALE, LocalDate.of(1985, 2, 18), 4600),
+        Patient("James", "Larson", Gender.MALE, LocalDate.of(1974, 4, 10), 5100),
+        Patient("Dan", "Ulrech", Gender.MALE, LocalDate.of(1991, 7, 11), 6000),
+        Patient("Heather", "Eisner", Gender.FEMALE, LocalDate.of(1994, 3, 6), 6000),
+        Patient("Jasper", "Martin", Gender.MALE, LocalDate.of(1971, 7, 1), 6000)
+)
+
+enum class Gender {
+    MALE,
+    FEMALE
+}
+```
+
+Say you wanted to find the 1st, 25th, 50th, 75th, and 100th percentiles by gender. We can tactically use a Kotlin extension function called `wbccPercentileByGender()` which will take a set of patients and separate a percentile calculation by gender. Then we can invoke it for the five desired percentiles and package them in a `Map<Double,Map<Gender,Double>>`, as showne below:
+
+```kotlin
+fun main(args: Array<String>) {
+
+    fun Collection<Patient>.wbccPercentileByGender(percentile: Double) =
+            percentileBy(
+                    percentile = percentile,
+                    keySelector = { it.gender },
+                    doubleMapper = { it.whiteBloodCellCount.toDouble() }
+            )
+
+    val percentileQuadrantsByGender = patients.let {
+        mapOf(1.0 to it.wbccPercentileByGender(1.0),
+                25.0 to it.wbccPercentileByGender(25.0),
+                50.0 to it.wbccPercentileByGender(50.0),
+                75.0 to it.wbccPercentileByGender(75.0),
+                100.0 to it.wbccPercentileByGender(100.0)
+        )
+    }
+
+    percentileQuadrantsByGender.forEach(::println)
+}
+```
+
+**OUTPUT:**
+
+```
+1.0={MALE=3900.0, FEMALE=3400.0}
+25.0={MALE=4200.0, FEMALE=4000.0}
+50.0={MALE=5250.0, FEMALE=5000.0}
+75.0={MALE=6000.0, FEMALE=6350.0}
+100.0={MALE=8800.0, FEMALE=6700.0}
+```
+
+
 ## Linear Regression
 
 Linear regression is being implemented as well. You can get a `SimpleRegression` on a `Sequence` or `Iterable` emitting `Double` pairs, for instance.
