@@ -17,12 +17,12 @@ class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<
     }
 }
 
-inline fun <T, C: Comparable<C>> List<T>.binByComparable(bucketIncrements: Int,
+inline fun <T, C: Comparable<C>> List<T>.binByComparable(binIncrements: Int,
                                                          crossinline incrementer: (C) -> C,
                                                          crossinline binMapper: (T) -> C,
-                                                         rangeStart: C? = null) = binByComparable(bucketIncrements, incrementer, binMapper, { it }, rangeStart)
+                                                         rangeStart: C? = null) = binByComparable(binIncrements, incrementer, binMapper, { it }, rangeStart)
 
-inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(bucketIncrements: Int,
+inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
                                                             crossinline incrementer: (C) -> C,
                                                             crossinline binMapper: (T) -> C,
                                                             crossinline groupOp: (List<T>) -> G,
@@ -39,7 +39,7 @@ inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(bucketIncrements: In
 
         val initial = AtomicBoolean(true)
         while (currentRangeEnd < maxC) {
-            repeat(if (initial.getAndSet(false)) bucketIncrements - 1 else bucketIncrements) { currentRangeEnd = incrementer(currentRangeEnd) }
+            repeat(if (initial.getAndSet(false)) binIncrements - 1 else binIncrements) { currentRangeEnd = incrementer(currentRangeEnd) }
             add(currentRangeStart..currentRangeEnd)
             currentRangeStart = incrementer(currentRangeEnd)
         }

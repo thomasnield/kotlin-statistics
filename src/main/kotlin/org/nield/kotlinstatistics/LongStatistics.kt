@@ -119,6 +119,18 @@ inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 
 // bin operators
 
+inline fun <T> Iterable<T>.binByLong(binSize: Long,
+                                 crossinline binMapper: (T) -> Long,
+                                 rangeStart: Long? = null
+): BinModel<List<T>, Long> = toList().binByLong(binSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Iterable<T>.binByLong(binSize: Long,
+                                    crossinline binMapper: (T) -> Long,
+                                    crossinline groupOp: (List<T>) -> G,
+                                    rangeStart: Long? = null
+) = toList().binByLong(binSize, binMapper, groupOp, rangeStart)
+
+
 inline fun <T> List<T>.binByLong(binSize: Long,
                                        crossinline binMapper: (T) -> Long,
                                        rangeStart: Long? = null

@@ -109,6 +109,30 @@ inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) ->
 
 // bin operators
 
+
+inline fun <T> Sequence<T>.binByInt(binSize: Int,
+                                    crossinline binMapper: (T) -> Int,
+                                    rangeStart: Int? = null
+): BinModel<List<T>, Int> = toList().binByInt(binSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Sequence<T>.binByInt(binSize: Int,
+                                       crossinline binMapper: (T) -> Int,
+                                       crossinline groupOp: (List<T>) -> G,
+                                       rangeStart: Int? = null
+) = toList().binByInt(binSize, binMapper, groupOp, rangeStart)
+
+inline fun <T> Iterable<T>.binByInt(binSize: Int,
+                                crossinline binMapper: (T) -> Int,
+                                rangeStart: Int? = null
+): BinModel<List<T>, Int> = toList().binByInt(binSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Iterable<T>.binByInt(binSize: Int,
+                                   crossinline binMapper: (T) -> Int,
+                                   crossinline groupOp: (List<T>) -> G,
+                                   rangeStart: Int? = null
+) = toList().binByInt(binSize, binMapper, groupOp, rangeStart)
+
+
 inline fun <T> List<T>.binByInt(binSize: Int,
                                  crossinline binMapper: (T) -> Int,
                                  rangeStart: Int? = null

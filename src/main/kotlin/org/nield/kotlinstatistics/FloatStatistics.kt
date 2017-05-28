@@ -123,17 +123,45 @@ inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Float,
 
 // Bin Operators
 
+inline fun <T> Sequence<T>.binByFloat(binSize: Float,
+                                      gapSize: Float,
+                                      crossinline binMapper: (T) -> Float,
+                                      rangeStart: Float? = null
+): BinModel<List<T>, Float> = toList().binByFloat(binSize, gapSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Sequence<T>.binByFloat(binSize: Float,
+                                         gapSize: Float,
+                                         crossinline binMapper: (T) -> Float,
+                                         crossinline groupOp: (List<T>) -> G,
+                                         rangeStart: Float? = null
+): BinModel<G, Float> = toList().binByFloat(binSize, gapSize, binMapper, groupOp, rangeStart)
+
+
+inline fun <T> Iterable<T>.binByFloat(binSize: Float,
+                                  gapSize: Float,
+                                  crossinline binMapper: (T) -> Float,
+                                  rangeStart: Float? = null
+): BinModel<List<T>, Float> = toList().binByFloat(binSize, gapSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Iterable<T>.binByFloat(binSize: Float,
+                                     gapSize: Float,
+                                     crossinline binMapper: (T) -> Float,
+                                     crossinline groupOp: (List<T>) -> G,
+                                     rangeStart: Float? = null
+): BinModel<G, Float> = toList().binByFloat(binSize, gapSize, binMapper, groupOp, rangeStart)
+
+
 inline fun <T> List<T>.binByFloat(binSize: Float,
                                    gapSize: Float,
                                    crossinline binMapper: (T) -> Float,
                                    rangeStart: Float? = null
 ): BinModel<List<T>, Float> = binByFloat(binSize, gapSize, binMapper, { it }, rangeStart)
 
-inline fun <T, G> List<T>.binByFloat(bucketSize: Float,
-                                      gapSize: Float,
-                                      crossinline binMapper: (T) -> Float,
-                                      crossinline groupOp: (List<T>) -> G,
-                                      rangeStart: Float? = null
+inline fun <T, G> List<T>.binByFloat(binSize: Float,
+                                     gapSize: Float,
+                                     crossinline binMapper: (T) -> Float,
+                                     crossinline groupOp: (List<T>) -> G,
+                                     rangeStart: Float? = null
 ): BinModel<G, Float> {
 
     val groupedByC = asSequence().groupBy { BigDecimal.valueOf(binMapper(it).toDouble()) }
@@ -144,7 +172,7 @@ inline fun <T, G> List<T>.binByFloat(bucketSize: Float,
         var currentRangeStart = minC
         var currentRangeEnd = minC
         val isFirst = AtomicBoolean(true)
-        val bucketSizeBigDecimal = BigDecimal.valueOf(bucketSize.toDouble())
+        val bucketSizeBigDecimal = BigDecimal.valueOf(binSize.toDouble())
         val gapSizeBigDecimal = BigDecimal.valueOf(gapSize.toDouble())
         while  (currentRangeEnd < maxC) {
             currentRangeEnd = currentRangeStart + bucketSizeBigDecimal - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSizeBigDecimal

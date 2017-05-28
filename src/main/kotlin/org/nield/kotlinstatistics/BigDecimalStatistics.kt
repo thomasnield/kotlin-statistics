@@ -115,13 +115,40 @@ inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 
 // bin operators
 
+
+inline fun <T> Sequence<T>.binByBigDecimal(binSize: BigDecimal,
+                                           gapSize: BigDecimal,
+                                           crossinline binMapper: (T) -> BigDecimal,
+                                           rangeStart: BigDecimal? = null
+) = toList().binByBigDecimal(binSize, gapSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Sequence<T>.binByBigDecimal(binSize: BigDecimal,
+                                              gapSize: BigDecimal,
+                                              crossinline binMapper: (T) -> BigDecimal,
+                                              crossinline groupOp: (List<T>) -> G,
+                                              rangeStart: BigDecimal? = null
+) = toList().binByBigDecimal(binSize, gapSize, binMapper, groupOp, rangeStart)
+
+inline fun <T> Iterable<T>.binByBigDecimal(binSize: BigDecimal,
+                                       gapSize: BigDecimal,
+                                       crossinline binMapper: (T) -> BigDecimal,
+                                       rangeStart: BigDecimal? = null
+) = toList().binByBigDecimal(binSize, gapSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Iterable<T>.binByBigDecimal(binSize: BigDecimal,
+                                          gapSize: BigDecimal,
+                                          crossinline binMapper: (T) -> BigDecimal,
+                                          crossinline groupOp: (List<T>) -> G,
+                                          rangeStart: BigDecimal? = null
+) = toList().binByBigDecimal(binSize, gapSize, binMapper, groupOp, rangeStart)
+
 inline fun <T> List<T>.binByBigDecimal(binSize: BigDecimal,
                                        gapSize: BigDecimal,
                                        crossinline binMapper: (T) -> BigDecimal,
                                        rangeStart: BigDecimal? = null
 ): BinModel<List<T>, BigDecimal> = binByBigDecimal(binSize, gapSize, binMapper, { it }, rangeStart)
 
-inline fun <T, G> List<T>.binByBigDecimal(bucketSize: BigDecimal,
+inline fun <T, G> List<T>.binByBigDecimal(binSize: BigDecimal,
                                           gapSize: BigDecimal,
                                           crossinline binMapper: (T) -> BigDecimal,
                                           crossinline groupOp: (List<T>) -> G,
@@ -137,7 +164,7 @@ inline fun <T, G> List<T>.binByBigDecimal(bucketSize: BigDecimal,
         var currentRangeEnd = minC
         val isFirst = AtomicBoolean(true)
         while  (currentRangeEnd < maxC) {
-            currentRangeEnd = currentRangeStart + bucketSize - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSize
+            currentRangeEnd = currentRangeStart + binSize - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSize
             add(currentRangeStart..currentRangeEnd)
             currentRangeStart = currentRangeEnd + gapSize
         }

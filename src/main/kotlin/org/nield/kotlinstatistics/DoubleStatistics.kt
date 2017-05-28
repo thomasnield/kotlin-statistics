@@ -136,13 +136,41 @@ inline fun <T,K> Sequence<T>.simpleRegressionBy(crossinline keySelector: (T) -> 
 
 // Bin Operators
 
+inline fun <T> Iterable<T>.binByDouble(binSize: Double,
+                                   gapSize: Double,
+                                   crossinline binMapper: (T) -> Double,
+                                   rangeStart: Double? = null
+): BinModel<List<T>, Double> = toList().binByDouble(binSize, gapSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Iterable<T>.binByDouble(binSize: Double,
+                                          gapSize: Double,
+                                          crossinline binMapper: (T) -> Double,
+                                          crossinline groupOp: (List<T>) -> G,
+                                          rangeStart: Double? = null
+) = toList().binByDouble(binSize, gapSize, binMapper, groupOp, rangeStart)
+
+
+inline fun <T> Sequence<T>.binByDouble(binSize: Double,
+                                       gapSize: Double,
+                                       crossinline binMapper: (T) -> Double,
+                                       rangeStart: Double? = null
+): BinModel<List<T>, Double> = toList().binByDouble(binSize, gapSize, binMapper, { it }, rangeStart)
+
+inline fun <T, G> Sequence<T>.binByDouble(binSize: Double,
+                                          gapSize: Double,
+                                          crossinline binMapper: (T) -> Double,
+                                          crossinline groupOp: (List<T>) -> G,
+                                          rangeStart: Double? = null
+) = toList().binByDouble(binSize, gapSize, binMapper, groupOp, rangeStart)
+
+
 inline fun <T> List<T>.binByDouble(binSize: Double,
                                    gapSize: Double,
                                    crossinline binMapper: (T) -> Double,
                                    rangeStart: Double? = null
 ): BinModel<List<T>, Double> = binByDouble(binSize, gapSize, binMapper, { it }, rangeStart)
 
-inline fun <T, G> List<T>.binByDouble(bucketSize: Double,
+inline fun <T, G> List<T>.binByDouble(binSize: Double,
                                       gapSize: Double,
                                       crossinline binMapper: (T) -> Double,
                                       crossinline groupOp: (List<T>) -> G,
@@ -157,7 +185,7 @@ inline fun <T, G> List<T>.binByDouble(bucketSize: Double,
         var currentRangeStart = minC
         var currentRangeEnd = minC
         val isFirst = AtomicBoolean(true)
-        val bucketSizeBigDecimal = BigDecimal.valueOf(bucketSize)
+        val bucketSizeBigDecimal = BigDecimal.valueOf(binSize)
         val gapSizeBigDecimal = BigDecimal.valueOf(gapSize)
         while  (currentRangeEnd < maxC) {
             currentRangeEnd = currentRangeStart + bucketSizeBigDecimal - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSizeBigDecimal
