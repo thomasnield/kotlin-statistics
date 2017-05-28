@@ -137,7 +137,6 @@ inline fun <T, G> List<T>.binByLong(binSize: Long,
     val buckets = mutableListOf<ClosedRange<Long>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
-        val isFirst = AtomicBoolean(true)
         while  (currentRangeEnd < maxC) {
             currentRangeEnd = currentRangeStart + binSize - 1L
             add(currentRangeStart..currentRangeEnd)
