@@ -416,7 +416,9 @@ fun main(args: Array<String>) {
 FieldDistributions(subjectWords={i=1, make=1, u=1, offer=2, congratulations!=1, your=1, inheritance=1, is=1, waiting!=1, hey=1}, sender={princeofnigeria2000@aol.com=2, lotterybacklog@gmail.com=1, jessica47@gmail.com=1})
 ```
 
-Here is another example. Here i a data set of white blood cell counts for a sample of patients: 
+## Reusing Logic with Extension Functions
+
+Here is another example that demonstrates code reuse using Kotlin extension functions. Here is a data set of white blood cell counts for a sample of patients: 
 
 ```kotlin
 import java.time.LocalDate
@@ -450,7 +452,7 @@ enum class Gender {
 }
 ```
 
-Say you wanted to find the 1st, 25th, 50th, 75th, and 100th percentiles by gender. We can tactically use a Kotlin extension function called `wbccPercentileByGender()` which will take a set of patients and separate a percentile calculation by gender. Then we can invoke it for the five desired percentiles and package them in a `Map<Double,Map<Gender,Double>>`, as showne below:
+Say you wanted to find the 1st, 25th, 50th, 75th, and 100th percentiles by gender. We can tactically use a Kotlin extension function called `wbccPercentileByGender()` which will take a set of patients and separate a percentile calculation by gender. Then we can invoke it for the five desired percentiles and package them in a `Map<Double,Map<Gender,Double>>`, as shown below:
 
 ```kotlin
 fun main(args: Array<String>) {
@@ -485,6 +487,7 @@ fun main(args: Array<String>) {
 100.0={MALE=8800.0, FEMALE=6700.0}
 ```
 
+Kotlin makes it easy to reuse code while remaining tactical, so spend some quality time with the [Kotlin Reference](https://kotlinlang.org/docs/reference/) to discover features you can leverage for expressing business logic. 
 
 ## Linear Regression
 
