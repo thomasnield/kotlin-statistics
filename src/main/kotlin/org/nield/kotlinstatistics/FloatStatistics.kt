@@ -4,6 +4,8 @@ import org.nield.kotlinstatistics.*
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean
 
+fun Float.abs() = let { if (it < 0.0F) (it * -1.0F) else it  }
+
 val Iterable<Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 val Sequence<Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 val Array<out Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)

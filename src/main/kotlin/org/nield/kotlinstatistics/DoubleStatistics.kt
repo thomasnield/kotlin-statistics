@@ -5,6 +5,8 @@ import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean
 
+fun Double.abs() = let { if (it < 0.0) (it * -1.0) else it  }
+
 val Iterable<Double>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
 val Sequence<Double>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
 val Array<out Double>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
