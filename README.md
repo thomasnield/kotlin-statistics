@@ -6,6 +6,10 @@ This library contains helpful extension functions to perform exploratory and pro
 
 [Read the introductory blog post here](http://tomstechnicalblog.blogspot.com/2017/05/introducing-kotlin-statistics.html)
 
+## Community
+
+Join the [#datscience](https://kotlinlang.slack.com/messages/C4W52CFEZ) community on Kotlin Slack for community discussion on this library as well as Kotlin for data science.
+
 ## Build Instructions
 
 You can use Gradle or Maven to pull the latest release from Maven.
