@@ -39,20 +39,17 @@ class DoubleStatisticsTest {
         )
 
         // find sums by name length
-        val sumsByLengths = sequence
-               .sumBy(keySelector = { it.name.length }, doubleMapper = {it.value} )
+        val sumsByLengths = sequence.sumBy(keySelector = { it.name.length }, doubleMapper = { it.value })
 
         println("Sums by lengths: $sumsByLengths")
 
         // find averages by name length
-        val averagesByLength = sequence
-                .averageBy(keySelector = { it.name.length }, doubleMapper = {it.value})
+        val averagesByLength = sequence.averageBy(keySelector = { it.name.length }, doubleMapper = { it.value })
 
         println("Averages by lengths: $averagesByLength")
 
         //find standard deviations by name length
-        val standardDeviationsByLength = sequence
-                .standardDeviationBy(keySelector = { it.name.length }, doubleMapper = {it.value})
+        val standardDeviationsByLength = sequence.standardDeviationBy(keySelector = { it.name.length }, doubleMapper = { it.value })
 
         println("Std Devs by lengths: $standardDeviationsByLength")
     }

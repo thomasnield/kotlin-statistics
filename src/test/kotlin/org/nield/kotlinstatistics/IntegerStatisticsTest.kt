@@ -2,6 +2,7 @@ package org.nield.kotlinstatistics
 
 import org.amshove.kluent.shouldEqualTo
 import org.junit.Test
+import org.nield.kotlinstatistics.integer.median
 
 class IntegerStatisticsTest {
 
