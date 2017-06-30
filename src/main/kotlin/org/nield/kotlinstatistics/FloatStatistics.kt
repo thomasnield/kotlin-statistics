@@ -1,5 +1,5 @@
-import org.apache.commons.math.stat.StatUtils
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import org.apache.commons.math3.stat.StatUtils
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.nield.kotlinstatistics.*
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean

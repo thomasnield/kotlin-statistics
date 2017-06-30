@@ -22,7 +22,7 @@ interface SimpleRegression {
 }
 
 
-class ApacheSimpleRegression(val sr: org.apache.commons.math.stat.regression.SimpleRegression): SimpleRegression {
+class ApacheSimpleRegression(val sr: org.apache.commons.math3.stat.regression.SimpleRegression): SimpleRegression {
     override val n get() = sr.n
     override val intercept get() = sr.intercept
     override val slope get() = sr.slope

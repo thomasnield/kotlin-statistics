@@ -1,8 +1,7 @@
 package org.nield.kotlinstatistics
 
-import org.apache.commons.math.stat.StatUtils
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
-import java.util.concurrent.atomic.AtomicBoolean
+import org.apache.commons.math3.stat.StatUtils
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 
 fun Long.abs() = let { if (it < 0L) (it * -1L) else it  }
 

@@ -1,7 +1,7 @@
 package org.nield.kotlinstatistics
 
-import org.apache.commons.math.stat.StatUtils
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import org.apache.commons.math3.stat.StatUtils
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import java.util.concurrent.atomic.AtomicBoolean
 
 fun Int.abs() = let { if (it < 0) (it * -1) else it  }
