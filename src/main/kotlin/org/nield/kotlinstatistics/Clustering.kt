@@ -24,4 +24,4 @@ class ClusterInput<out T>(val item: T, val location: DoubleArray): Clusterable {
 }
 
 data class DoublePoint(val x: Double, val y: Double)
-data class Centroid<out T>(val center: T, val points: List<T>)
+data class Centroid<out T>(val center: DoublePoint, val points: List<T>)
