@@ -121,33 +121,33 @@ inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 // bin operators
 
 inline fun <T> Iterable<T>.binByLong(binSize: Long,
-                                 crossinline binMapper: (T) -> Long,
+                                 crossinline valueMapper: (T) -> Long,
                                  rangeStart: Long? = null
-): BinModel<List<T>, Long> = toList().binByLong(binSize, binMapper, { it }, rangeStart)
+): BinModel<List<T>, Long> = toList().binByLong(binSize, valueMapper, { it }, rangeStart)
 
 inline fun <T, G> Iterable<T>.binByLong(binSize: Long,
-                                    crossinline binMapper: (T) -> Long,
+                                    crossinline valueMapper: (T) -> Long,
                                     crossinline groupOp: (List<T>) -> G,
                                     rangeStart: Long? = null
-) = toList().binByLong(binSize, binMapper, groupOp, rangeStart)
+) = toList().binByLong(binSize, valueMapper, groupOp, rangeStart)
 
 
 inline fun <T> List<T>.binByLong(binSize: Long,
-                                       crossinline binMapper: (T) -> Long,
+                                       crossinline valueMapper: (T) -> Long,
                                        rangeStart: Long? = null
-): BinModel<List<T>, Long> = binByLong(binSize, binMapper, { it }, rangeStart)
+): BinModel<List<T>, Long> = binByLong(binSize, valueMapper, { it }, rangeStart)
 
 inline fun <T, G> List<T>.binByLong(binSize: Long,
-                                    crossinline binMapper: (T) -> Long,
+                                    crossinline valueMapper: (T) -> Long,
                                     crossinline groupOp: (List<T>) -> G,
                                     rangeStart: Long? = null
 ): BinModel<G, Long> {
 
-    val groupedByC = asSequence().groupBy(binMapper)
+    val groupedByC = asSequence().groupBy(valueMapper)
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
-    val buckets = mutableListOf<ClosedRange<Long>>().apply {
+    val bins = mutableListOf<ClosedRange<Long>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
         while  (currentRangeEnd < maxC) {
@@ -157,13 +157,13 @@ inline fun <T, G> List<T>.binByLong(binSize: Long,
         }
     }
 
-    return buckets.asSequence()
+    return bins.asSequence()
             .map { it to mutableListOf<T>() }
-            .map { bucketWithList ->
+            .map { binWithList ->
                 groupedByC.entries.asSequence()
-                        .filter { it.key in bucketWithList.first }
-                        .forEach { bucketWithList.second.addAll(it.value) }
-                bucketWithList
+                        .filter { it.key in binWithList.first }
+                        .forEach { binWithList.second.addAll(it.value) }
+                binWithList
             }.map { Bin(it.first, groupOp(it.second)) }
             .toList()
             .let(::BinModel)

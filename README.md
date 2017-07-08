@@ -213,9 +213,9 @@ Key(category=ABZ, section=2)=5.1
 Key(category=ABR, section=2)=1.1
 ```
 
-## Slicing by Ranges/Bins/Buckets
+## Slicing by Ranges/Bins
 
-You can also group by ranges (or known in statistics as "bins", "buckets", or a "histogram"). 
+You can also group by ranges (or known in statistics as "bins", "bins", or a "histogram"). 
 
 Currently you can group any `T` items into bins composed of `Comparable` ranges. Below, we group up items by yearly quarters by mapping each item to a `Month`, and then setting the `binSize` to 3. We also have to provide an `incrementer` so the model knows how to build the bins incrementally.
 
@@ -238,9 +238,9 @@ fun main(args: Array<String>) {
             Sale(8, LocalDate.of(2016, 7,11), 144.2)
             )
 
-    //bucket by quarter
+    //bin by quarter
     val byQuarter = sales.binByComparable(
-            binMapper = { it.date.month },
+            valueMapper = { it.date.month },
             binIncrements = 3,
             incrementer = { it.plus(1L) }
     )
@@ -278,9 +278,9 @@ fun main(args: Array<String>) {
             Sale(8, LocalDate.of(2016, 7,11), 144.2)
     )
 
-    //bucket by quarter
+    //bin by quarter
     val totalValueByQuarter = sales.binByComparable(
-            binMapper = { it.date.month },
+            valueMapper = { it.date.month },
             binIncrements = 3,
             incrementer = { it.plus(1L) },
             groupOp = { it.map(Sale::value).sum() }
@@ -320,9 +320,9 @@ fun main(args: Array<String>) {
             Sale(8, LocalDate.of(2016, 7,11), 144.2)
             )
 
-    //bucket by double ranges
+    //bin by double ranges
     val binned = sales.binByDouble(
-            binMapper = { it.value },
+            valueMapper = { it.value },
             binSize = 20.0,
             gapSize = .01,
             rangeStart = 100.0
@@ -341,6 +341,99 @@ Bin(range=140.01..160.0, value=[Sale(accountId=2, date=2016-07-04, value=140.2),
 Bin(range=160.01..180.0, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
 Bin(range=180.01..200.0, value=[Sale(accountId=4, date=2016-01-05, value=192.7)])
 ```
+
+## Clustering
+
+There are a few clustering algorithms available in Kotlin-Statistics. These algorithms attempt to group up items that are closely related based on their proximity on a 2-dimensional plot. Currently there are three methods of clustering available that are [implemented with Apache Commons Math](https://commons.apache.org/proper/commons-math/userguide/ml.html)
+
+* KMeans
+* Fuzzy-KMeans
+* Multi-KMeans
+* DBSCAN 
+
+![](https://commons.apache.org/proper/commons-math/images/userguide/cluster_comparison.png)
+
+Below, we cluster Patients by their age and white blood cell count. Note that the `xSelector` and `ySelector` arguments currently must map to `Double` values. 
+
+```kotlin
+fun main(args: Array<String>) {
+
+    //cluster patients by age and white blood cell count
+    val clusters: List<Centroid<Patient>> =
+            patients.multiKMeansCluster(k = 3,
+                    maxIterations = 10000,
+                    trialCount = 50,
+                    xSelector = { it.age.toDouble() },
+                    ySelector = { it.whiteBloodCellCount.toDouble() }
+            )
+
+    // print out the clusters
+    clusters.forEach {
+        println("CENTROID: ${it.center}")
+        it.points.forEach {
+            println("\t$it")
+        }
+    }
+}
+```
+
+**OUTPUT:**
+
+```
+CENTROID: DoublePoint(x=-1.0, y=-1.0)
+	Patient(firstName=Sarah, lastName=Marley, gender=FEMALE, birthday=1971-02-05, whiteBloodCellCount=6700)
+	Patient(firstName=Sam, lastName=Beasley, gender=MALE, birthday=1992-04-17, whiteBloodCellCount=8800)
+CENTROID: DoublePoint(x=-1.0, y=-1.0)
+	Patient(firstName=John, lastName=Simone, gender=MALE, birthday=1990-01-07, whiteBloodCellCount=4500)
+	Patient(firstName=Jessica, lastName=Arnold, gender=FEMALE, birthday=1973-03-09, whiteBloodCellCount=3400)
+	Patient(firstName=Michael, lastName=Erlich, gender=MALE, birthday=1993-12-17, whiteBloodCellCount=4100)
+	Patient(firstName=Jason, lastName=Miles, gender=MALE, birthday=1991-11-01, whiteBloodCellCount=3900)
+	Patient(firstName=Rebekah, lastName=Earley, gender=FEMALE, birthday=1975-02-18, whiteBloodCellCount=4600)
+CENTROID: DoublePoint(x=-1.0, y=-1.0)
+	Patient(firstName=Dan, lastName=Forney, gender=MALE, birthday=1985-09-13, whiteBloodCellCount=5400)
+	Patient(firstName=Lauren, lastName=Michaels, gender=FEMALE, birthday=1986-08-21, whiteBloodCellCount=5000)
+	Patient(firstName=James, lastName=Larson, gender=MALE, birthday=1974-04-10, whiteBloodCellCount=5100)
+	Patient(firstName=Dan, lastName=Ulrech, gender=MALE, birthday=1992-07-11, whiteBloodCellCount=6000)
+	Patient(firstName=Heather, lastName=Eisner, gender=FEMALE, birthday=1994-03-06, whiteBloodCellCount=6000)
+	Patient(firstName=Jasper, lastName=Martin, gender=MALE, birthday=1971-07-01, whiteBloodCellCount=6000)
+```
+
+Here, we use [TornadoFX](https://github.com/edvin/tornadofx) to display the clusters in a [ScatterPlot](https://edvin.gitbooks.io/tornadofx-guide/content/8.%20Charts.html). 
+
+
+```kotlin
+import javafx.scene.chart.NumberAxis
+import tornadofx.*
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+
+
+class MyApp: App(MyView::class)
+
+class MyView : View() {
+    override val root = scatterchart("WBCC Clustering by Age", NumberAxis(), NumberAxis()) {
+
+                patients.multiKMeansCluster(k = 3,
+                    maxIterations = 10000,
+                    trialCount = 50,
+                    xSelector = { it.age.toDouble() },
+                    ySelector = { it.whiteBloodCellCount.toDouble() }
+                )
+                .forEachIndexed { index, centroid ->
+                    series("Group ${index + 1}") {
+                        centroid.points.forEach {
+                            data(it.age, it.whiteBloodCellCount)
+                        }
+                    }
+                }
+    }
+}
+```
+
+**RENDERED UI:**
+
+![](http://i.imgur.com/bMYTT04.png)
+
 
 ## Aggregating Multiple Fields
 

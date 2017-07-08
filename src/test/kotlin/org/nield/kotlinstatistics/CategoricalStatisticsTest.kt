@@ -1,6 +1,6 @@
 package org.nield.kotlinstatistics
 
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class CategoricalStatisticsTest {
