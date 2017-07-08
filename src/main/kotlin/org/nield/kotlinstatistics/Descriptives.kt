@@ -1,6 +1,6 @@
 package org.nield.kotlinstatistics
 
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 
 
 interface Descriptives {

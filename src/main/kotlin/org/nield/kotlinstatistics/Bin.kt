@@ -19,21 +19,21 @@ class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<
 
 inline fun <T, C: Comparable<C>> List<T>.binByComparable(binIncrements: Int,
                                                          crossinline incrementer: (C) -> C,
-                                                         crossinline binMapper: (T) -> C,
-                                                         rangeStart: C? = null) = binByComparable(binIncrements, incrementer, binMapper, { it }, rangeStart)
+                                                         crossinline valueMapper: (T) -> C,
+                                                         rangeStart: C? = null) = binByComparable(binIncrements, incrementer, valueMapper, { it }, rangeStart)
 
 inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
                                                             crossinline incrementer: (C) -> C,
-                                                            crossinline binMapper: (T) -> C,
+                                                            crossinline valueMapper: (T) -> C,
                                                             crossinline groupOp: (List<T>) -> G,
                                                             rangeStart: C? = null
 ): BinModel<G, C> {
 
-    val groupedByC = asSequence().groupBy(binMapper)
+    val groupedByC = asSequence().groupBy(valueMapper)
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
-    val buckets = mutableListOf<ClosedRange<C>>().apply {
+    val bins = mutableListOf<ClosedRange<C>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
 
@@ -45,13 +45,13 @@ inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
         }
     }
 
-    return buckets.asSequence()
+    return bins.asSequence()
             .map { it to mutableListOf<T>() }
-            .map { bucketWithList ->
+            .map { binWithList ->
                 groupedByC.entries.asSequence()
-                        .filter { it.key in bucketWithList.first }
-                        .forEach { bucketWithList.second.addAll(it.value) }
-                bucketWithList
+                        .filter { it.key in binWithList.first }
+                        .forEach { binWithList.second.addAll(it.value) }
+                binWithList
             }.map { Bin(it.first, groupOp(it.second)) }
             .toList()
             .let(::BinModel)

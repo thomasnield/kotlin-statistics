@@ -1,7 +1,7 @@
 package org.nield.kotlinstatistics
 
-import org.apache.commons.math.stat.StatUtils
-import org.apache.commons.math.stat.descriptive.DescriptiveStatistics
+import org.apache.commons.math3.stat.StatUtils
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -118,48 +118,48 @@ inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 
 inline fun <T> Sequence<T>.binByBigDecimal(binSize: BigDecimal,
                                            gapSize: BigDecimal,
-                                           crossinline binMapper: (T) -> BigDecimal,
+                                           crossinline valueMapper: (T) -> BigDecimal,
                                            rangeStart: BigDecimal? = null
-) = toList().binByBigDecimal(binSize, gapSize, binMapper, { it }, rangeStart)
+) = toList().binByBigDecimal(binSize, gapSize, valueMapper, { it }, rangeStart)
 
 inline fun <T, G> Sequence<T>.binByBigDecimal(binSize: BigDecimal,
                                               gapSize: BigDecimal,
-                                              crossinline binMapper: (T) -> BigDecimal,
+                                              crossinline valueMapper: (T) -> BigDecimal,
                                               crossinline groupOp: (List<T>) -> G,
                                               rangeStart: BigDecimal? = null
-) = toList().binByBigDecimal(binSize, gapSize, binMapper, groupOp, rangeStart)
+) = toList().binByBigDecimal(binSize, gapSize, valueMapper, groupOp, rangeStart)
 
 inline fun <T> Iterable<T>.binByBigDecimal(binSize: BigDecimal,
                                        gapSize: BigDecimal,
-                                       crossinline binMapper: (T) -> BigDecimal,
+                                       crossinline valueMapper: (T) -> BigDecimal,
                                        rangeStart: BigDecimal? = null
-) = toList().binByBigDecimal(binSize, gapSize, binMapper, { it }, rangeStart)
+) = toList().binByBigDecimal(binSize, gapSize, valueMapper, { it }, rangeStart)
 
 inline fun <T, G> Iterable<T>.binByBigDecimal(binSize: BigDecimal,
                                           gapSize: BigDecimal,
-                                          crossinline binMapper: (T) -> BigDecimal,
+                                          crossinline valueMapper: (T) -> BigDecimal,
                                           crossinline groupOp: (List<T>) -> G,
                                           rangeStart: BigDecimal? = null
-) = toList().binByBigDecimal(binSize, gapSize, binMapper, groupOp, rangeStart)
+) = toList().binByBigDecimal(binSize, gapSize, valueMapper, groupOp, rangeStart)
 
 inline fun <T> List<T>.binByBigDecimal(binSize: BigDecimal,
                                        gapSize: BigDecimal,
-                                       crossinline binMapper: (T) -> BigDecimal,
+                                       crossinline valueMapper: (T) -> BigDecimal,
                                        rangeStart: BigDecimal? = null
-): BinModel<List<T>, BigDecimal> = binByBigDecimal(binSize, gapSize, binMapper, { it }, rangeStart)
+): BinModel<List<T>, BigDecimal> = binByBigDecimal(binSize, gapSize, valueMapper, { it }, rangeStart)
 
 inline fun <T, G> List<T>.binByBigDecimal(binSize: BigDecimal,
                                           gapSize: BigDecimal,
-                                          crossinline binMapper: (T) -> BigDecimal,
+                                          crossinline valueMapper: (T) -> BigDecimal,
                                           crossinline groupOp: (List<T>) -> G,
                                           rangeStart: BigDecimal? = null
 ): BinModel<G, BigDecimal> {
 
-    val groupedByC = asSequence().groupBy(binMapper)
+    val groupedByC = asSequence().groupBy(valueMapper)
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
-    val buckets = mutableListOf<ClosedRange<BigDecimal>>().apply {
+    val bins = mutableListOf<ClosedRange<BigDecimal>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
         val isFirst = AtomicBoolean(true)
@@ -170,13 +170,13 @@ inline fun <T, G> List<T>.binByBigDecimal(binSize: BigDecimal,
         }
     }
 
-    return buckets.asSequence()
+    return bins.asSequence()
             .map { it to mutableListOf<T>() }
-            .map { bucketWithList ->
+            .map { binWithList ->
                 groupedByC.entries.asSequence()
-                        .filter { it.key in bucketWithList.first }
-                        .forEach { bucketWithList.second.addAll(it.value) }
-                bucketWithList
+                        .filter { it.key in binWithList.first }
+                        .forEach { binWithList.second.addAll(it.value) }
+                binWithList
             }.map { Bin(it.first, groupOp(it.second)) }
             .toList()
             .let(::BinModel)
