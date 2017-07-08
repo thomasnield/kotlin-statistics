@@ -409,7 +409,7 @@ val patients = listOf(
 enum class Gender {
     MALE,
     FEMALE
-
+}
 ```
 
 **OUTPUT:**
