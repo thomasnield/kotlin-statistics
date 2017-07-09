@@ -363,8 +363,7 @@ import java.time.temporal.ChronoUnit
 fun main(args: Array<String>) {
 
     //cluster patients by age and white blood cell count
-    val clusters: List<Centroid<Patient>> =
-            patients.multiKMeansCluster(k = 3,
+    val clusters =  patients.multiKMeansCluster(k = 3,
                     maxIterations = 10000,
                     trialCount = 50,
                     xSelector = { it.age.toDouble() },
