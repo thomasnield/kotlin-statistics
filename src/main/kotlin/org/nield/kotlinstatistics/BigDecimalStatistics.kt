@@ -13,34 +13,6 @@ fun Sequence<BigDecimal>.average() = toList().let { list ->
 }
 fun Iterable<BigDecimal>.average() = asSequence().average()
 
-fun Iterable<BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Sequence<BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Array<out BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
-
-fun Iterable<BigDecimal>.median() = percentile(50.0)
-fun Sequence<BigDecimal>.median() = percentile(50.0)
-fun Array<out BigDecimal>.median() = percentile(50.0)
-
-fun Iterable<BigDecimal>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList() .toDoubleArray(), percentile)
-fun Sequence<BigDecimal>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList() .toDoubleArray(), percentile)
-fun Array<out BigDecimal>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray() , percentile)
-
-fun Iterable<BigDecimal>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
-fun Sequence<BigDecimal>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
-fun Array<out BigDecimal>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
-
-fun Iterable<BigDecimal>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
-fun Sequence<BigDecimal>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
-fun Array<out BigDecimal>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
-
-fun Iterable<BigDecimal>.standardDeviation() = descriptiveStatistics.standardDeviation
-fun Sequence<BigDecimal>.standardDeviation() = descriptiveStatistics.standardDeviation
-fun Array<out BigDecimal>.standardDeviation() = descriptiveStatistics.standardDeviation
-
-fun Iterable<BigDecimal>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
-fun Sequence<BigDecimal>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList() .toDoubleArray())
-fun Array<out BigDecimal>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
-
 val Iterable<BigDecimal>.kurtosis get() = descriptiveStatistics.kurtosis
 val Sequence<BigDecimal>.kurtosis get() = descriptiveStatistics.kurtosis
 val Array<out BigDecimal>.kurtosis get() = descriptiveStatistics.kurtosis
@@ -108,34 +80,6 @@ fun <K> Sequence<Pair<K,BigDecimal>>.maxBy() =
 
 fun <K> Iterable<Pair<K,BigDecimal>>.maxBy() = asSequence().maxBy()
 
-
-
-
-inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
-        groupApply(keySelector, bigDecimalMapper) { it.median() }
-
-inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
-        asSequence().medianBy(keySelector, bigDecimalMapper)
-
-fun <K> Sequence<Pair<K,BigDecimal>>.medianBy() =
-        groupApply({it.first}, {it.second}) { it.median() }
-
-fun <K> Iterable<Pair<K,BigDecimal>>.medianBy() = asSequence().medianBy()
-
-
-
-
-
-inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
-        groupApply(keySelector, bigDecimalMapper) { it.variance() }
-
-inline fun <T,K> Iterable<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
-        asSequence().varianceBy(keySelector, bigDecimalMapper)
-
-fun <K> Sequence<Pair<K,BigDecimal>>.varianceBy() =
-        groupApply({it.first}, {it.second}) { it.variance() }
-
-fun <K> Iterable<Pair<K,BigDecimal>>.varianceBy() = asSequence().varianceBy()
 
 
 

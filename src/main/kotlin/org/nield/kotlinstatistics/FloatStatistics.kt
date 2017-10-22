@@ -6,39 +6,12 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 val FloatArray.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 
-fun Iterable<Float>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Sequence<Float>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Array<out Float>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun FloatArray.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-
-fun Iterable<Float>.median() = percentile(50.0)
-fun Sequence<Float>.median() = percentile(50.0)
-fun Array<out Float>.median() = percentile(50.0)
+fun FloatArray.geometricMean() = asSequence().geometricMean()
 fun FloatArray.median() = percentile(50.0)
-
-fun Iterable<Float>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
-fun Sequence<Float>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
-fun Array<out Float>.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
-fun FloatArray.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
-
-fun Iterable<Float>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Sequence<Float>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Array<out Float>.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun FloatArray.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-
-fun Iterable<Float>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Sequence<Float>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Array<out Float>.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun FloatArray.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-
-fun Iterable<Float>.standardDeviation() = descriptiveStatistics.standardDeviation
-fun Sequence<Float>.standardDeviation() = descriptiveStatistics.standardDeviation
-fun Array<out Float>.standardDeviation() = descriptiveStatistics.standardDeviation
-fun FloatArray.standardDeviation() = descriptiveStatistics.standardDeviation
-
-fun Iterable<Float>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Sequence<Float>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun Array<out Float>.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun FloatArray.percentile(percentile: Double) = asSequence().percentile(50.0)
+fun FloatArray.variance() = asSequence().variance()
+fun FloatArray.sumOfSquares() = asSequence().sumOfSquares()
+fun FloatArray.standardDeviation() = asSequence().standardDeviation()
 fun FloatArray.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 
 val Iterable<Float>.kurtosis get() = descriptiveStatistics.kurtosis
@@ -118,62 +91,6 @@ fun <K> Sequence<Pair<K,Float>>.maxBy() =
         groupApply({it.first}, {it.second}) { it.max() }
 
 fun <K> Iterable<Pair<K,Float>>.maxBy() = asSequence().maxBy()
-
-
-
-
-
-
-
-
-inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        groupApply(keySelector, floatMapper) { it.median() }
-
-inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        asSequence().medianBy(keySelector, floatMapper)
-
-
-fun <K> Sequence<Pair<K,Float>>.medianBy() =
-        groupApply({it.first}, {it.second}) { it.median() }
-
-fun <K> Iterable<Pair<K,Float>>.medianBy() = asSequence().medianBy()
-
-
-
-
-
-
-
-inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        groupApply(keySelector, floatMapper) { it.variance() }
-
-inline fun <T,K> Iterable<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        asSequence().varianceBy(keySelector, floatMapper)
-
-fun <K> Sequence<Pair<K,Float>>.varianceBy() =
-        groupApply({it.first}, {it.second}) { it.variance() }
-
-fun <K> Iterable<Pair<K,Float>>.varianceBy() = asSequence().varianceBy()
-
-
-
-
-
-
-
-
-inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        groupApply(keySelector, floatMapper) { it.standardDeviation() }
-
-inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        asSequence().standardDeviationBy(keySelector, floatMapper)
-
-fun <K> Sequence<Pair<K,Float>>.standardDeviationBy() =
-        groupApply({it.first}, {it.second}) { it.standardDeviation() }
-
-fun <K> Iterable<Pair<K,Float>>.standardDeviationBy() = asSequence().standardDeviationBy()
-
-
 
 
 
