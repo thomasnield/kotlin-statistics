@@ -18,7 +18,7 @@ You can use Gradle or Maven to pull the latest release from Maven.
 
 ```
 dependencies {
-    compile 'org.nield:kotlinstatistics:0.1.1'
+    compile 'org.nield:kotlinstatistics:0.3.0'
 }
 ```
 
@@ -28,7 +28,7 @@ dependencies {
 <dependency>
     <groupId>org.nield</groupId>
     <artifactId>kotlinstatistics</artifactId>
-    <version>0.1.0</version>
+    <version>0.3.0</version>
 </dependency>
 ```
 
@@ -356,46 +356,80 @@ There are a few clustering algorithms available in Kotlin-Statistics. These algo
 Below, we cluster Patients by their age and white blood cell count. Note that the `xSelector` and `ySelector` arguments currently must map to `Double` values. 
 
 ```kotlin
+
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
+
 fun main(args: Array<String>) {
 
     //cluster patients by age and white blood cell count
-    val clusters: List<Centroid<Patient>> =
-            patients.multiKMeansCluster(k = 3,
-                    maxIterations = 10000,
-                    trialCount = 50,
-                    xSelector = { it.age.toDouble() },
-                    ySelector = { it.whiteBloodCellCount.toDouble() }
-            )
+    val clusters =  patients.multiKMeansCluster(k = 3,
+			    maxIterations = 10000,
+			    trialCount = 50,
+			    xSelector = { it.age.toDouble() },
+			    ySelector = { it.whiteBloodCellCount.toDouble() }
+		    )
 
     // print out the clusters
-    clusters.forEach {
-        println("CENTROID: ${it.center}")
-        it.points.forEach {
+    clusters.forEachIndexed { index, item ->
+        println("CENTROID: $index")
+        item.points.forEach {
             println("\t$it")
         }
     }
+}
+
+
+data class Patient(val firstName: String,
+                   val lastName: String,
+                   val gender: Gender,
+                   val birthday: LocalDate,
+                   val whiteBloodCellCount: Int)  {
+
+    val age = ChronoUnit.YEARS.between(birthday, LocalDate.now())
+}
+
+val patients = listOf(
+        Patient("John", "Simone", Gender.MALE, LocalDate.of(1989, 1, 7), 4500),
+        Patient("Sarah", "Marley", Gender.FEMALE, LocalDate.of(1970, 2, 5), 6700),
+        Patient("Jessica", "Arnold", Gender.FEMALE, LocalDate.of(1980, 3, 9), 3400),
+        Patient("Sam", "Beasley", Gender.MALE, LocalDate.of(1981, 4, 17), 8800),
+        Patient("Dan", "Forney", Gender.MALE, LocalDate.of(1985, 9, 13), 5400),
+        Patient("Lauren", "Michaels", Gender.FEMALE, LocalDate.of(1975, 8, 21), 5000),
+        Patient("Michael", "Erlich", Gender.MALE, LocalDate.of(1985, 12, 17), 4100),
+        Patient("Jason", "Miles", Gender.MALE, LocalDate.of(1991, 11, 1), 3900),
+        Patient("Rebekah", "Earley", Gender.FEMALE, LocalDate.of(1985, 2, 18), 4600),
+        Patient("James", "Larson", Gender.MALE, LocalDate.of(1974, 4, 10), 5100),
+        Patient("Dan", "Ulrech", Gender.MALE, LocalDate.of(1991, 7, 11), 6000),
+        Patient("Heather", "Eisner", Gender.FEMALE, LocalDate.of(1994, 3, 6), 6000),
+        Patient("Jasper", "Martin", Gender.MALE, LocalDate.of(1971, 7, 1), 6000)
+)
+
+enum class Gender {
+    MALE,
+    FEMALE
 }
 ```
 
 **OUTPUT:**
 
 ```
-CENTROID: DoublePoint(x=-1.0, y=-1.0)
-	Patient(firstName=Sarah, lastName=Marley, gender=FEMALE, birthday=1971-02-05, whiteBloodCellCount=6700)
-	Patient(firstName=Sam, lastName=Beasley, gender=MALE, birthday=1992-04-17, whiteBloodCellCount=8800)
-CENTROID: DoublePoint(x=-1.0, y=-1.0)
-	Patient(firstName=John, lastName=Simone, gender=MALE, birthday=1990-01-07, whiteBloodCellCount=4500)
-	Patient(firstName=Jessica, lastName=Arnold, gender=FEMALE, birthday=1973-03-09, whiteBloodCellCount=3400)
-	Patient(firstName=Michael, lastName=Erlich, gender=MALE, birthday=1993-12-17, whiteBloodCellCount=4100)
-	Patient(firstName=Jason, lastName=Miles, gender=MALE, birthday=1991-11-01, whiteBloodCellCount=3900)
-	Patient(firstName=Rebekah, lastName=Earley, gender=FEMALE, birthday=1975-02-18, whiteBloodCellCount=4600)
-CENTROID: DoublePoint(x=-1.0, y=-1.0)
+CENTROID: 0
 	Patient(firstName=Dan, lastName=Forney, gender=MALE, birthday=1985-09-13, whiteBloodCellCount=5400)
-	Patient(firstName=Lauren, lastName=Michaels, gender=FEMALE, birthday=1986-08-21, whiteBloodCellCount=5000)
+	Patient(firstName=Lauren, lastName=Michaels, gender=FEMALE, birthday=1975-08-21, whiteBloodCellCount=5000)
 	Patient(firstName=James, lastName=Larson, gender=MALE, birthday=1974-04-10, whiteBloodCellCount=5100)
-	Patient(firstName=Dan, lastName=Ulrech, gender=MALE, birthday=1992-07-11, whiteBloodCellCount=6000)
+	Patient(firstName=Dan, lastName=Ulrech, gender=MALE, birthday=1991-07-11, whiteBloodCellCount=6000)
 	Patient(firstName=Heather, lastName=Eisner, gender=FEMALE, birthday=1994-03-06, whiteBloodCellCount=6000)
 	Patient(firstName=Jasper, lastName=Martin, gender=MALE, birthday=1971-07-01, whiteBloodCellCount=6000)
+CENTROID: 1
+	Patient(firstName=Sarah, lastName=Marley, gender=FEMALE, birthday=1970-02-05, whiteBloodCellCount=6700)
+	Patient(firstName=Sam, lastName=Beasley, gender=MALE, birthday=1981-04-17, whiteBloodCellCount=8800)
+CENTROID: 2
+	Patient(firstName=John, lastName=Simone, gender=MALE, birthday=1989-01-07, whiteBloodCellCount=4500)
+	Patient(firstName=Jessica, lastName=Arnold, gender=FEMALE, birthday=1980-03-09, whiteBloodCellCount=3400)
+	Patient(firstName=Michael, lastName=Erlich, gender=MALE, birthday=1985-12-17, whiteBloodCellCount=4100)
+	Patient(firstName=Jason, lastName=Miles, gender=MALE, birthday=1991-11-01, whiteBloodCellCount=3900)
+	Patient(firstName=Rebekah, lastName=Earley, gender=FEMALE, birthday=1985-02-18, whiteBloodCellCount=4600)
 ```
 
 Here, we use [TornadoFX](https://github.com/edvin/tornadofx) to display the clusters in a [ScatterPlot](https://edvin.gitbooks.io/tornadofx-guide/content/8.%20Charts.html). 
