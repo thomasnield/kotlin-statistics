@@ -4,11 +4,6 @@ import org.nield.kotlinstatistics.*
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean
 
-fun Float.abs() = let { if (it < 0.0F) (it * -1.0F) else it  }
-
-val Iterable<Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
-val Sequence<Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
-val Array<out Float>.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 val FloatArray.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 
 fun Iterable<Float>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
@@ -58,11 +53,7 @@ val FloatArray.skewness get() = descriptiveStatistics.skewness
 
 
 // AGGREGATION OPERATORS
-inline fun <T,K> Sequence<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
-        groupApply(keySelector, longMapper) { it.descriptiveStatistics }
 
-inline fun <T,K> Iterable<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline longMapper: (T) -> Long) =
-        asSequence().descriptiveStatisticsBy(keySelector, longMapper)
 
 
 inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
@@ -71,11 +62,35 @@ inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinlin
 inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().sumBy(keySelector, floatMapper)
 
+fun <K> Sequence<Pair<K,Float>>.sumBy() =
+        groupApply({it.first}, {it.second}) { it.sum() }
+
+fun <K> Iterable<Pair<K,Float>>.sumBy() = asSequence().sumBy()
+
+
+
+
+
+
+
+
 inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         groupApply(keySelector, floatMapper) { it.average() }
 
 inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().averageBy(keySelector, floatMapper)
+
+fun <K> Sequence<Pair<K,Float>>.averageBy() =
+        groupApply({it.first}, {it.second}) { it.average() }
+
+fun <K> Iterable<Pair<K,Float>>.averageBy() = asSequence().averageBy()
+
+
+
+
+
+
+
 
 inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         groupApply(keySelector, floatMapper) { it.min() }
@@ -83,11 +98,33 @@ inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinlin
 inline fun <T,K> Iterable<T>.minBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().minBy(keySelector, floatMapper)
 
+fun <K> Sequence<Pair<K,Float>>.minBy() =
+        groupApply({it.first}, {it.second}) { it.min() }
+
+fun <K> Iterable<Pair<K,Float>>.minBy() = asSequence().minBy()
+
+
+
+
+
+
 inline fun <T,K> Sequence<T>.maxBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         groupApply(keySelector, floatMapper) { it.max() }
 
 inline fun <T,K> Iterable<T>.maxBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().maxBy(keySelector, floatMapper)
+
+fun <K> Sequence<Pair<K,Float>>.maxBy() =
+        groupApply({it.first}, {it.second}) { it.max() }
+
+fun <K> Iterable<Pair<K,Float>>.maxBy() = asSequence().maxBy()
+
+
+
+
+
+
+
 
 inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         groupApply(keySelector, floatMapper) { it.median() }
@@ -95,17 +132,52 @@ inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossin
 inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().medianBy(keySelector, floatMapper)
 
+
+fun <K> Sequence<Pair<K,Float>>.medianBy() =
+        groupApply({it.first}, {it.second}) { it.median() }
+
+fun <K> Iterable<Pair<K,Float>>.medianBy() = asSequence().medianBy()
+
+
+
+
+
+
+
 inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         groupApply(keySelector, floatMapper) { it.variance() }
 
 inline fun <T,K> Iterable<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().varianceBy(keySelector, floatMapper)
 
+fun <K> Sequence<Pair<K,Float>>.varianceBy() =
+        groupApply({it.first}, {it.second}) { it.variance() }
+
+fun <K> Iterable<Pair<K,Float>>.varianceBy() = asSequence().varianceBy()
+
+
+
+
+
+
+
+
 inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         groupApply(keySelector, floatMapper) { it.standardDeviation() }
 
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().standardDeviationBy(keySelector, floatMapper)
+
+fun <K> Sequence<Pair<K,Float>>.standardDeviationBy() =
+        groupApply({it.first}, {it.second}) { it.standardDeviation() }
+
+fun <K> Iterable<Pair<K,Float>>.standardDeviationBy() = asSequence().standardDeviationBy()
+
+
+
+
+
+
 
 
 inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
@@ -114,12 +186,21 @@ inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, 
 inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
         asSequence().geometricMeanBy(keySelector, floatMapper)
 
+fun <K> Sequence<Pair<K,Float>>.geometricMeanBy() =
+        groupApply({it.first}, {it.second}) { it.geometricMean() }
 
-fun Sequence<Pair<Float, Float>>.simpleRegression() = simpleRegression({it.first},{it.second})
+fun <K> Iterable<Pair<K,Float>>.geometricMeanBy() = asSequence().geometricMeanBy()
+
+
+
+
+
 
 inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Float, crossinline ySelector: (T) -> Float) =
         map { xSelector(it).toDouble() to ySelector(it).toDouble() }
                 .simpleRegression()
+
+fun Sequence<Pair<Float, Float>>.simpleRegression() = simpleRegression({it.first},{it.second})
 
 
 

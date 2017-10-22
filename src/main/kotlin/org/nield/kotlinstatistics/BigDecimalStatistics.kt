@@ -13,10 +13,6 @@ fun Sequence<BigDecimal>.average() = toList().let { list ->
 }
 fun Iterable<BigDecimal>.average() = asSequence().average()
 
-val Iterable<BigDecimal>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
-val Sequence<BigDecimal>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
-val Array<out BigDecimal>.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
-
 fun Iterable<BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 fun Sequence<BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 fun Array<out BigDecimal>.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
@@ -56,12 +52,6 @@ val Array<out BigDecimal>.skewness get() = descriptiveStatistics.skewness
 
 // AGGREGATION OPERATORS
 
-inline fun <T,K> Sequence<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
-        groupApply(keySelector, bigDecimalMapper) { it.descriptiveStatistics }
-
-inline fun <T,K> Iterable<T>.descriptiveStatisticsBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
-        asSequence().descriptiveStatisticsBy(keySelector, bigDecimalMapper)
-
 
 inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.sum() }
@@ -69,11 +59,28 @@ inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinlin
 inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().sumBy(keySelector, bigDecimalMapper)
 
+fun <K> Sequence<Pair<K,BigDecimal>>.sumBy() =
+        groupApply({it.first}, {it.second}) { it.sum() }
+
+fun <K> Iterable<Pair<K,BigDecimal>>.sumBy() = asSequence().sumBy()
+
+
+
+
 inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.average() }
 
 inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().averageBy(keySelector, bigDecimalMapper)
+
+fun <K> Sequence<Pair<K,BigDecimal>>.averageBy() =
+        groupApply({it.first}, {it.second}) { it.average() }
+
+fun <K> Iterable<Pair<K,BigDecimal>>.averageBy() = asSequence().averageBy()
+
+
+
+
 
 inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.min() }
@@ -81,11 +88,28 @@ inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinlin
 inline fun <T,K> Iterable<T>.minBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().minBy(keySelector, bigDecimalMapper)
 
+fun <K> Sequence<Pair<K,BigDecimal>>.minBy() =
+        groupApply({it.first}, {it.second}) { it.min() }
+
+fun <K> Iterable<Pair<K,BigDecimal>>.minBy() = asSequence().minBy()
+
+
+
+
 inline fun <T,K> Sequence<T>.maxBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.max() }
 
 inline fun <T,K> Iterable<T>.maxBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().maxBy(keySelector, bigDecimalMapper)
+
+
+fun <K> Sequence<Pair<K,BigDecimal>>.maxBy() =
+        groupApply({it.first}, {it.second}) { it.max() }
+
+fun <K> Iterable<Pair<K,BigDecimal>>.maxBy() = asSequence().maxBy()
+
+
+
 
 inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.median() }
@@ -93,11 +117,32 @@ inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossin
 inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().medianBy(keySelector, bigDecimalMapper)
 
+fun <K> Sequence<Pair<K,BigDecimal>>.medianBy() =
+        groupApply({it.first}, {it.second}) { it.median() }
+
+fun <K> Iterable<Pair<K,BigDecimal>>.medianBy() = asSequence().medianBy()
+
+
+
+
+
 inline fun <T,K> Sequence<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.variance() }
 
 inline fun <T,K> Iterable<T>.varianceBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().varianceBy(keySelector, bigDecimalMapper)
+
+fun <K> Sequence<Pair<K,BigDecimal>>.varianceBy() =
+        groupApply({it.first}, {it.second}) { it.variance() }
+
+fun <K> Iterable<Pair<K,BigDecimal>>.varianceBy() = asSequence().varianceBy()
+
+
+
+
+
+
+
 
 inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.standardDeviation() }
@@ -105,12 +150,31 @@ inline fun <T,K> Sequence<T>.standardDeviationBy(crossinline keySelector: (T) ->
 inline fun <T,K> Iterable<T>.standardDeviationBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().standardDeviationBy(keySelector, bigDecimalMapper)
 
+fun <K> Sequence<Pair<K,BigDecimal>>.standardDeviationBy() =
+        groupApply({it.first}, {it.second}) { it.standardDeviation() }
+
+fun <K> Iterable<Pair<K,BigDecimal>>.standardDeviationBy() = asSequence().standardDeviationBy()
+
+
+
+
+
 
 inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         groupApply(keySelector, bigDecimalMapper) { it.geometricMean() }
 
 inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline bigDecimalMapper: (T) -> BigDecimal) =
         asSequence().geometricMeanBy(keySelector, bigDecimalMapper)
+
+fun <K> Sequence<Pair<K,BigDecimal>>.geometricMeanBy() =
+        groupApply({it.first}, {it.second}) { it.geometricMean() }
+
+fun <K> Iterable<Pair<K,BigDecimal>>.geometricMeanBy() = asSequence().geometricMeanBy()
+
+
+
+
+
 
 
 // bin operators
