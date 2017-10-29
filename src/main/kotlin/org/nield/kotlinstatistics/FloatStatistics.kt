@@ -13,15 +13,7 @@ fun FloatArray.variance() = asSequence().variance()
 fun FloatArray.sumOfSquares() = asSequence().sumOfSquares()
 fun FloatArray.standardDeviation() = asSequence().standardDeviation()
 fun FloatArray.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-
-val Iterable<Float>.kurtosis get() = descriptiveStatistics.kurtosis
-val Sequence<Float>.kurtosis get() = descriptiveStatistics.kurtosis
-val Array<out Float>.kurtosis get() = descriptiveStatistics.kurtosis
 val FloatArray.kurtosis get() = descriptiveStatistics.kurtosis
-
-val Iterable<Float>.skewness get() = descriptiveStatistics.skewness
-val Sequence<Float>.skewness get() = descriptiveStatistics.skewness
-val Array<out Float>.skewness get() = descriptiveStatistics.skewness
 val FloatArray.skewness get() = descriptiveStatistics.skewness
 
 
@@ -29,11 +21,11 @@ val FloatArray.skewness get() = descriptiveStatistics.skewness
 
 
 
-inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        groupApply(keySelector, floatMapper) { it.sum() }
+inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline floatSelector: (T) -> Float) =
+        groupApply(keySelector, floatSelector) { it.sum() }
 
-inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        asSequence().sumBy(keySelector, floatMapper)
+inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline floatSelector: (T) -> Float) =
+        asSequence().sumBy(keySelector, floatSelector)
 
 fun <K> Sequence<Pair<K,Float>>.sumBy() =
         groupApply({it.first}, {it.second}) { it.sum() }
@@ -45,13 +37,11 @@ fun <K> Iterable<Pair<K,Float>>.sumBy() = asSequence().sumBy()
 
 
 
+inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline floatSelector: (T) -> Float) =
+        groupApply(keySelector, floatSelector) { it.average() }
 
-
-inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        groupApply(keySelector, floatMapper) { it.average() }
-
-inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        asSequence().averageBy(keySelector, floatMapper)
+inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline floatSelector: (T) -> Float) =
+        asSequence().averageBy(keySelector, floatSelector)
 
 fun <K> Sequence<Pair<K,Float>>.averageBy() =
         groupApply({it.first}, {it.second}) { it.average() }
@@ -64,107 +54,50 @@ fun <K> Iterable<Pair<K,Float>>.averageBy() = asSequence().averageBy()
 
 
 
-
-inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        groupApply(keySelector, floatMapper) { it.min() }
-
-inline fun <T,K> Iterable<T>.minBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        asSequence().minBy(keySelector, floatMapper)
-
-fun <K> Sequence<Pair<K,Float>>.minBy() =
-        groupApply({it.first}, {it.second}) { it.min() }
-
-fun <K> Iterable<Pair<K,Float>>.minBy() = asSequence().minBy()
-
-
-
-
-
-
-inline fun <T,K> Sequence<T>.maxBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        groupApply(keySelector, floatMapper) { it.max() }
-
-inline fun <T,K> Iterable<T>.maxBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        asSequence().maxBy(keySelector, floatMapper)
-
-fun <K> Sequence<Pair<K,Float>>.maxBy() =
-        groupApply({it.first}, {it.second}) { it.max() }
-
-fun <K> Iterable<Pair<K,Float>>.maxBy() = asSequence().maxBy()
-
-
-
-
-
-
-inline fun <T,K> Sequence<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        groupApply(keySelector, floatMapper) { it.geometricMean() }
-
-inline fun <T,K> Iterable<T>.geometricMeanBy(crossinline keySelector: (T) -> K, crossinline floatMapper: (T) -> Float) =
-        asSequence().geometricMeanBy(keySelector, floatMapper)
-
-fun <K> Sequence<Pair<K,Float>>.geometricMeanBy() =
-        groupApply({it.first}, {it.second}) { it.geometricMean() }
-
-fun <K> Iterable<Pair<K,Float>>.geometricMeanBy() = asSequence().geometricMeanBy()
-
-
-
-
-
-
-inline fun <T> Sequence<T>.simpleRegression(crossinline xSelector: (T) -> Float, crossinline ySelector: (T) -> Float) =
-        map { xSelector(it).toDouble() to ySelector(it).toDouble() }
-                .simpleRegression()
-
-fun Sequence<Pair<Float, Float>>.simpleRegression() = simpleRegression({it.first},{it.second})
-
-
-
 // Bin Operators
 
 inline fun <T> Sequence<T>.binByFloat(binSize: Float,
                                       gapSize: Float,
-                                      crossinline valueMapper: (T) -> Float,
+                                      crossinline valueSelector: (T) -> Float,
                                       rangeStart: Float? = null
-): BinModel<List<T>, Float> = toList().binByFloat(binSize, gapSize, valueMapper, { it }, rangeStart)
+): BinModel<List<T>, Float> = toList().binByFloat(binSize, gapSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Sequence<T>.binByFloat(binSize: Float,
                                          gapSize: Float,
-                                         crossinline valueMapper: (T) -> Float,
+                                         crossinline valueSelector: (T) -> Float,
                                          crossinline groupOp: (List<T>) -> G,
                                          rangeStart: Float? = null
-): BinModel<G, Float> = toList().binByFloat(binSize, gapSize, valueMapper, groupOp, rangeStart)
+): BinModel<G, Float> = toList().binByFloat(binSize, gapSize, valueSelector, groupOp, rangeStart)
 
 
 inline fun <T> Iterable<T>.binByFloat(binSize: Float,
                                   gapSize: Float,
-                                  crossinline valueMapper: (T) -> Float,
+                                  crossinline valueSelector: (T) -> Float,
                                   rangeStart: Float? = null
-): BinModel<List<T>, Float> = toList().binByFloat(binSize, gapSize, valueMapper, { it }, rangeStart)
+): BinModel<List<T>, Float> = toList().binByFloat(binSize, gapSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Iterable<T>.binByFloat(binSize: Float,
                                      gapSize: Float,
-                                     crossinline valueMapper: (T) -> Float,
+                                     crossinline valueSelector: (T) -> Float,
                                      crossinline groupOp: (List<T>) -> G,
                                      rangeStart: Float? = null
-): BinModel<G, Float> = toList().binByFloat(binSize, gapSize, valueMapper, groupOp, rangeStart)
+): BinModel<G, Float> = toList().binByFloat(binSize, gapSize, valueSelector, groupOp, rangeStart)
 
 
 inline fun <T> List<T>.binByFloat(binSize: Float,
                                    gapSize: Float,
-                                   crossinline valueMapper: (T) -> Float,
+                                   crossinline valueSelector: (T) -> Float,
                                    rangeStart: Float? = null
-): BinModel<List<T>, Float> = binByFloat(binSize, gapSize, valueMapper, { it }, rangeStart)
+): BinModel<List<T>, Float> = binByFloat(binSize, gapSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> List<T>.binByFloat(binSize: Float,
                                      gapSize: Float,
-                                     crossinline valueMapper: (T) -> Float,
+                                     crossinline valueSelector: (T) -> Float,
                                      crossinline groupOp: (List<T>) -> G,
                                      rangeStart: Float? = null
 ): BinModel<G, Float> {
 
-    val groupedByC = asSequence().groupBy { BigDecimal.valueOf(valueMapper(it).toDouble()) }
+    val groupedByC = asSequence().groupBy { BigDecimal.valueOf(valueSelector(it).toDouble()) }
     val minC = rangeStart?.toDouble()?.let(BigDecimal::valueOf) ?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 

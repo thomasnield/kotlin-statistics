@@ -17,13 +17,13 @@ inline fun <T,K,R> Sequence<T>.groupApply(crossinline keySelector: (T) -> K, cro
     return aggregatedMap
 }
 
-inline fun <T,V,K,R> Sequence<T>.groupApply(crossinline keySelector: (T) -> K, crossinline valueMapper: (T) -> V, crossinline aggregation: (Iterable<V>) -> R): Map<K, R> {
+inline fun <T,V,K,R> Sequence<T>.groupApply(crossinline keySelector: (T) -> K, crossinline valueSelector: (T) -> V, crossinline aggregation: (Iterable<V>) -> R): Map<K, R> {
     val map = mutableMapOf<K, MutableList<V>>()
 
     for (item in this) {
         val key = keySelector(item)
         val list = map.computeIfAbsent(key) { mutableListOf() }
-        list += valueMapper(item)
+        list += valueSelector(item)
     }
     val aggregatedMap = mutableMapOf<K, R>()
 

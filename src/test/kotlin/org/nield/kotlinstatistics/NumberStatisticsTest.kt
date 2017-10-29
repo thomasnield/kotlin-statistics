@@ -14,6 +14,7 @@ class NumberStatisticsTest {
 
     val groups = sequenceOf("A","A","B", "B")
 
+
     @Test
     fun descriptiveStatistics() {
 
@@ -21,6 +22,22 @@ class NumberStatisticsTest {
         assertTrue(intVector.descriptiveStatistics.mean == 5.0)
         assertTrue(longVector.descriptiveStatistics.mean == 5.0)
         assertTrue(bigDecimalVector.descriptiveStatistics.mean == 5.0)
+
+        assertTrue(doubleVector.descriptiveStatistics.min == 1.0)
+        assertTrue(intVector.descriptiveStatistics.min == 1.0)
+        assertTrue(longVector.descriptiveStatistics.min == 1.0)
+        assertTrue(bigDecimalVector.descriptiveStatistics.min == 1.0)
+
+        assertTrue(doubleVector.descriptiveStatistics.max == 11.0)
+        assertTrue(intVector.descriptiveStatistics.max == 11.0)
+        assertTrue(longVector.descriptiveStatistics.max == 11.0)
+        assertTrue(bigDecimalVector.descriptiveStatistics.max == 11.0)
+
+
+        assertTrue(doubleVector.descriptiveStatistics.size == 4L)
+        assertTrue(intVector.descriptiveStatistics.size == 4L)
+        assertTrue(longVector.descriptiveStatistics.size == 4L)
+        assertTrue(bigDecimalVector.descriptiveStatistics.size == 4L)
     }
     @Test
     fun descriptiveBy() {
@@ -43,7 +60,18 @@ class NumberStatisticsTest {
                 .let {
                     assertTrue(it["A"]!!.mean == 2.0 && it["B"]!!.mean == 8.0)
                 }
+
+
+
+        groups.zip(doubleVector).descriptiveStatisticsBy(
+                keySelector = { it.first },
+                valueSelector = {it.second}
+                )
+                .let {
+                    assertTrue(it["A"]!!.mean == 2.0 && it["B"]!!.mean == 8.0)
+                }
     }
+
 
     @Test
     fun geometricMean() {
@@ -80,7 +108,17 @@ class NumberStatisticsTest {
                 .let {
                     assertTrue(it["A"]!! == 2.0 && it["B"]!! == 8.0)
                 }
+
+
+        groups.zip(doubleVector).medianBy(
+                keySelector = {it.first},
+                valueSelector = {it.second}
+        )
+        .let {
+            assertTrue(it["A"]!! == 2.0 && it["B"]!! == 8.0)
+        }
     }
+
 
     @Test
     fun percentile() {
@@ -105,6 +143,15 @@ class NumberStatisticsTest {
                     assertTrue(it["A"]!! == 2.0 && it["B"]!! == 8.0)
                 }
         groups.zip(bigDecimalVector).percentileBy(50.0)
+                .let {
+                    assertTrue(it["A"]!! == 2.0 && it["B"]!! == 8.0)
+                }
+
+        groups.zip(bigDecimalVector).percentileBy(
+                    percentile = 50.0,
+                    keySelector = {it.first},
+                    valueSelector = {it.second}
+                )
                 .let {
                     assertTrue(it["A"]!! == 2.0 && it["B"]!! == 8.0)
                 }
@@ -137,6 +184,14 @@ class NumberStatisticsTest {
                 .let {
                     assertTrue(it["A"]!! == 2.0 && it["B"]!! == 18.0)
                 }
+
+        groups.zip(bigDecimalVector).varianceBy(
+                keySelector = {it.first},
+                valueSelector = {it.second}
+        )
+        .let {
+            assertTrue(it["A"]!! == 2.0 && it["B"]!! == 18.0)
+        }
     }
 
     @Test
@@ -159,23 +214,33 @@ class NumberStatisticsTest {
 
     @Test
     fun standardDeviationBy() {
-        println(doubleVector.standardDeviation())
+
+        val r = mapOf("A" to 1.4142135623730951, "B" to 4.242640687119285)
+
         groups.zip(doubleVector).standardDeviationBy()
                 .let {
-                    assertTrue(it["A"]!! == 2.0 && it["B"]!! == 18.0)
+                    assertTrue(it == r)
                 }
         groups.zip(intVector).standardDeviationBy()
                 .let {
-                    assertTrue(it["A"]!! == 2.0 && it["B"]!! == 18.0)
+                    assertTrue(it == r)
                 }
         groups.zip(longVector).standardDeviationBy()
                 .let {
-                    assertTrue(it["A"]!! == 2.0 && it["B"]!! == 18.0)
+                    assertTrue(it == r)
                 }
         groups.zip(bigDecimalVector).standardDeviationBy()
                 .let {
-                    assertTrue(it["A"]!! == 2.0 && it["B"]!! == 18.0)
+                    assertTrue(it == r)
                 }
+
+        groups.zip(bigDecimalVector).standardDeviationBy(
+                keySelector = {it.first},
+                valueSelector = {it.second}
+        )
+        .let {
+            assertTrue(it == r)
+        }
     }
 
     @Test
@@ -190,5 +255,83 @@ class NumberStatisticsTest {
         intVector.asSequence().normalize().let { assertTrue(Arrays.equals(it, r)) }
         longVector.asSequence().normalize().let { assertTrue(Arrays.equals(it, r)) }
         bigDecimalVector.asSequence().normalize().let { assertTrue(Arrays.equals(it, r)) }
+    }
+
+    @Test
+    fun kurtosis() {
+        val r = 1.4999999999999947
+
+        assertTrue(doubleVector.kurtosis == r)
+        assertTrue(intVector.kurtosis == r)
+        assertTrue(longVector.kurtosis == r)
+        assertTrue(bigDecimalVector.kurtosis == r)
+    }
+
+    @Test
+    fun skewness() {
+        val r = 1.1903401282789945
+
+        assertTrue(doubleVector.skewness == r)
+        assertTrue(intVector.skewness == r)
+        assertTrue(longVector.skewness == r)
+        assertTrue(bigDecimalVector.skewness == r)
+    }
+
+
+    @Test
+    fun geometricMeanBy() {
+
+        val r = mapOf("A" to 1.7320508075688774, "B" to 7.416198487095664)
+
+        groups.zip(doubleVector).geometricMeanBy()
+                .let {
+                    assertTrue(it == r)
+                }
+        groups.zip(intVector).geometricMeanBy()
+                .let {
+                    assertTrue(it == r)
+                }
+        groups.zip(longVector).geometricMeanBy()
+                .let {
+                    assertTrue(it == r)
+                }
+        groups.zip(bigDecimalVector).geometricMeanBy()
+                .let {
+                    assertTrue(it == r)
+                }
+
+        groups.zip(bigDecimalVector).geometricMeanBy(
+                keySelector = {it.first},
+                valueSelector = {it.second}
+        )
+        .let {
+            assertTrue(it == r)
+        }
+    }
+
+    @Test
+    fun simpleRegression() {
+        doubleVector.zip(doubleVector.map { it * 2 })
+                .simpleRegression()
+                .let { assertTrue(it.slope == 2.0) }
+
+        intVector.zip(intVector.map { it * 2 })
+                .simpleRegression()
+                .let { assertTrue(it.slope == 2.0) }
+
+        longVector.zip(longVector.map { it * 2 })
+                .simpleRegression()
+                .let { assertTrue(it.slope == 2.0) }
+
+        bigDecimalVector.zip(bigDecimalVector.map { it * BigDecimal.valueOf(2L) })
+                .simpleRegression()
+                .let { assertTrue(it.slope == 2.0) }
+
+        intVector.zip(intVector.map { it * 2 })
+                .simpleRegression(
+                        xSelector = {it.first},
+                        ySelector = {it.second}
+                )
+                .let { assertTrue(it.slope == 2.0) }
     }
 }

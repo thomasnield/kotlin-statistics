@@ -18,7 +18,7 @@ You can use Gradle or Maven to pull the latest release from Maven.
 
 ```
 dependencies {
-    compile 'org.nield:kotlinstatistics:0.3.0'
+    compile 'org.nield:kotlin-statistics:1.0.0'
 }
 ```
 
@@ -27,8 +27,8 @@ dependencies {
 ```
 <dependency>
     <groupId>org.nield</groupId>
-    <artifactId>kotlinstatistics</artifactId>
-    <version>0.3.0</version>
+    <artifactId>kotlin-statistics</artifactId>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -121,21 +121,34 @@ val sequence = sequenceOf(
         Item("Iota", 8.8)
 )
 
-// find sums by name length
+// find sums by name length, using pairs or functional arguments
 val sumsByLengths = sequence
-       .sumBy(keySelector = { it.name.length }, doubleMapper = {it.value} )
+       .map { it.name.length to it.value }
+       .sumBy()
+
+val sumsByLengths = sequence
+       .sumBy(keySelector = { it.name.length }, doubleSelector = {it.value} )
 
 println("Sums by lengths: $sumsByLengths") 
 
-// find averages by name length
+// find averages by name length, using pairs or functional arguments
+
 val averagesByLength = sequence
-        .averageBy(keySelector = { it.name.length }, doubleMapper = {it.value})
+        .map { it.name.length to it.value }
+        .averageBy()
 
-println("Averages by lengths: $averagesByLength") 
+val averagesByLength = sequence
+        .averageBy(keySelector = { it.name.length }, doubleSelector = {it.value})
 
-//find standard deviations by name length
+
+//find standard deviations by name length, using pairs or functional arguments
+
 val standardDeviationsByLength = sequence
-        .standardDeviationBy(keySelector = { it.name.length }, doubleMapper = {it.value}) 
+        .map { it.name.length to it.value }
+        .standardDeviationBy()
+
+val standardDeviationsByLength = sequence
+        .standardDeviationBy(keySelector = { it.name.length }, valueSelector = {it.value})
 
 println("Std Devs by lengths: $standardDeviationsByLength")
 ```
@@ -189,7 +202,7 @@ countByCategoryAndSection.entries.forEach { println(it) }
 
 // Get Average Defect Rate by Category and Section
 val averageDefectByCategoryAndSection =
-        products.averageBy(keySelector = { Key(it.category, it.section) }, doubleMapper = { it.defectRate })
+        products.averageBy(keySelector = { Key(it.category, it.section) }, doubleSelector = { it.defectRate })
 
 println("\nAverage Defect Rate by Category and Section")
 averageDefectByCategoryAndSection.entries.forEach { println(it) }
@@ -240,7 +253,7 @@ fun main(args: Array<String>) {
 
     //bin by quarter
     val byQuarter = sales.binByComparable(
-            valueMapper = { it.date.month },
+            valueSelector = { it.date.month },
             binIncrements = 3,
             incrementer = { it.plus(1L) }
     )
@@ -280,7 +293,7 @@ fun main(args: Array<String>) {
 
     //bin by quarter
     val totalValueByQuarter = sales.binByComparable(
-            valueMapper = { it.date.month },
+            valueSelector = { it.date.month },
             binIncrements = 3,
             incrementer = { it.plus(1L) },
             groupOp = { it.map(Sale::value).sum() }
@@ -322,7 +335,7 @@ fun main(args: Array<String>) {
 
     //bin by double ranges
     val binned = sales.binByDouble(
-            valueMapper = { it.value },
+            valueSelector = { it.value },
             binSize = 20.0,
             gapSize = .01,
             rangeStart = 100.0
@@ -592,7 +605,7 @@ fun main(args: Array<String>) {
             percentileBy(
                     percentile = percentile,
                     keySelector = { it.gender },
-                    doubleMapper = { it.whiteBloodCellCount.toDouble() }
+                    valueSelector = { it.whiteBloodCellCount }
             )
 
     val percentileQuadrantsByGender = patients.let {
@@ -657,8 +670,8 @@ fun main(args: Array<String>) {
             )
 
     val regression = salesDates.simpleRegression(
-                xSelector = { it.date.dayOfYear.toDouble() },
-                ySelector = { it.sales.toDouble() }
+                xSelector = { it.date.dayOfYear },
+                ySelector = { it.sales }
             )
 
     //print slope of regression

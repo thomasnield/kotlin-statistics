@@ -19,17 +19,17 @@ class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<
 
 inline fun <T, C: Comparable<C>> List<T>.binByComparable(binIncrements: Int,
                                                          crossinline incrementer: (C) -> C,
-                                                         crossinline valueMapper: (T) -> C,
-                                                         rangeStart: C? = null) = binByComparable(binIncrements, incrementer, valueMapper, { it }, rangeStart)
+                                                         crossinline valueSelector: (T) -> C,
+                                                         rangeStart: C? = null) = binByComparable(binIncrements, incrementer, valueSelector, { it }, rangeStart)
 
 inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
                                                             crossinline incrementer: (C) -> C,
-                                                            crossinline valueMapper: (T) -> C,
+                                                            crossinline valueSelector: (T) -> C,
                                                             crossinline groupOp: (List<T>) -> G,
                                                             rangeStart: C? = null
 ): BinModel<G, C> {
 
-    val groupedByC = asSequence().groupBy(valueMapper)
+    val groupedByC = asSequence().groupBy(valueSelector)
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 

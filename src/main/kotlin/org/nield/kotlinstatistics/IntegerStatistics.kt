@@ -9,90 +9,81 @@ fun IntArray.median() = percentile(50.0)
 fun IntArray.percentile(percentile: Double) = StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
 fun IntArray.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 fun IntArray.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-
-fun Iterable<Int>.standardDeviation() = descriptiveStatistics.standardDeviation
-fun Sequence<Int>.standardDeviation() = descriptiveStatistics.standardDeviation
-fun Array<out Int>.standardDeviation() = descriptiveStatistics.standardDeviation
-fun IntArray.standardDeviation() = descriptiveStatistics.standardDeviation
 fun IntArray.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-
-val Iterable<Int>.kurtosis get() = descriptiveStatistics.kurtosis
-val Sequence<Int>.kurtosis get() = descriptiveStatistics.kurtosis
-val Array<out Int>.kurtosis get() = descriptiveStatistics.kurtosis
 val IntArray.kurtosis get() = descriptiveStatistics.kurtosis
-
-val Iterable<Int>.skewness get() = descriptiveStatistics.skewness
-val Sequence<Int>.skewness get() = descriptiveStatistics.skewness
-val Array<out Int>.skewness get() = descriptiveStatistics.skewness
 val IntArray.skewness get() = descriptiveStatistics.skewness
 
 
 // AGGREGATION OPERATORS
 
 
-inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
-        groupApply(keySelector, intMapper) { it.sum() }
+inline fun <T,K> Sequence<T>.sumBy(crossinline keySelector: (T) -> K, crossinline intSelector: (T) -> Int) =
+        groupApply(keySelector, intSelector) { it.sum() }
 
-inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
-        asSequence().sumBy(keySelector, intMapper)
+inline fun <T,K> Iterable<T>.sumBy(crossinline keySelector: (T) -> K, crossinline intSelector: (T) -> Int) =
+        asSequence().sumBy(keySelector, intSelector)
 
-inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
-        groupApply(keySelector, intMapper) { it.average() }
+fun <K> Sequence<Pair<K,Int>>.sumBy() =
+        groupApply({it.first}, {it.second}) { it.sum() }
 
-inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
-        asSequence().averageBy(keySelector, intMapper)
+fun <K> Iterable<Pair<K,Int>>.sumBy() = asSequence().sumBy()
 
-inline fun <T,K> Sequence<T>.minBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
-        groupApply(keySelector, intMapper) { it.min() }
 
-inline fun <T,K> Iterable<T>.minBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
-        asSequence().minBy(keySelector, intMapper)
 
-inline fun <T,K> Sequence<T>.maxBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
-        groupApply(keySelector, intMapper) { it.max() }
 
-inline fun <T,K> Iterable<T>.maxBy(crossinline keySelector: (T) -> K, crossinline intMapper: (T) -> Int) =
-        asSequence().maxBy(keySelector, intMapper)
+
+
+inline fun <T,K> Sequence<T>.averageBy(crossinline keySelector: (T) -> K, crossinline intSelector: (T) -> Int) =
+        groupApply(keySelector, intSelector) { it.average() }
+
+inline fun <T,K> Iterable<T>.averageBy(crossinline keySelector: (T) -> K, crossinline intSelector: (T) -> Int) =
+        asSequence().averageBy(keySelector, intSelector)
+
+
+fun <K> Sequence<Pair<K,Int>>.averageBy() =
+        groupApply({it.first}, {it.second}) { it.average() }
+
+fun <K> Iterable<Pair<K,Int>>.averageBy() = asSequence().averageBy()
 
 
 // bin operators
 
 
 inline fun <T> Sequence<T>.binByInt(binSize: Int,
-                                    crossinline valueMapper: (T) -> Int,
+                                    crossinline valueSelector: (T) -> Int,
                                     rangeStart: Int? = null
-): BinModel<List<T>, Int> = toList().binByInt(binSize, valueMapper, { it }, rangeStart)
+): BinModel<List<T>, Int> = toList().binByInt(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Sequence<T>.binByInt(binSize: Int,
-                                       crossinline valueMapper: (T) -> Int,
+                                       crossinline valueSelector: (T) -> Int,
                                        crossinline groupOp: (List<T>) -> G,
                                        rangeStart: Int? = null
-) = toList().binByInt(binSize, valueMapper, groupOp, rangeStart)
+) = toList().binByInt(binSize, valueSelector, groupOp, rangeStart)
 
 inline fun <T> Iterable<T>.binByInt(binSize: Int,
-                                crossinline valueMapper: (T) -> Int,
+                                crossinline valueSelector: (T) -> Int,
                                 rangeStart: Int? = null
-): BinModel<List<T>, Int> = toList().binByInt(binSize, valueMapper, { it }, rangeStart)
+): BinModel<List<T>, Int> = toList().binByInt(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Iterable<T>.binByInt(binSize: Int,
-                                   crossinline valueMapper: (T) -> Int,
+                                   crossinline valueSelector: (T) -> Int,
                                    crossinline groupOp: (List<T>) -> G,
                                    rangeStart: Int? = null
-) = toList().binByInt(binSize, valueMapper, groupOp, rangeStart)
+) = toList().binByInt(binSize, valueSelector, groupOp, rangeStart)
 
 
 inline fun <T> List<T>.binByInt(binSize: Int,
-                                 crossinline valueMapper: (T) -> Int,
+                                 crossinline valueSelector: (T) -> Int,
                                  rangeStart: Int? = null
-): BinModel<List<T>, Int> = binByInt(binSize, valueMapper, { it }, rangeStart)
+): BinModel<List<T>, Int> = binByInt(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> List<T>.binByInt(binSize: Int,
-                                    crossinline valueMapper: (T) -> Int,
+                                    crossinline valueSelector: (T) -> Int,
                                     crossinline groupOp: (List<T>) -> G,
                                     rangeStart: Int? = null
 ): BinModel<G, Int> {
 
-    val groupedByC = asSequence().groupBy(valueMapper)
+    val groupedByC = asSequence().groupBy(valueSelector)
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
