@@ -1,8 +1,8 @@
-![](http://i.imgur.com/v3FqiEA.png) 
+![](http://i.imgur.com/v3FqiEA.png)
 # Kotlin Statistics
 ### Idiomatic math and statistical extensions for Kotlin
 
-This library contains helpful extension functions to perform exploratory and production statistics in a Kotlin-idiomatic way. 
+This library contains helpful extension functions to perform exploratory and production statistics in a Kotlin-idiomatic way.
 
 [Read the introductory blog post here](http://tomstechnicalblog.blogspot.com/2017/05/introducing-kotlin-statistics.html)
 
@@ -86,7 +86,7 @@ There are a number of extension function operators that support `Int`, `Long`, `
 Here is an example of using the `median()` extension function against a `Sequence` of Doubles:
 
 ```kotlin
-val median = sequenceOf(1.0, 3.0, 5.0).median() 
+val median = sequenceOf(1.0, 3.0, 5.0).median()
 println(median) // prints "3.0"
 ```
 
@@ -129,7 +129,7 @@ val sumsByLengths = sequence
 val sumsByLengths = sequence
        .sumBy(keySelector = { it.name.length }, doubleSelector = {it.value} )
 
-println("Sums by lengths: $sumsByLengths") 
+println("Sums by lengths: $sumsByLengths")
 
 // find averages by name length, using pairs or functional arguments
 
@@ -161,12 +161,12 @@ Averages by lengths: {5=6.8, 4=5.733333333333334, 7=6.8}
 Std Devs by lengths: {5=2.1416504538945342, 4=2.619584360585134, 7=0.0}
 ```
 
-These slicing operators are backed by a common `groupApply()` function, which can be used to implement other slicing operators easily. 
+These slicing operators are backed by a common `groupApply()` function, which can be used to implement other slicing operators easily.
 
 
 ## Slicing Using Data Classes
 
-You can slice on multiple fields using data classes with the `xxxBy()` operators as well. This is similar to using a GROUP BY on multiple fields in SQL:
+You can slice on multiple fields using data classes with the `xxxBy()` operators as well. This is similar to using a GROUP BY on multiple fields in SQL. Below we slice a count and average defect of products by their `category` and `section`.
 
 ```kotlin
 //declare Product class
@@ -228,9 +228,12 @@ Key(category=ABR, section=2)=1.1
 
 ## Slicing by Ranges/Bins
 
-You can also group by ranges (or known in statistics as "bins", "bins", or a "histogram"). 
+You can also group by ranges (or known in statistics as "bins" or a "histogram").
 
-Currently you can group any `T` items into bins composed of `Comparable` ranges. Below, we group up items by yearly quarters by mapping each item to a `Month`, and then setting the `binSize` to 3. We also have to provide an `incrementer` so the model knows how to build the bins incrementally.
+
+### Slicing by Comparables
+
+You can group any `T` items into bins composed of `Comparable` ranges. Below, we group up items by yearly quarters by mapping each item to a `Month`, and then setting the `binSize` to 3. We also have to provide an `incrementer` so the model knows how to build the bins incrementally.
 
 ```kotlin
 
@@ -271,7 +274,7 @@ Bin(range=JULY..SEPTEMBER, value=[Sale(accountId=2, date=2016-07-04, value=140.2
 Bin(range=OCTOBER..DECEMBER, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
 ```
 
-If you want to perform a mathematical aggregation on a certain property for each item (rather than group up the items into a `List` for a given bin), provide a `groupOp` argument specifying how to calculate a value  on each grouping. Below, we find the sum of values by quarter. 
+If you want to perform a mathematical aggregation on a certain property for each item (rather than group up the items into a `List` for a given bin), provide a `groupOp` argument specifying how to calculate a value  on each grouping. Below, we find the sum of values by quarter.
 
 ```kotlin
 import java.time.LocalDate
@@ -291,7 +294,7 @@ fun main(args: Array<String>) {
             Sale(8, LocalDate.of(2016, 7,11), 144.2)
     )
 
-    //bin by quarter
+    //bin sums by quarter
     val totalValueByQuarter = sales.binByComparable(
             valueSelector = { it.date.month },
             binIncrements = 3,
@@ -312,7 +315,11 @@ Bin(range=JULY..SEPTEMBER, value=284.4)
 Bin(range=OCTOBER..DECEMBER, value=344.3)
 ```
 
-There are also specialized bin operators that deal with numeric ranges for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by increments of 20.0 for the `value`. 
+### Slicing By Numbers
+
+There are specialized bin operators that deal with numeric ranges for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by increments of 20.0 for the `value`.
+
+Note that continuous (decimal) numeric types need a `gapSize` to specify the space between each bin. This is necessary to create a specific enough cut-off to convert a continuous axis into a discrete one.
 
 ```kotlin
 
@@ -362,11 +369,11 @@ There are a few clustering algorithms available in Kotlin-Statistics. These algo
 * KMeans
 * Fuzzy-KMeans
 * Multi-KMeans
-* DBSCAN 
+* DBSCAN
 
 ![](https://commons.apache.org/proper/commons-math/images/userguide/cluster_comparison.png)
 
-Below, we cluster Patients by their age and white blood cell count. Note that the `xSelector` and `ySelector` arguments currently must map to `Double` values. 
+Below, we cluster Patients by their age and white blood cell count. Note that the `xSelector` and `ySelector` arguments currently must map to a numeric type. 
 
 ```kotlin
 
@@ -445,7 +452,7 @@ CENTROID: 2
 	Patient(firstName=Rebekah, lastName=Earley, gender=FEMALE, birthday=1985-02-18, whiteBloodCellCount=4600)
 ```
 
-Here, we use [TornadoFX](https://github.com/edvin/tornadofx) to display the clusters in a [ScatterPlot](https://edvin.gitbooks.io/tornadofx-guide/content/8.%20Charts.html). 
+Here, we use [TornadoFX](https://github.com/edvin/tornadofx) to display the clusters in a [ScatterPlot](https://edvin.gitbooks.io/tornadofx-guide/content/8.%20Charts.html).
 
 
 ```kotlin
@@ -484,7 +491,7 @@ class MyView : View() {
 
 ## Aggregating Multiple Fields
 
-Using the Kotlin `let()` operator, it is easy to take a collection of items and aggregate multiple fields into another "summary" object. Below, we take a collection `Email` objects and find the distribution of instances of `subject` and `sender`. 
+Using the Kotlin `let()` operator, it is easy to take a collection of items and aggregate multiple fields into another "summary" object. Below, we take a collection `Email` objects and find the distribution of instances of `subject` and `sender`.
 
 ```kotlin
 package org.nield.kotlinstatistics
@@ -562,7 +569,7 @@ FieldDistributions(subjectWords={i=1, make=1, u=1, offer=2, congratulations!=1, 
 
 ## Reusing Logic with Extension Functions
 
-Here is another example that demonstrates code reuse using Kotlin extension functions. Here is a data set of white blood cell counts for a sample of patients: 
+Here is another example that demonstrates code reuse using Kotlin extension functions. Here is a data set of white blood cell counts for a sample of patients:
 
 ```kotlin
 import java.time.LocalDate
@@ -631,7 +638,7 @@ fun main(args: Array<String>) {
 100.0={MALE=8800.0, FEMALE=6700.0}
 ```
 
-Kotlin makes it easy to reuse code while remaining tactical, so spend some quality time with the [Kotlin Reference](https://kotlinlang.org/docs/reference/) to discover features you can leverage for expressing business logic. 
+Kotlin makes it easy to reuse code while remaining nimble, so spend some quality time with the [Kotlin Reference](https://kotlinlang.org/docs/reference/) to discover features you can leverage for expressing business logic.
 
 ## Linear Regression
 
@@ -658,7 +665,7 @@ import java.time.LocalDate
 fun main(args: Array<String>) {
 
     class SaleDate(val date: LocalDate, val sales: Int)
-    
+
     val salesDates = listOf(
                 SaleDate(LocalDate.of(2017,1,1), 1080),
                 SaleDate(LocalDate.of(2017,1,2), 2010),
