@@ -650,7 +650,7 @@ fun main(args: Array<String>) {
 }
 ```
 
-You can also select the `x` and `y` on any arbitrary type `T`. Currently, `x` and `y` must be mapped to a `Double`. Below, we plot a regression against sale numbers across calendar dates:
+You can also select the `x` and `y` on any arbitrary type `T`. Below, we plot a regression against sale numbers across calendar dates:
 
 ```kotlin
 import java.time.LocalDate
