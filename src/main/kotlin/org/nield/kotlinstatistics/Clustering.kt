@@ -22,7 +22,7 @@ inline fun <T> Sequence<T>.kMeansCluster(k: Int, maxIterations: Int, crossinline
 
 
 
-inline fun <T> Collection<T>.fuzzyKMeansCluser(k: Int, fuzziness: Double, crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) =
+inline fun <T> Collection<T>.fuzzyKMeansCluster(k: Int, fuzziness: Double, crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) =
         asSequence().map { ClusterInput(it, doubleArrayOf(xSelector(it), ySelector(it))) }
                 .toList()
                 .let {
@@ -32,8 +32,8 @@ inline fun <T> Collection<T>.fuzzyKMeansCluser(k: Int, fuzziness: Double, crossi
                                 Centroid((it.center).point.let { DoublePoint(it[0],it[1])}, it.points.map { it.item })
                             }
                 }
-inline fun <T> Sequence<T>.fuzzyKMeansCluser(k: Int, fuzziness: Double, crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) =
-        toList().fuzzyKMeansCluser(k,fuzziness,xSelector,ySelector)
+inline fun <T> Sequence<T>.fuzzyKMeansCluster(k: Int, fuzziness: Double, crossinline xSelector: (T) -> Double, crossinline ySelector: (T) -> Double) =
+        toList().fuzzyKMeansCluster(k,fuzziness,xSelector,ySelector)
 
 
 fun Collection<Pair<Double,Double>>.multiKMeansCluster(k: Int, maxIterations: Int, trialCount: Int) = multiKMeansCluster(k, maxIterations,  trialCount, {it.first}, {it.second})
