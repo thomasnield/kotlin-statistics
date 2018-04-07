@@ -398,6 +398,12 @@ val nbc = emails.toNaiveBayesClassifier(
         featuresSelector = { it.message.splitWords().toSet() },
         categorySelector = {it.isSpam }
 )
+
+
+
+fun String.splitWords() =  split(Regex("\\s")).asSequence()
+         .map { it.replace(Regex("[^A-Za-z]"),"").toLowerCase() }
+         .filter { it.isNotEmpty() }
 ```
 
 We can then use this `NaiveBayesClassifier` model to predict the spamminess of new emails.
@@ -413,9 +419,6 @@ val input2 = "interesting meeting on amazon cloud services discount program".spl
 val predictedCategory2 = nbc.predict(input2)
 Assert.assertTrue(predictedCategory2 == false)
 ```
-
-If you want to add more observations to your Naive Bayes model, just call `addObservation()` and it will update its probability model.
-
 
 Here is another example that categorizes bank transactions.
 
@@ -494,6 +497,7 @@ val input2 = BankTransaction(date = LocalDate.of(2018,3,6),
 val result2 = nbc.predictWithProbability(input2.memo.splitWords().toSet())
 Assert.assertTrue(result2?.category == "COFFEE")
 ```
+If you want to add more observations to your Naive Bayes model, just call `addObservation()` and it will update its probability model.
 
 ```kotlin
 val nbc = NaiveBayesClassifier<String,String>()
