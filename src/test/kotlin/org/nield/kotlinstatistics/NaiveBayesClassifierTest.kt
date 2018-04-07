@@ -108,7 +108,6 @@ class NaiveBayesClassifierTest {
                 amount = 13.99,
                 memo = "NETFLIX VIDEO ON DEMAND #21"
         )
-
         val result1 = nbc.predictWithProbability(input1.memo.splitWords().toSet())
         Assert.assertTrue(result1?.category == "ENTERTAINMENT")
 
@@ -118,7 +117,6 @@ class NaiveBayesClassifierTest {
                 amount = 17.21,
                 memo = "FROGG COFFEE BAR AND CREPERIE"
         )
-
         val result2 = nbc.predictWithProbability(input2.memo.splitWords().toSet())
         Assert.assertTrue(result2?.category == "COFFEE")
     }
