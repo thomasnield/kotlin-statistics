@@ -2,14 +2,14 @@ package org.nield.kotlinstatistics
 
 import java.util.concurrent.atomic.AtomicBoolean
 
-class Bin<out T,in C: Comparable<C>>(val range: ClosedRange<in C>, val value: T) {
+class Bin<T,C: Comparable<C>>(val range: ClosedRange<C>, val value: T) {
     operator fun contains(key: C) = key in range
     override fun toString(): String {
         return "Bin(range=$range, value=$value)"
     }
 }
 
-class BinModel<out T, in C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<Bin<T,C>> by bins {
+class BinModel<T, C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<Bin<T,C>> by bins {
     operator fun get(key: C) = bins.find { key in it.range }
     operator fun contains(key: C) = bins.any { key in it.range }
     override fun toString(): String {
