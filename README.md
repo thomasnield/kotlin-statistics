@@ -367,6 +367,141 @@ Bin(range=160.01..180.0, value=[Sale(accountId=1, date=2016-12-03, value=180.0),
 Bin(range=180.01..200.0, value=[Sale(accountId=4, date=2016-01-05, value=192.7)])
 ```
 
+## Naive Bayes Classifier
+
+The `NaiveBayesClassifier` does a simple but powerful form of machine learning. For a given set of `T` items, you can extract one or more `F` features and associate a category `C`.
+
+You can then test a new set of features `F` and predict a category `C`.
+
+For instance, say you want to identify email as spam/not spam based on the words in the messages. In this case `true` or `false` will be the possible categories. and each word will be a feature.
+
+In idiomatic Kotlin fashion we can take a simple `List<Email>` and call `toNaiveBayesClassifier()`, provide the higher-order functions to extract the features and category, and then generate a model.
+
+```kotlin
+class Email(val message: String, val isSpam: Boolean)
+
+val emails = listOf(
+        Email("Hey there! I thought you might find this interesting. Click here.", isSpam = true),
+        Email("Get viagra for a discount as much as 90%", isSpam = true),
+        Email("Viagra prescription for less", isSpam = true),
+        Email("Even better than Viagra, try this new prescription drug", isSpam = true),
+
+        Email("Hey, I left my phone at home. Email me if you need anything. I'll be in a meeting for the afternoon.", isSpam = false),
+        Email("Please see attachment for notes on today's meeting. Interesting findings on your market research.", isSpam = false),
+        Email("An item on your Amazon wish list received a discount", isSpam = false),
+        Email("Your prescription drug order is ready", isSpam = false),
+        Email("Your Amazon account password has been reset", isSpam = false),
+        Email("Your Amazon order", isSpam = false)
+)
+
+val nbc = emails.toNaiveBayesClassifier(
+        featuresSelector = { it.message.splitWords().toSet() },
+        categorySelector = {it.isSpam }
+)
+```
+
+We can then use this `NaiveBayesClassifier` model to predict the spamminess of new emails.
+
+```kotlin
+ // TEST 1
+val input = "discount viagra wholesale, hurry while this offer lasts".splitWords().toSet()
+val predictedCategory = nbc.predict(input)
+Assert.assertTrue(predictedCategory == true)
+
+// TEST 2
+val input2 = "interesting meeting on amazon cloud services discount program".splitWords().toSet()
+val predictedCategory2 = nbc.predict(input2)
+Assert.assertTrue(predictedCategory2 == false)
+```
+
+If you want to add more observations to your Naive Bayes model, just call `addObservation()` and it will update its probability model.
+
+
+Here is another example that categorizes bank transactions.
+
+```kotlin
+class BankTransaction(
+        val date: LocalDate,
+        val amount: Double,
+        val memo: String,
+        val category: String? = null
+)
+
+val bankTransactions = listOf(
+        BankTransaction(date = LocalDate.of(2018,3,13),
+                amount = 12.69,
+                memo = "WHOLEFDS HPK 10140",
+                category = "GROCERY"
+        ),
+        BankTransaction(date = LocalDate.of(2018,3,13),
+                amount = 4.64,
+                memo = "BIGGBY COFFEE #370",
+                category = "COFFEE"
+        ),
+        BankTransaction(date = LocalDate.of(2018,3,13),
+                amount = 14.23,
+                memo = "AMAZON SALE",
+                category = "ELECTRONICS"
+        ),
+        BankTransaction(date = LocalDate.of(2018,3,13),
+                amount = 7.99,
+                memo = "AMAZON KINDLE EBOOK SALE",
+                category = "BOOK"
+        ),
+        BankTransaction(date = LocalDate.of(2018,3,10),
+                amount = 5.40,
+                memo = "AMAZON VIDEO ON DEMAND",
+                category = "ENTERTAINMENT"
+        ),
+        BankTransaction(date = LocalDate.of(2018,3,10),
+                amount = 61.27,
+                memo = "WHOLEFDS PLN 10030",
+                category = "GROCERY"
+        ),
+        BankTransaction(date = LocalDate.of(2018,3,12),
+                amount = 61.27,
+                memo = "STARBUCKS COFFEE #370",
+                category = "COFFEE"
+        ),
+        BankTransaction(date = LocalDate.of(2018,3,7),
+                amount = 2.29,
+                memo = "REDBOX VIDEO RENTAL #271",
+                category = "ENTERTAINMENT"
+        )
+)
+
+val nbc = bankTransactions.toNaiveBayesClassifier(
+        featuresSelector = { it.memo.splitWords().toSet() },
+        categorySelector = { it.category!! }
+)
+
+// TEST 1
+val input1 = BankTransaction(date = LocalDate.of(2018,3,31),
+        amount = 13.99,
+        memo = "NETFLIX VIDEO ON DEMAND #21"
+)
+
+val result1 = nbc.predictWithProbability(input1.memo.splitWords().toSet())
+Assert.assertTrue(result1?.category == "ENTERTAINMENT")
+
+
+// TEST 2
+val input2 = BankTransaction(date = LocalDate.of(2018,3,6),
+        amount = 17.21,
+        memo = "FROGG COFFEE BAR AND CREPERIE"
+)
+
+val result2 = nbc.predictWithProbability(input2.memo.splitWords().toSet())
+Assert.assertTrue(result2?.category == "COFFEE")
+```
+
+```kotlin
+val nbc = NaiveBayesClassifier<String,String>()
+nbc.addObservation("GROCERY", "COSTCO WHOLESALE #545".splitWords().toSet())
+```
+
+
+
 ## Clustering
 
 There are a few clustering algorithms available in Kotlin-Statistics. These algorithms attempt to group up items that are closely related based on their proximity on a 2-dimensional plot. Currently there are three methods of clustering available that are [implemented with Apache Commons Math](https://commons.apache.org/proper/commons-math/userguide/ml.html)
