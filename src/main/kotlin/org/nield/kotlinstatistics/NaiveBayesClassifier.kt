@@ -9,7 +9,7 @@ fun <T,F,C> Iterable<T>.toNaiveBayesClassifier(
         categorySelector: ((T) -> C),
         observationLimit: Int = Int.MAX_VALUE,
         k1: Double = 0.5,
-        k2: Double = k1 * 0.5
+        k2: Double = k1 * 2.0
 ) = NaiveBayesClassifier<F,C>(observationLimit, k1,k2).also { nbc ->
 
     forEach { nbc.addObservation(categorySelector(it), featuresSelector(it)) }
