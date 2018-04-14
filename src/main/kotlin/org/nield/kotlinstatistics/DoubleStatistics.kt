@@ -49,6 +49,19 @@ fun <K> Iterable<Pair<K,Double>>.averageBy() = asSequence().averageBy()
 
 
 
+
+fun Sequence<Double>.doubleRange() = toList().doubleRange()
+fun Iterable<Double>.doubleRange() = toList().let { (it.min()?:throw Exception("At least one element must be present"))..(it.max()?:throw Exception("At least one element must be present")) }
+
+inline fun <T,K> Sequence<T>.doubleRangeBy(crossinline keySelector: (T) -> K, crossinline doubleSelector: (T) -> Double) =
+        groupApply(keySelector, doubleSelector) { it.range() }
+
+inline fun <T,K> Iterable<T>.doubleRangeBy(crossinline keySelector: (T) -> K, crossinline doubleSelector: (T) -> Double) =
+        asSequence().rangeBy(keySelector, doubleSelector)
+
+
+
+
 // Bin Operators
 
 inline fun <T> Iterable<T>.binByDouble(binSize: Double,

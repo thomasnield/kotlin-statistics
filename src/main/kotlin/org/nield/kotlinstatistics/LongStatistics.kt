@@ -49,6 +49,19 @@ fun <K> Iterable<Pair<K,Long>>.averageBy() = asSequence().averageBy()
 
 
 
+
+
+fun Sequence<Long>.longRange() = toList().longRange()
+fun Iterable<Long>.longRange() = toList().let { (it.min()?:throw Exception("At least one element must be present"))..(it.max()?:throw Exception("At least one element must be present")) }
+
+inline fun <T,K> Sequence<T>.longRangeBy(crossinline keySelector: (T) -> K, crossinline longSelector: (T) -> Long) =
+        groupApply(keySelector, longSelector) { it.range() }
+
+inline fun <T,K> Iterable<T>.longRangeBy(crossinline keySelector: (T) -> K, crossinline longSelector: (T) -> Long) =
+        asSequence().rangeBy(keySelector, longSelector)
+
+
+
 // bin operators
 
 inline fun <T> Sequence<T>.binByLong(binSize: Long,
