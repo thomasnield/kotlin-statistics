@@ -1,9 +1,13 @@
 buildscript {
+
+  ext.kotlin_version = '1.2.31'
+
+
   repositories {
     mavenCentral()
   }
   dependencies {
-    classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.31'
+    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
 }
 
@@ -15,8 +19,8 @@ repositories {
 }
 
 dependencies {
-  compile 'org.jetbrains.kotlin:kotlin-stdlib'
-    compile 'org.apache.commons:commons-math3:3.6.1'
+  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  compile 'org.apache.commons:commons-math3:3.6.1'
 
   testCompile 'junit:junit:4.12'
 }
@@ -46,7 +50,7 @@ signing {
 
 group = "org.nield"
 archivesBaseName = "kotlin-statistics"
-version = "1.1.1"
+version = "1.1.2"
 
 uploadArchives {
   repositories {
