@@ -46,6 +46,18 @@ fun <K> Sequence<Pair<K,Int>>.averageBy() =
 fun <K> Iterable<Pair<K,Int>>.averageBy() = asSequence().averageBy()
 
 
+fun Sequence<Int>.intRange() = toList().intRange()
+fun Iterable<Int>.intRange() = toList().let { (it.min()?:throw Exception("At least one element must be present"))..(it.max()?:throw Exception("At least one element must be present")) }
+
+inline fun <T,K> Sequence<T>.intRangeBy(crossinline keySelector: (T) -> K, crossinline intSelector: (T) -> Int) =
+        groupApply(keySelector, intSelector) { it.range() }
+
+inline fun <T,K> Iterable<T>.intRangeBy(crossinline keySelector: (T) -> K, crossinline intSelector: (T) -> Int) =
+        asSequence().rangeBy(keySelector, intSelector)
+
+
+
+
 // bin operators
 
 

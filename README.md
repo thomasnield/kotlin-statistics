@@ -373,7 +373,7 @@ The `NaiveBayesClassifier` does a simple but powerful form of machine learning. 
 
 You can then test a new set of features `F` and predict a category `C`.
 
-For instance, say you want to identify email as spam/not spam based on the words in the messages. In this case `true` or `false` will be the possible categories. and each word will be a feature.
+For instance, say you want to identify email as spam/not spam based on the words in the messages. In this case `true` (spam) or `false` (not spam) will be the possible categories, and each word will be a feature.
 
 In idiomatic Kotlin fashion we can take a simple `List<Email>` and call `toNaiveBayesClassifier()`, provide the higher-order functions to extract the features and category, and then generate a model.
 
@@ -398,6 +398,12 @@ val nbc = emails.toNaiveBayesClassifier(
         featuresSelector = { it.message.splitWords().toSet() },
         categorySelector = {it.isSpam }
 )
+
+
+
+fun String.splitWords() =  split(Regex("\\s")).asSequence()
+         .map { it.replace(Regex("[^A-Za-z]"),"").toLowerCase() }
+         .filter { it.isNotEmpty() }
 ```
 
 We can then use this `NaiveBayesClassifier` model to predict the spamminess of new emails.
@@ -413,9 +419,6 @@ val input2 = "interesting meeting on amazon cloud services discount program".spl
 val predictedCategory2 = nbc.predict(input2)
 Assert.assertTrue(predictedCategory2 == false)
 ```
-
-If you want to add more observations to your Naive Bayes model, just call `addObservation()` and it will update its probability model.
-
 
 Here is another example that categorizes bank transactions.
 
@@ -494,6 +497,7 @@ val input2 = BankTransaction(date = LocalDate.of(2018,3,6),
 val result2 = nbc.predictWithProbability(input2.memo.splitWords().toSet())
 Assert.assertTrue(result2?.category == "COFFEE")
 ```
+If you want to add more observations to your Naive Bayes model, just call `addObservation()` and it will update its probability model.
 
 ```kotlin
 val nbc = NaiveBayesClassifier<String,String>()
