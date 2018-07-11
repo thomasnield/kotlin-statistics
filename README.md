@@ -516,7 +516,7 @@ Kotlin-Statistics has a few helpful extensions to randomly sample elements from 
 
 ## Weighted Coin/Dice - Discrete Distribution Sampling
 
-There may be times you want different values of type `T` to be assigned different probabilities, and then you want to sample a `T` randomly given those probabilities. This can be helpful for creating simulations or stochastic algorithms.
+There may be times you want different values of type `T` to be assigned different probabilities, and then you want to sample a `T` randomly given those probabilities. This can be helpful for [creating simulations or stochastic algorithms in general](https://github.com/thomasnield/traveling_salesman_demo).
 
 The `WeightedCoin` and `WeightedDice` assist in these purposes.
 
