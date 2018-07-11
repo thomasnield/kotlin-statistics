@@ -596,7 +596,7 @@ CENTROID: 2
 	Patient(firstName=Rebekah, lastName=Earley, gender=FEMALE, birthday=1985-02-18, whiteBloodCellCount=4600)
 ```
 
-Here, we use [TornadoFX](https://github.com/edvin/tornadofx) to display the clusters in a [ScatterPlot](https://edvin.gitbooks.io/tornadofx-guide/content/8.%20Charts.html).
+Here, we use [TornadoFX](https://github.com/edvin/tornadofx) to display the clusters in a [ScatterPlot](https://edvin.gitbooks.io/tornadofx-guide/content/part1/8.%20Charts.html).
 
 
 ```kotlin
