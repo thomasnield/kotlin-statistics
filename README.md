@@ -577,9 +577,9 @@ fun main(args: Array<String>) {
 
     val gameDice = WeightedDice(
             Move.ATTACK to .60,
-            Move.DEFEND to .10,
-            Move.HEAL to .05,
-            Move.RETREAT to .05
+            Move.DEFEND to .20,
+            Move.HEAL to .10,
+            Move.RETREAT to .10
     )
 
     val nextMove = gameDice.roll()
