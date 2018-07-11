@@ -127,28 +127,3 @@ class WeightedDice<T>(val probabilities: Map<T,Double>) {
         rangedDistribution.asIterable().first { rng -> it in rng.value }.key
     }
 }
-
-
-enum class Move {
-    ATTACK,
-    DEFEND,
-    HEAL,
-    RETREAT
-}
-
-fun main(args: Array<String>) {
-
-    val gameDice = WeightedDice(
-            Move.ATTACK to .60,
-            Move.DEFEND to .10,
-            Move.HEAL to .05,
-            Move.RETREAT to .05
-    )
-
-    val result = gameDice.roll()
-    println(result)
-}
-
-
-
-
