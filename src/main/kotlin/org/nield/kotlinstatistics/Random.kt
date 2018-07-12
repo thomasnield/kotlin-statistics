@@ -87,6 +87,8 @@ fun <T> List<T>.random(sampleSize: Int): List<T> {
 
 /**
  * Simulates a weighted TRUE/FALSE coin flip, with a percentage of probability towards TRUE
+ *
+ * In other words, this is a Probability Density Function (PDF) for discrete TRUE/FALSE values
  */
 class WeightedCoin(val trueProbability: Double) {
     fun flip() = ThreadLocalRandom.current().nextDouble(0.0,1.0) <= trueProbability
@@ -94,6 +96,8 @@ class WeightedCoin(val trueProbability: Double) {
 
 /**
  * Simulates a weighted TRUE/FALSE coin flip, with a percentage of probability towards TRUE
+ *
+ * In other words, this is a Probability Density Function (PDF) for discrete TRUE/FALSE values
  */
 fun weightedCoinFlip(trueProbability: Double) =
         ThreadLocalRandom.current().nextDouble(0.0,1.0) <= trueProbability
@@ -101,6 +105,8 @@ fun weightedCoinFlip(trueProbability: Double) =
 
 /**
  *  Assigns a probabilty to each distinct `T` item, and randomly selects `T` values given those probabilities.
+ *  
+ *  In other words, this is a Probability Density Function (PDF) for discrete `T` values
  */
 class WeightedDice<T>(val probabilities: Map<T,Double>) {
 
