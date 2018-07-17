@@ -97,6 +97,89 @@ val median = sequenceOf(1.0, 3.0, 5.0).median()
 println(median) // prints "3.0"
 ```
 
+## Random Selection
+
+Kotlin-Statistics has a few helpful extensions to randomly sample elements from an `Iterable<T>` or `Sequence<T>`.
+
+* `randomFirst()` - Selects one random element but throws an error if no elements are found.
+* `randomFirstOrNull()` - Selects one random element but returns `null` if no elements are found.
+* `random(n: Int)`  - Selects `n` random elements.
+* `randomDistinct(n: Int)` - Select `n` distinct random elements.
+
+
+## Weighted Coin/Dice - Discrete Distribution Sampling
+
+Rather than do a pure random sampling, there may be times you want different values of type `T` to be assigned different probabilities, and then you want to sample a `T` randomly given those probabilities. This can be helpful for [creating simulations or stochastic algorithms in general](https://github.com/thomasnield/traveling_salesman_demo).
+
+The `WeightedCoin` and `WeightedDice` assist in these purposes.
+
+A `WeightedCoin` accepts a `trueProbability` from `0.0 to .999`. If we provide a probability of .80, the coin will flip approximately 80% of the time to be `true`.
+
+
+```kotlin
+val riggedCoin = WeightedCoin(trueProbability = .80)
+
+// flip coin 1000 times and print outcome counts
+(1..1000).asSequence().map { riggedCoin.flip() }
+        .countBy()
+        .also {
+            println(it)
+        }
+```
+
+**OUTPUT:**
+
+```
+{false=20033, true=79967}
+```
+
+You can use the `WeightedDice` to manage outcomes mapped to any type `T`. For instance, if we have a dice with sides "A", "B", and "C" with probability outcomes .11, .66, and .22, we can create a `WeightedDice` effectively like this:
+
+```kotlin
+    val threeSidedDice = WeightedDice(
+            "A" to .11,
+            "B" to .66,
+            "C" to .22
+    )
+
+    // roll dice 1000 times and print outcome counts
+    (1..1000).asSequence().map { threeSidedDice.roll() }
+            .countBy()
+            .also {
+                println(it)
+            }
+```
+
+**OUTPUT:**
+
+```
+{B=682, C=202, A=116}
+```
+
+Typically with `WeightedDice`, you may likely use an enumerable to assign outcome probabilites to discrete items:
+
+```kotlin
+enum class Move {
+    ATTACK,
+    DEFEND,
+    HEAL,
+    RETREAT
+}
+
+fun main(args: Array<String>) {
+
+    val gameDice = WeightedDice(
+            Move.ATTACK to .60,
+            Move.DEFEND to .20,
+            Move.HEAL to .10,
+            Move.RETREAT to .10
+    )
+
+    val nextMove = gameDice.roll()
+
+    println(nextMove)
+}
+```
 
 ## Slicing Operators
 
@@ -506,89 +589,6 @@ val nbc = NaiveBayesClassifier<String,String>()
 nbc.addObservation("GROCERY", "COSTCO WHOLESALE #545".splitWords().toSet())
 ```
 
-## Random Selection
-
-Kotlin-Statistics has a few helpful extensions to randomly sample elements from an `Iterable<T>` or `Sequence<T>`.
-
-* `randomFirst()` - Selects one random element but throws an error if no elements are found.
-* `randomFirstOrNull()` - Selects one random element but returns `null` if no elements are found.
-* `random(n: Int)`  - Selects `n` random elements.
-* `randomDistinct(n: Int)` - Select `n` distinct random elements.
-
-
-## Weighted Coin/Dice - Discrete Distribution Sampling
-
-There may be times you want different values of type `T` to be assigned different probabilities, and then you want to sample a `T` randomly given those probabilities. This can be helpful for [creating simulations or stochastic algorithms in general](https://github.com/thomasnield/traveling_salesman_demo).
-
-The `WeightedCoin` and `WeightedDice` assist in these purposes.
-
-A `WeightedCoin` accepts a `trueProbability` from `0.0 to .999`. If we provide a probability of .80, the coin will flip approximately 80% of the time to be `true`.
-
-
-```kotlin
-val riggedCoin = WeightedCoin(trueProbability = .80)
-
-// flip coin 1000 times and print outcome counts
-(1..1000).asSequence().map { riggedCoin.flip() }
-        .countBy()
-        .also {
-            println(it)
-        }
-```
-
-**OUTPUT:**
-
-```
-{false=20033, true=79967}
-```
-
-You can use the `WeightedDice` to manage outcomes mapped to any type `T`. For instance, if we have a dice with sides "A", "B", and "C" with probability outcomes .11, .66, and .22, we can create a `WeightedDice` effectively like this:
-
-```kotlin
-    val threeSidedDice = WeightedDice(
-            "A" to .11,
-            "B" to .66,
-            "C" to .22
-    )
-
-    // roll dice 1000 times and print outcome counts
-    (1..1000).asSequence().map { threeSidedDice.roll() }
-            .countBy()
-            .also {
-                println(it)
-            }
-```
-
-**OUTPUT:**
-
-```
-{B=682, C=202, A=116}
-```
-
-Typically with `WeightedDice`, you may likely use an enumerable to assign outcome probabilites to discrete items:
-
-```kotlin
-enum class Move {
-    ATTACK,
-    DEFEND,
-    HEAL,
-    RETREAT
-}
-
-fun main(args: Array<String>) {
-
-    val gameDice = WeightedDice(
-            Move.ATTACK to .60,
-            Move.DEFEND to .20,
-            Move.HEAL to .10,
-            Move.RETREAT to .10
-    )
-
-    val nextMove = gameDice.roll()
-
-    println(nextMove)
-}
-```
 
 ## Clustering
 
