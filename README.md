@@ -115,8 +115,8 @@ A `WeightedCoin` accepts a `trueProbability` from `0.0 to .999`. If we provide a
 ```kotlin
 val riggedCoin = WeightedCoin(trueProbability = .80)
 
-// flip coin 1000 times and print outcome counts
-(1..1000).asSequence().map { riggedCoin.flip() }
+// flip coin 100000 times and print outcome counts
+(1..100000).asSequence().map { riggedCoin.flip() }
         .countBy()
         .also {
             println(it)
