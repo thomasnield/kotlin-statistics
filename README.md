@@ -67,7 +67,7 @@ dependencies {
 </dependency>
 ```
 
-## KotlinConf Talks Using Kotlin-Statistics
+## Kotlin-Statistics at KotlinConf
 
 [![](https://img.youtube.com/vi/-zTqtEcnM7A/hqdefault.jpg)](https://youtu.be/-zTqtEcnM7A)
 
