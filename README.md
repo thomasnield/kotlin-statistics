@@ -1,5 +1,7 @@
 ![](http://i.imgur.com/v3FqiEA.png)
+
 # Kotlin Statistics
+
 ### Idiomatic math and statistical extensions for Kotlin
 
 [![](https://jitpack.io/v/optimatika/okAlgo.svg)](https://jitpack.io/#optimatika/okAlgo)
@@ -8,12 +10,6 @@ This library contains helpful extension functions to perform exploratory and pro
 
 [Read the introductory blog post here](http://tomstechnicalblog.blogspot.com/2017/05/introducing-kotlin-statistics.html)
 
-
-## KotlinConf Talks 
-
-[![](https://img.youtube.com/vi/-zTqtEcnM7A/hqdefault.jpg)](https://youtu.be/-zTqtEcnM7A)
-
-[![KotlinConf- Kotlin for Data Science](https://i.ytimg.com/vi/J8GYPG6pt5w/hqdefault.jpg)](https://www.youtube.com/watch?v=J8GYPG6pt5w)
 
 ## Community
 
@@ -70,6 +66,13 @@ dependencies {
     <version>-SNAPSHOT</version>
 </dependency>
 ```
+
+## KotlinConf Talks Using Kotlin-Statistics
+
+[![](https://img.youtube.com/vi/-zTqtEcnM7A/hqdefault.jpg)](https://youtu.be/-zTqtEcnM7A)
+
+[![KotlinConf- Kotlin for Data Science](https://i.ytimg.com/vi/J8GYPG6pt5w/hqdefault.jpg)](https://www.youtube.com/watch?v=J8GYPG6pt5w)
+
 
 ## Basic Operators
 
