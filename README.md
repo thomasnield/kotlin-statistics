@@ -8,6 +8,13 @@ This library contains helpful extension functions to perform exploratory and pro
 
 [Read the introductory blog post here](http://tomstechnicalblog.blogspot.com/2017/05/introducing-kotlin-statistics.html)
 
+
+## KotlinConf Talks 
+
+[![](https://img.youtube.com/vi/-zTqtEcnM7A/hqdefault.jpg)](https://youtu.be/-zTqtEcnM7A)
+
+[![KotlinConf- Kotlin for Data Science](https://i.ytimg.com/vi/J8GYPG6pt5w/hqdefault.jpg)](https://www.youtube.com/watch?v=J8GYPG6pt5w)
+
 ## Community
 
 Join the [#datscience](https://kotlinlang.slack.com/messages/C4W52CFEZ) community on Kotlin Slack for community discussion on this library as well as Kotlin for data science.
