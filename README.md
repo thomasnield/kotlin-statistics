@@ -23,7 +23,7 @@ You can use Gradle or Maven to pull the latest release from Maven.
 
 ```
 dependencies {
-    compile 'org.nield:kotlin-statistics:1.2.0'
+    compile 'org.nield:kotlin-statistics:1.2.1'
 }
 ```
 
@@ -33,7 +33,7 @@ dependencies {
 <dependency>
     <groupId>org.nield</groupId>
     <artifactId>kotlin-statistics</artifactId>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 
