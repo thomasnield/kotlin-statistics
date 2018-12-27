@@ -33,7 +33,7 @@ dependencies {
 <dependency>
     <groupId>org.nield</groupId>
     <artifactId>kotlin-statistics</artifactId>
-    <version>1.1.3</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -244,6 +244,8 @@ Key(category=ABR, section=2)=1.1
 
 You can also group by ranges (or known in statistics as "bins" or a "histogram").
 
+> Please note that in Kotlin-Statistics 1.2, the `gapSize` parameter was removed from all `binBy()` extension functions. A `Range` interface was implemented to accomodate a `ClosedOpenRange` needed for binning operations. Hopefully Kotlin will [officially support different open range implementations](https://github.com/thomasnield/KEEP/blob/master/proposals/stdlib/exclusive-ranges.md) and Kotlin-Statistics can migrate to them. 
+
 ### Slicing By Numbers
 
 There are specialized bin operators that deal with numeric ranges for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by increments of 20.0 for the `value`.
@@ -332,6 +334,8 @@ Bin(range=JULY..SEPTEMBER, value=[Sale(accountId=2, date=2016-07-04, value=140.2
 Bin(range=OCTOBER..DECEMBER, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
 ```
 
+### Custom Binning Operations
+
 If you want to perform a mathematical aggregation on a certain property for each item (rather than group up the items into a `List` for a given bin), provide a `groupOp` argument specifying how to calculate a value  on each grouping. Below, we find the sum of values by quarter.
 
 ```kotlin
@@ -385,13 +389,13 @@ Kotlin-Statistics has a few helpful extensions to randomly sample elements from 
 * `randomDistinct(n: Int)` - Select `n` distinct random elements.
 
 
-## Weighted Coin/Dice - Discrete Distribution Sampling
+## Weighted Coin/Dice - Discrete PDF Sampling
 
 Rather than do a pure random sampling, there may be times you want different values of type `T` to be assigned different probabilities, and then you want to sample a `T` randomly given those probabilities. This can be helpful for [creating simulations or stochastic algorithms in general](https://github.com/thomasnield/traveling_salesman_demo).
 
 The `WeightedCoin` and `WeightedDice` assist in these purposes.
 
-A `WeightedCoin` accepts a `trueProbability` from `0.0 to .999`. If we provide a probability of .80, the coin will flip approximately 80% of the time to be `true`.
+A `WeightedCoin` accepts a `trueProbability` from `0.0 to 1.0`. If we provide a probability of .80, the coin will flip approximately 80% of the time to be `true`.
 
 
 ```kotlin
