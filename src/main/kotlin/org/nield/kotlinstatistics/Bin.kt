@@ -58,3 +58,15 @@ inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
             .toList()
             .let(::BinModel)
 }
+
+
+inline fun <T, C: Comparable<C>> Sequence<T>.binByComparable(binIncrements: Int,
+                                                             crossinline incrementer: (C) -> C,
+                                                             crossinline valueSelector: (T) -> C,
+                                                             rangeStart: C? = null) = binByComparable(binIncrements, incrementer, valueSelector, { it }, rangeStart)
+
+inline fun <T, C: Comparable<C>, G> Sequence<T>.binByComparable(binIncrements: Int,
+                                                                crossinline incrementer: (C) -> C,
+                                                                crossinline valueSelector: (T) -> C,
+                                                                crossinline groupOp: (List<T>) -> G,
+                                                                rangeStart: C? = null)  = toList().binByComparable(binIncrements, incrementer, valueSelector, groupOp, rangeStart)
