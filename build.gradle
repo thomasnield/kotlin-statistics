@@ -52,7 +52,7 @@ signing {
 
 group = "org.nield"
 archivesBaseName = "kotlin-statistics"
-version = "1.2.0"
+version = "1.2.1"
 
 uploadArchives {
   repositories {

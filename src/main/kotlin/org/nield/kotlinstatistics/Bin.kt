@@ -1,6 +1,8 @@
 package org.nield.kotlinstatistics
 
+import org.nield.kotlinstatistics.range.ClosedOpenRange
 import org.nield.kotlinstatistics.range.Range
+import org.nield.kotlinstatistics.range.XClosedRange
 import org.nield.kotlinstatistics.range.until
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -22,14 +24,16 @@ class BinModel<T, C: Comparable<C>>(val bins: List<Bin<T, C>>): Iterable<Bin<T,C
 inline fun <T, C: Comparable<C>> List<T>.binByComparable(binIncrements: Int,
                                                          crossinline incrementer: (C) -> C,
                                                          crossinline valueSelector: (T) -> C,
-                                                         rangeStart: C? = null) = binByComparable(binIncrements, incrementer, valueSelector, { it }, rangeStart)
+                                                         rangeStart: C? = null,
+                                                         endExclusive: Boolean = false) = binByComparable(binIncrements, incrementer, valueSelector, { it }, rangeStart, endExclusive)
 
 inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
                                                             crossinline incrementer: (C) -> C,
                                                             crossinline valueSelector: (T) -> C,
                                                             crossinline groupOp: (List<T>) -> G,
-                                                            rangeStart: C? = null
-): BinModel<G, C> {
+                                                            rangeStart: C? = null,
+                                                            endExclusive: Boolean = false
+                                                            ): BinModel<G, C> {
 
     val groupedByC = asSequence().groupBy(valueSelector)
     val minC = rangeStart?:groupedByC.keys.min()!!
@@ -40,9 +44,11 @@ inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
         var currentRangeEnd = minC
 
         val initial = AtomicBoolean(true)
+        val rangeFactory = { lowerBound: C, upperBound: C  -> if (endExclusive) ClosedOpenRange(lowerBound, upperBound) else XClosedRange(lowerBound, upperBound) }
+
         while (currentRangeEnd < maxC) {
             repeat(if (initial.getAndSet(false)) binIncrements - 1 else binIncrements) { currentRangeEnd = incrementer(currentRangeEnd) }
-            add(currentRangeStart until currentRangeEnd)
+            add(rangeFactory(currentRangeStart, currentRangeEnd))
             currentRangeStart = incrementer(currentRangeEnd)
         }
     }
@@ -63,10 +69,12 @@ inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
 inline fun <T, C: Comparable<C>> Sequence<T>.binByComparable(binIncrements: Int,
                                                              crossinline incrementer: (C) -> C,
                                                              crossinline valueSelector: (T) -> C,
-                                                             rangeStart: C? = null) = binByComparable(binIncrements, incrementer, valueSelector, { it }, rangeStart)
+                                                             rangeStart: C? = null,
+                                                             endExclusive: Boolean = false) = binByComparable(binIncrements, incrementer, valueSelector, { it }, rangeStart, endExclusive)
 
 inline fun <T, C: Comparable<C>, G> Sequence<T>.binByComparable(binIncrements: Int,
                                                                 crossinline incrementer: (C) -> C,
                                                                 crossinline valueSelector: (T) -> C,
                                                                 crossinline groupOp: (List<T>) -> G,
-                                                                rangeStart: C? = null)  = toList().binByComparable(binIncrements, incrementer, valueSelector, groupOp, rangeStart)
+                                                                rangeStart: C? = null,
+                                                                endExclusive: Boolean = false)  = toList().binByComparable(binIncrements, incrementer, valueSelector, groupOp, rangeStart, endExclusive)
