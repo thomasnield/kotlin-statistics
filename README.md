@@ -244,6 +244,8 @@ Key(category=ABR, section=2)=1.1
 
 You can also group by ranges (or known in statistics as "bins" or a "histogram").
 
+> Please note that in Kotlin-Statistics 1.2, the `gapSize` parameter was removed from all `binBy()` extension functions. A `Range` interface was implemented to accomodate a `ClosedOpenRange` needed for binning operations. Hopefully Kotlin will [officially support different open range implementations](https://github.com/thomasnield/KEEP/blob/master/proposals/stdlib/exclusive-ranges.md) and Kotlin-Statistics can migrate to them. 
+
 ### Slicing By Numbers
 
 There are specialized bin operators that deal with numeric ranges for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by increments of 20.0 for the `value`.
