@@ -387,7 +387,7 @@ Kotlin-Statistics has a few helpful extensions to randomly sample elements from 
 * `randomDistinct(n: Int)` - Select `n` distinct random elements.
 
 
-## Weighted Coin/Dice - Discrete Distribution Sampling
+## Weighted Coin/Dice - Discrete PDF Sampling
 
 Rather than do a pure random sampling, there may be times you want different values of type `T` to be assigned different probabilities, and then you want to sample a `T` randomly given those probabilities. This can be helpful for [creating simulations or stochastic algorithms in general](https://github.com/thomasnield/traveling_salesman_demo).
 
