@@ -23,7 +23,7 @@ You can use Gradle or Maven to pull the latest release from Maven.
 
 ```
 dependencies {
-    compile 'org.nield:kotlin-statistics:1.1.3'
+    compile 'org.nield:kotlin-statistics:1.2.0'
 }
 ```
 
@@ -244,6 +244,50 @@ Key(category=ABR, section=2)=1.1
 
 You can also group by ranges (or known in statistics as "bins" or a "histogram").
 
+### Slicing By Numbers
+
+There are specialized bin operators that deal with numeric ranges for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by increments of 20.0 for the `value`.
+
+
+```kotlin
+
+import java.time.LocalDate
+
+fun main(args: Array<String>) {
+
+    data class Sale(val accountId: Int, val date: LocalDate, val value: Double)
+
+    val sales = listOf(
+            Sale(1, LocalDate.of(2016,12,3), 180.0),
+            Sale(2, LocalDate.of(2016, 7, 4), 140.2),
+            Sale(3, LocalDate.of(2016, 6, 3), 111.4),
+            Sale(4, LocalDate.of(2016, 1, 5), 192.7),
+            Sale(5, LocalDate.of(2016, 5, 4), 137.9),
+            Sale(6, LocalDate.of(2016, 3, 6), 125.6),
+            Sale(7, LocalDate.of(2016, 12,4), 164.3),
+            Sale(8, LocalDate.of(2016, 7,11), 144.2)
+            )
+
+    //bin by double ranges
+    val binned = sales.binByDouble(
+            valueSelector = { it.value },
+            binSize = 20.0,
+            rangeStart = 100.0
+    )
+
+    binned.forEach(::println)
+}
+```
+
+**OUTPUT:**
+
+```
+Bin(range=[100.0..120.0), value=[Sale(accountId=3, date=2016-06-03, value=111.4)])
+Bin(range=[120.0..140.0), value=[Sale(accountId=5, date=2016-05-04, value=137.9), Sale(accountId=6, date=2016-03-06, value=125.6)])
+Bin(range=[140.0..160.0), value=[Sale(accountId=2, date=2016-07-04, value=140.2), Sale(accountId=8, date=2016-07-11, value=144.2)])
+Bin(range=[160.0..180.0), value=[Sale(accountId=7, date=2016-12-04, value=164.3)])
+Bin(range=[180.0..200.0), value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=4, date=2016-01-05, value=192.7)])
+```
 
 ### Slicing by Comparables
 
@@ -329,50 +373,7 @@ Bin(range=JULY..SEPTEMBER, value=284.4)
 Bin(range=OCTOBER..DECEMBER, value=344.3)
 ```
 
-### Slicing By Numbers
 
-There are specialized bin operators that deal with numeric ranges for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by increments of 20.0 for the `value`.
-
-
-```kotlin
-
-import java.time.LocalDate
-
-fun main(args: Array<String>) {
-
-    data class Sale(val accountId: Int, val date: LocalDate, val value: Double)
-
-    val sales = listOf(
-            Sale(1, LocalDate.of(2016,12,3), 180.0),
-            Sale(2, LocalDate.of(2016, 7, 4), 140.2),
-            Sale(3, LocalDate.of(2016, 6, 3), 111.4),
-            Sale(4, LocalDate.of(2016, 1, 5), 192.7),
-            Sale(5, LocalDate.of(2016, 5, 4), 137.9),
-            Sale(6, LocalDate.of(2016, 3, 6), 125.6),
-            Sale(7, LocalDate.of(2016, 12,4), 164.3),
-            Sale(8, LocalDate.of(2016, 7,11), 144.2)
-            )
-
-    //bin by double ranges
-    val binned = sales.binByDouble(
-            valueSelector = { it.value },
-            binSize = 20.0,
-            rangeStart = 100.0
-    )
-
-    binned.forEach(::println)
-}
-```
-
-**OUTPUT:**
-
-```
-Bin(range=100.0..120.0, value=[Sale(accountId=3, date=2016-06-03, value=111.4)])
-Bin(range=120.01..140.0, value=[Sale(accountId=5, date=2016-05-04, value=137.9), Sale(accountId=6, date=2016-03-06, value=125.6)])
-Bin(range=140.01..160.0, value=[Sale(accountId=2, date=2016-07-04, value=140.2), Sale(accountId=8, date=2016-07-11, value=144.2)])
-Bin(range=160.01..180.0, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
-Bin(range=180.01..200.0, value=[Sale(accountId=4, date=2016-01-05, value=192.7)])
-```
 
 ## Random Selection
 
