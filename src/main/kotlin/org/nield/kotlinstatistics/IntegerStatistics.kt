@@ -2,6 +2,8 @@ package org.nield.kotlinstatistics
 
 import org.apache.commons.math3.stat.StatUtils
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
+import org.nield.kotlinstatistics.range.Range
+import org.nield.kotlinstatistics.range.XClosedRange
 
 val IntArray.descriptiveStatistics get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(::ApacheDescriptives)
 fun IntArray.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray() )
@@ -99,12 +101,12 @@ inline fun <T, G> List<T>.binByInt(binSize: Int,
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
-    val bins = mutableListOf<ClosedRange<Int>>().apply {
+    val bins = mutableListOf<Range<Int>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
         while  (currentRangeEnd < maxC) {
             currentRangeEnd = currentRangeStart + binSize - 1
-            add(currentRangeStart..currentRangeEnd)
+            add(XClosedRange(currentRangeStart, currentRangeEnd))
             currentRangeStart = currentRangeEnd + 1
         }
     }

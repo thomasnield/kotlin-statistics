@@ -1,6 +1,8 @@
 import org.apache.commons.math3.stat.StatUtils
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.nield.kotlinstatistics.*
+import org.nield.kotlinstatistics.range.Range
+import org.nield.kotlinstatistics.range.until
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -67,41 +69,35 @@ inline fun <T,K> Iterable<T>.floatRangeBy(crossinline keySelector: (T) -> K, cro
 // Bin Operators
 
 inline fun <T> Sequence<T>.binByFloat(binSize: Float,
-                                      gapSize: Float,
                                       crossinline valueSelector: (T) -> Float,
                                       rangeStart: Float? = null
-): BinModel<List<T>, Float> = toList().binByFloat(binSize, gapSize, valueSelector, { it }, rangeStart)
+): BinModel<List<T>, Float> = toList().binByFloat(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Sequence<T>.binByFloat(binSize: Float,
-                                         gapSize: Float,
                                          crossinline valueSelector: (T) -> Float,
                                          crossinline groupOp: (List<T>) -> G,
                                          rangeStart: Float? = null
-): BinModel<G, Float> = toList().binByFloat(binSize, gapSize, valueSelector, groupOp, rangeStart)
+): BinModel<G, Float> = toList().binByFloat(binSize, valueSelector, groupOp, rangeStart)
 
 
 inline fun <T> Iterable<T>.binByFloat(binSize: Float,
-                                  gapSize: Float,
                                   crossinline valueSelector: (T) -> Float,
                                   rangeStart: Float? = null
-): BinModel<List<T>, Float> = toList().binByFloat(binSize, gapSize, valueSelector, { it }, rangeStart)
+): BinModel<List<T>, Float> = toList().binByFloat(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Iterable<T>.binByFloat(binSize: Float,
-                                     gapSize: Float,
                                      crossinline valueSelector: (T) -> Float,
                                      crossinline groupOp: (List<T>) -> G,
                                      rangeStart: Float? = null
-): BinModel<G, Float> = toList().binByFloat(binSize, gapSize, valueSelector, groupOp, rangeStart)
+): BinModel<G, Float> = toList().binByFloat(binSize, valueSelector, groupOp, rangeStart)
 
 
 inline fun <T> List<T>.binByFloat(binSize: Float,
-                                   gapSize: Float,
                                    crossinline valueSelector: (T) -> Float,
                                    rangeStart: Float? = null
-): BinModel<List<T>, Float> = binByFloat(binSize, gapSize, valueSelector, { it }, rangeStart)
+): BinModel<List<T>, Float> = binByFloat(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> List<T>.binByFloat(binSize: Float,
-                                     gapSize: Float,
                                      crossinline valueSelector: (T) -> Float,
                                      crossinline groupOp: (List<T>) -> G,
                                      rangeStart: Float? = null
@@ -111,16 +107,15 @@ inline fun <T, G> List<T>.binByFloat(binSize: Float,
     val minC = rangeStart?.toDouble()?.let(BigDecimal::valueOf) ?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
-    val bins = mutableListOf<ClosedFloatingPointRange<Float>>().apply {
+    val bins = mutableListOf<Range<Float>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
         val isFirst = AtomicBoolean(true)
         val binSizeBigDecimal = BigDecimal.valueOf(binSize.toDouble())
-        val gapSizeBigDecimal = BigDecimal.valueOf(gapSize.toDouble())
         while  (currentRangeEnd < maxC) {
-            currentRangeEnd = currentRangeStart + binSizeBigDecimal - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSizeBigDecimal
-            add(currentRangeStart.toFloat()..currentRangeEnd.toFloat())
-            currentRangeStart = currentRangeEnd + gapSizeBigDecimal
+            currentRangeEnd = currentRangeStart + binSizeBigDecimal
+            add(currentRangeStart.toFloat() until currentRangeEnd.toFloat())
+            currentRangeStart = currentRangeEnd
         }
     }
 

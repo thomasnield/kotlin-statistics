@@ -1,5 +1,8 @@
 package org.nield.kotlinstatistics
 
+import org.nield.kotlinstatistics.range.ClosedOpenRange
+import org.nield.kotlinstatistics.range.Range
+import org.nield.kotlinstatistics.range.until
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -49,39 +52,34 @@ fun <K> Iterable<Pair<K,BigDecimal>>.averageBy() = asSequence().averageBy()
 
 
 inline fun <T> Sequence<T>.binByBigDecimal(binSize: BigDecimal,
-                                           gapSize: BigDecimal,
                                            crossinline valueSelector: (T) -> BigDecimal,
                                            rangeStart: BigDecimal? = null
-) = toList().binByBigDecimal(binSize, gapSize, valueSelector, { it }, rangeStart)
+) = toList().binByBigDecimal(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Sequence<T>.binByBigDecimal(binSize: BigDecimal,
-                                              gapSize: BigDecimal,
                                               crossinline valueSelector: (T) -> BigDecimal,
                                               crossinline groupOp: (List<T>) -> G,
                                               rangeStart: BigDecimal? = null
-) = toList().binByBigDecimal(binSize, gapSize, valueSelector, groupOp, rangeStart)
+) = toList().binByBigDecimal(binSize, valueSelector, groupOp, rangeStart)
 
 inline fun <T> Iterable<T>.binByBigDecimal(binSize: BigDecimal,
-                                       gapSize: BigDecimal,
                                        crossinline valueSelector: (T) -> BigDecimal,
                                        rangeStart: BigDecimal? = null
-) = toList().binByBigDecimal(binSize, gapSize, valueSelector, { it }, rangeStart)
+) = toList().binByBigDecimal(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Iterable<T>.binByBigDecimal(binSize: BigDecimal,
-                                          gapSize: BigDecimal,
-                                          crossinline valueSelector: (T) -> BigDecimal,
+                                              crossinline valueSelector: (T) -> BigDecimal,
                                           crossinline groupOp: (List<T>) -> G,
                                           rangeStart: BigDecimal? = null
-) = toList().binByBigDecimal(binSize, gapSize, valueSelector, groupOp, rangeStart)
+) = toList().binByBigDecimal(binSize, valueSelector, groupOp, rangeStart)
 
 inline fun <T> List<T>.binByBigDecimal(binSize: BigDecimal,
-                                       gapSize: BigDecimal,
                                        crossinline valueSelector: (T) -> BigDecimal,
                                        rangeStart: BigDecimal? = null
-): BinModel<List<T>, BigDecimal> = binByBigDecimal(binSize, gapSize, valueSelector, { it }, rangeStart)
+): BinModel<List<T>, BigDecimal> = binByBigDecimal(binSize, valueSelector, { it }, rangeStart)
+
 
 inline fun <T, G> List<T>.binByBigDecimal(binSize: BigDecimal,
-                                          gapSize: BigDecimal,
                                           crossinline valueSelector: (T) -> BigDecimal,
                                           crossinline groupOp: (List<T>) -> G,
                                           rangeStart: BigDecimal? = null
@@ -91,14 +89,14 @@ inline fun <T, G> List<T>.binByBigDecimal(binSize: BigDecimal,
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
-    val bins = mutableListOf<ClosedRange<BigDecimal>>().apply {
+    val bins = mutableListOf<ClosedOpenRange<BigDecimal>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
-        val isFirst = AtomicBoolean(true)
+
         while  (currentRangeEnd < maxC) {
-            currentRangeEnd = currentRangeStart + binSize - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSize
-            add(currentRangeStart..currentRangeEnd)
-            currentRangeStart = currentRangeEnd + gapSize
+            currentRangeEnd = currentRangeStart + binSize
+            add(currentRangeStart until currentRangeEnd)
+            currentRangeStart = currentRangeEnd
         }
     }
 
@@ -113,3 +111,7 @@ inline fun <T, G> List<T>.binByBigDecimal(binSize: BigDecimal,
             .toList()
             .let(::BinModel)
 }
+
+
+
+

@@ -333,7 +333,6 @@ Bin(range=OCTOBER..DECEMBER, value=344.3)
 
 There are specialized bin operators that deal with numeric ranges for `Int`, `Long`, `Double`, `Float`, and `BigDecimal`. Below, we bin the sales items by increments of 20.0 for the `value`.
 
-Note that continuous (decimal) numeric types need a `gapSize` to specify the space between each bin. This is necessary to create a specific enough cut-off to convert a continuous axis into a discrete one.
 
 ```kotlin
 
@@ -358,7 +357,6 @@ fun main(args: Array<String>) {
     val binned = sales.binByDouble(
             valueSelector = { it.value },
             binSize = 20.0,
-            gapSize = .01,
             rangeStart = 100.0
     )
 

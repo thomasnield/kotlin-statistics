@@ -2,7 +2,6 @@ package org.nield.kotlinstatistics
 
 import org.junit.Assert
 import org.junit.Test
-import kotlin.coroutines.experimental.buildSequence
 
 class IntegerStatisticsTest {
 
@@ -48,11 +47,11 @@ class IntegerStatisticsTest {
                 )
 
         Assert.assertTrue(binned.bins.size == 3)
-        Assert.assertTrue(binned[5]!!.range == 0..99)
-        Assert.assertTrue(binned[105]!!.range.let { it.start == 100 && it.endInclusive == 199 })
-        Assert.assertTrue(binned[205]!!.range.let { it.start == 200 && it.endInclusive == 299 })
+        Assert.assertTrue(binned[5]!!.range.let { it.lowerBound == 0 && it.upperBound == 99 })
+        Assert.assertTrue(binned[105]!!.range.let { it.lowerBound == 100 && it.upperBound == 199 })
+        Assert.assertTrue(binned[205]!!.range.let { it.lowerBound == 200 && it.upperBound == 299 })
     }
-    private fun <T> Sequence<T>.repeat() : Sequence<T> = buildSequence {
+    private fun <T> Sequence<T>.repeat() : Sequence<T> = sequence {
         while(true) yieldAll(this@repeat)
     }
 }

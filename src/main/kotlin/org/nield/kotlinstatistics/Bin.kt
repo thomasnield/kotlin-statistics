@@ -1,8 +1,10 @@
 package org.nield.kotlinstatistics
 
+import org.nield.kotlinstatistics.range.Range
+import org.nield.kotlinstatistics.range.until
 import java.util.concurrent.atomic.AtomicBoolean
 
-class Bin<T,C: Comparable<C>>(val range: ClosedRange<C>, val value: T) {
+class Bin<T,C: Comparable<C>>(val range: Range<C>, val value: T) {
     operator fun contains(key: C) = key in range
     override fun toString(): String {
         return "Bin(range=$range, value=$value)"
@@ -33,14 +35,14 @@ inline fun <T, C: Comparable<C>, G> List<T>.binByComparable(binIncrements: Int,
     val minC = rangeStart?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
-    val bins = mutableListOf<ClosedRange<C>>().apply {
+    val bins = mutableListOf<Range<C>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
 
         val initial = AtomicBoolean(true)
         while (currentRangeEnd < maxC) {
             repeat(if (initial.getAndSet(false)) binIncrements - 1 else binIncrements) { currentRangeEnd = incrementer(currentRangeEnd) }
-            add(currentRangeStart..currentRangeEnd)
+            add(currentRangeStart until currentRangeEnd)
             currentRangeStart = incrementer(currentRangeEnd)
         }
     }

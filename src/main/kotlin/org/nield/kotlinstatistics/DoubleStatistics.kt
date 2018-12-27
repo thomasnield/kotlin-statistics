@@ -2,6 +2,8 @@ package org.nield.kotlinstatistics
 
 import org.apache.commons.math3.stat.StatUtils
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
+import org.nield.kotlinstatistics.range.Range
+import org.nield.kotlinstatistics.range.until
 import java.math.BigDecimal
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -65,41 +67,35 @@ inline fun <T,K> Iterable<T>.doubleRangeBy(crossinline keySelector: (T) -> K, cr
 // Bin Operators
 
 inline fun <T> Iterable<T>.binByDouble(binSize: Double,
-                                   gapSize: Double,
                                    crossinline valueSelector: (T) -> Double,
                                    rangeStart: Double? = null
-): BinModel<List<T>, Double> = toList().binByDouble(binSize, gapSize, valueSelector, { it }, rangeStart)
+): BinModel<List<T>, Double> = toList().binByDouble(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Iterable<T>.binByDouble(binSize: Double,
-                                          gapSize: Double,
                                           crossinline valueSelector: (T) -> Double,
                                           crossinline groupOp: (List<T>) -> G,
                                           rangeStart: Double? = null
-) = toList().binByDouble(binSize, gapSize, valueSelector, groupOp, rangeStart)
+) = toList().binByDouble(binSize, valueSelector, groupOp, rangeStart)
 
 
 inline fun <T> Sequence<T>.binByDouble(binSize: Double,
-                                       gapSize: Double,
                                        crossinline valueSelector: (T) -> Double,
                                        rangeStart: Double? = null
-): BinModel<List<T>, Double> = toList().binByDouble(binSize, gapSize, valueSelector, { it }, rangeStart)
+): BinModel<List<T>, Double> = toList().binByDouble(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> Sequence<T>.binByDouble(binSize: Double,
-                                          gapSize: Double,
                                           crossinline valueSelector: (T) -> Double,
                                           crossinline groupOp: (List<T>) -> G,
                                           rangeStart: Double? = null
-) = toList().binByDouble(binSize, gapSize, valueSelector, groupOp, rangeStart)
+) = toList().binByDouble(binSize, valueSelector, groupOp, rangeStart)
 
 
 inline fun <T> List<T>.binByDouble(binSize: Double,
-                                   gapSize: Double,
                                    crossinline valueSelector: (T) -> Double,
                                    rangeStart: Double? = null
-): BinModel<List<T>, Double> = binByDouble(binSize, gapSize, valueSelector, { it }, rangeStart)
+): BinModel<List<T>, Double> = binByDouble(binSize, valueSelector, { it }, rangeStart)
 
 inline fun <T, G> List<T>.binByDouble(binSize: Double,
-                                      gapSize: Double,
                                       crossinline valueSelector: (T) -> Double,
                                       crossinline groupOp: (List<T>) -> G,
                                       rangeStart: Double? = null
@@ -109,16 +105,15 @@ inline fun <T, G> List<T>.binByDouble(binSize: Double,
     val minC = rangeStart?.let(BigDecimal::valueOf)?:groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
-    val bins = mutableListOf<ClosedRange<Double>>().apply {
+    val bins = mutableListOf<Range<Double>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
-        val isFirst = AtomicBoolean(true)
         val binSizeBigDecimal = BigDecimal.valueOf(binSize)
-        val gapSizeBigDecimal = BigDecimal.valueOf(gapSize)
+
         while  (currentRangeEnd < maxC) {
-            currentRangeEnd = currentRangeStart + binSizeBigDecimal - if (isFirst.getAndSet(false)) BigDecimal.ZERO else gapSizeBigDecimal
-            add(currentRangeStart.toDouble()..currentRangeEnd.toDouble())
-            currentRangeStart = currentRangeEnd + gapSizeBigDecimal
+            currentRangeEnd = currentRangeStart + binSizeBigDecimal
+            add(currentRangeStart.toDouble() until currentRangeEnd.toDouble())
+            currentRangeStart = currentRangeEnd
         }
     }
 

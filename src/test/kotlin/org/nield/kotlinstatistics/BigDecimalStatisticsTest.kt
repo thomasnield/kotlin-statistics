@@ -3,7 +3,6 @@ package org.nield.kotlinstatistics
 import org.junit.Assert
 import org.junit.Test
 import java.math.BigDecimal
-import kotlin.coroutines.experimental.buildSequence
 
 class BigDecimalStatisticsTest {
 

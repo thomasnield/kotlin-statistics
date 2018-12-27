@@ -2,12 +2,11 @@ package org.nield.kotlinstatistics
 
 import org.junit.Assert
 import org.junit.Test
-import kotlin.coroutines.experimental.buildSequence
 
 class DoubleStatisticsTest {
 
-    val doubleVector = sequenceOf(1.0, 3.0, 5.0, 11.0)
-    val groups = sequenceOf("A","A","B", "B")
+    val doubleVector = sequenceOf(0.0, 1.0, 3.0, 5.0, 11.0)
+    val groups = sequenceOf("A", "B","B","C", "C")
 
     @Test
     fun sumBy() {
@@ -42,18 +41,17 @@ class DoubleStatisticsTest {
                 .zip(groups.repeat())
                 .binByDouble(
                         binSize = 100.0,
-                        gapSize = .01,
                         valueSelector = {it.first},
                         rangeStart = 0.0
                 )
 
         Assert.assertTrue(binned.bins.size == 3)
         println(binned.bins)
-        Assert.assertTrue(binned[5.0]!!.range == 0.0..100.00)
-        Assert.assertTrue(binned[105.0]!!.range.let { it.start == 100.01 && it.endInclusive == 200.0 })
-        Assert.assertTrue(binned[205.0]!!.range.let { it.start == 200.01 && it.endInclusive == 300.00 })
+        Assert.assertTrue(binned[5.0]!!.range.let { it.lowerBound == 0.0 && it.upperBound == 100.0 })
+        Assert.assertTrue(binned[105.0]!!.range.let { it.lowerBound == 100.0 && it.upperBound == 200.0 })
+        Assert.assertTrue(binned[205.0]!!.range.let { it.lowerBound == 200.0 && it.upperBound == 300.0 })
     }
-    private fun <T> Sequence<T>.repeat() : Sequence<T> = buildSequence {
+    private fun <T> Sequence<T>.repeat() : Sequence<T> = sequence {
         while(true) yieldAll(this@repeat)
     }
 }
