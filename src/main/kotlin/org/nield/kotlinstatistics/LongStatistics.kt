@@ -33,6 +33,17 @@ fun <K> Iterable<Pair<K,Long>>.sumBy() = asSequence().sumBy()
 
 
 
+inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline longSelector: (T) -> Long) =
+        groupApply(keySelector, longSelector) { it.median() }
+
+inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline longSelector: (T) -> Long) =
+        asSequence().medianBy(keySelector, longSelector)
+
+
+fun <K> Sequence<Pair<K,Long>>.medianBy() =
+        groupApply({it.first}, {it.second}) { it.median() }
+
+fun <K> Iterable<Pair<K,Long>>.medianBy() = asSequence().medianBy()
 
 
 

@@ -22,6 +22,18 @@ class LongStatisticsTest {
     }
 
     @Test
+    fun medianBy() {
+        val r = mapOf("A" to 2.0, "B" to 8.0)
+
+        groups.zip(longVector).medianBy().let { Assert.assertTrue(it == r) }
+
+        groups.zip(longVector).medianBy(
+                keySelector = {it.first},
+                longSelector = {it.second}
+        ).let { Assert.assertTrue(it == r) }
+    }
+
+    @Test
     fun averageBy() {
         val r = mapOf("A" to 2.0, "B" to 8.0)
 
@@ -30,7 +42,6 @@ class LongStatisticsTest {
                 longSelector = {it.second}
         ).let { Assert.assertTrue(it == r) }
     }
-
 
     @Test
     fun binTest() {
