@@ -395,7 +395,7 @@ Rather than do a pure random sampling, there may be times you want different val
 
 The `WeightedCoin` and `WeightedDice` assist in these purposes.
 
-A `WeightedCoin` accepts a `trueProbability` from `0.0 to .999`. If we provide a probability of .80, the coin will flip approximately 80% of the time to be `true`.
+A `WeightedCoin` accepts a `trueProbability` from `0.0 to 1.0`. If we provide a probability of .80, the coin will flip approximately 80% of the time to be `true`.
 
 
 ```kotlin
