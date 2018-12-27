@@ -334,6 +334,8 @@ Bin(range=JULY..SEPTEMBER, value=[Sale(accountId=2, date=2016-07-04, value=140.2
 Bin(range=OCTOBER..DECEMBER, value=[Sale(accountId=1, date=2016-12-03, value=180.0), Sale(accountId=7, date=2016-12-04, value=164.3)])
 ```
 
+### Custom Binning Operations
+
 If you want to perform a mathematical aggregation on a certain property for each item (rather than group up the items into a `List` for a given bin), provide a `groupOp` argument specifying how to calculate a value  on each grouping. Below, we find the sum of values by quarter.
 
 ```kotlin
