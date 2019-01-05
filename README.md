@@ -926,7 +926,7 @@ fun main(args: Array<String>) {
 ```
 
 ## Related Projects
-* [Komputation](https://github.com/sekwiatkowski/komputation) - JVM Neural Network framework written in Kotlin
+* [Kmath](https://github.com/altavir/kmath) - Kotlin math API in development
 * [Apache Commons Math](http://commons.apache.org/proper/commons-math/) - Math and statistical Java library
 * [Koma](https://github.com/kyonifer/koma) - Scientific computing library for Kotlin
 * [Krangl](https://github.com/holgerbrandl/krangl) - Tabular data wrangling library for Kotlin
