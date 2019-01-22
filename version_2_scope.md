@@ -9,9 +9,9 @@ Features
 - Random operators
 - Random distributions (Normal, Student, Poisson, Exponential, etc)
 - Light machine learning
-    Linear Regression
-    Naive Bayes
-    Logistic Regression
-    K-means clustering (later)
-    Random forests/decision trees/boosting (later)
-    Neural Networks (later)
+    * Linear Regression
+    * Naive Bayes
+    * Logistic Regression
+    * K-means clustering (later)
+    * Random forests/decision trees/boosting (later)
+    * Neural Networks (later)
