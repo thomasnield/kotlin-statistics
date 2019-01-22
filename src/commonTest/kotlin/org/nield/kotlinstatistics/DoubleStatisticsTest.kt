@@ -12,7 +12,7 @@ class DoubleStatisticsTest {
 
     @Test
     fun sumBy() {
-        val r = mapOf("A" to 4.0, "B" to 16.0)
+        val r = mapOf("A" to 0.0, "B" to 4.0, "C" to 16.0)
 
         assertEquals(groups.zip(doubleVector).sumBy(), r)
 
@@ -24,7 +24,7 @@ class DoubleStatisticsTest {
 
     @Test
     fun averageBy() {
-        val r = mapOf("A" to 2.0, "B" to 8.0)
+        val r = mapOf("A" to 0.0, "B" to 2.0, "C" to 8.0)
 
         groups.zip(doubleVector).averageBy(
             keySelector = { it.first },
