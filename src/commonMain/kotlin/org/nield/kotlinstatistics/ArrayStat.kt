@@ -1,6 +1,6 @@
 package org.nield.kotlinstatistics
 
-expect object StatUtils {
+expect object ArrayStat {
     fun geometricMean(array: DoubleArray): Double
     fun percentile(array: DoubleArray, percentile: Double): Double
     fun variance(array: DoubleArray): Double

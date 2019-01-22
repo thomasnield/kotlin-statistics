@@ -42,10 +42,11 @@ class NaiveBayesClassifier<F, C>(
     val k2: Double = k1 * 2.0
 ) {
 
-    private val _population = mutableListOf<BayesInput<F, C>>()
-    private val modelStale = AtomicBoolean(false)
+    //FIXME removed atomic. Not sure why it was there. For thread safety need external synchronization
 
-    @Volatile
+    private val _population = mutableListOf<BayesInput<F, C>>()
+    private var modelStale = false
+
     private var probabilities = mapOf<FeatureProbability.Key<F, C>, FeatureProbability<F, C>>()
     val population: List<BayesInput<F, C>> get() = _population
 
@@ -57,7 +58,7 @@ class NaiveBayesClassifier<F, C>(
             _population.removeAt(0)
         }
         _population += BayesInput(category, features.toSet())
-        modelStale.set(true)
+        modelStale = true
     }
 
     /**
@@ -77,7 +78,7 @@ class NaiveBayesClassifier<F, C>(
             }.map { it to FeatureProbability(it.feature, it.category, this) }
             .toMap()
 
-        modelStale.set(false)
+        modelStale = false
     }
 
     /**
@@ -104,7 +105,7 @@ class NaiveBayesClassifier<F, C>(
      * Predicts a category `C` for a given set of `F` features, but also returns the probability of that category being correct.
      */
     fun predictWithProbability(features: Iterable<F>): CategoryProbability<C>? {
-        if (modelStale.get()) rebuildModel()
+        if (modelStale) rebuildModel()
 
         val f = features.toSet()
 

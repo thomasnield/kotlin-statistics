@@ -4,18 +4,16 @@ import org.nield.kotlinstatistics.range.Range
 import org.nield.kotlinstatistics.range.XClosedRange
 
 val IntArray.descriptiveStatistics
-    get(): Descriptives = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(
-        ::ApacheDescriptives
-    )
+    get(): Descriptives = asSequence().map { it.toDouble() }.descriptiveStatistics()
 
-fun IntArray.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun IntArray.geometricMean() = ArrayStat.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 fun IntArray.median() = percentile(50.0)
 fun IntArray.percentile(percentile: Double) =
-    StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
+    ArrayStat.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
 
-fun IntArray.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun IntArray.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun IntArray.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun IntArray.variance() = ArrayStat.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun IntArray.sumOfSquares() = ArrayStat.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun IntArray.normalize() = ArrayStat.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 val IntArray.kurtosis get() = descriptiveStatistics.kurtosis
 val IntArray.skewness get() = descriptiveStatistics.skewness
 

@@ -1,7 +1,9 @@
 package org.nield.kotlinstatistics.range
 
-import org.junit.Test
+import kotlin.test.Test
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 
 class RangeTest {
@@ -11,15 +13,15 @@ class RangeTest {
 
         val rng = OpenRange(0.0, 1.0)
 
-        Assert.assertTrue(.5 in rng)
-        Assert.assertTrue(.1 in rng)
+        assertTrue(.5 in rng)
+        assertTrue(.1 in rng)
 
-        Assert.assertFalse(1.0 in rng)
-        Assert.assertFalse(0.0 in rng)
-        Assert.assertFalse(-0.1 in rng)
+        assertFalse(1.0 in rng)
+        assertFalse(0.0 in rng)
+        assertFalse(-0.1 in rng)
 
 
-        val exception = ExpectedException.none()
+        //val exception = ExpectedException.none()
 
         assertFailsWith(InvalidRangeException::class) {
             OpenRange(1.0, 1.0)
@@ -35,12 +37,12 @@ class RangeTest {
 
         val rng = ClosedOpenRange(0.0, 1.0)
 
-        Assert.assertTrue(.5 in rng)
-        Assert.assertTrue(.1 in rng)
+        assertTrue(.5 in rng)
+        assertTrue(.1 in rng)
 
-        Assert.assertFalse(1.0 in rng)
-        Assert.assertTrue(0.0 in rng)
-        Assert.assertFalse(-0.1 in rng)
+        assertFalse(1.0 in rng)
+        assertTrue(0.0 in rng)
+        assertFalse(-0.1 in rng)
 
         ClosedOpenRange(1.0, 1.0)
 
@@ -54,12 +56,12 @@ class RangeTest {
 
         val rng = OpenClosedRange(0.0, 1.0)
 
-        Assert.assertTrue(.5 in rng)
-        Assert.assertTrue(.1 in rng)
+        assertTrue(.5 in rng)
+        assertTrue(.1 in rng)
 
-        Assert.assertTrue(1.0 in rng)
-        Assert.assertFalse(0.0 in rng)
-        Assert.assertFalse(-0.1 in rng)
+        assertTrue(1.0 in rng)
+        assertFalse(0.0 in rng)
+        assertFalse(-0.1 in rng)
 
         OpenClosedRange(1.0, 1.0)
 

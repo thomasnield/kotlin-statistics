@@ -19,4 +19,4 @@ interface Descriptives {
     operator fun get(index: Int): Double
 }
 
-internal expect fun Iterable<Double>.descriptiveStatistics(): Descriptives
+internal expect fun Sequence<Double>.descriptiveStatistics(): Descriptives

@@ -16,7 +16,7 @@ kotlin {
         compilations["main"].kotlinOptions.jvmTarget = "1.8"
         compilations["test"].kotlinOptions.jvmTarget = "1.8"
     }
-    js()
+    //js()
 
     sourceSets {
         commonMain {
@@ -42,16 +42,16 @@ kotlin {
                 implementation kotlin("test-junit")
             }
         }
-        jsMain {
-            dependencies {
-                implementation kotlin("stdlib-js")
-            }
-        }
-        jsTest {
-            dependencies {
-                implementation kotlin("test-js")
-            }
-        }
+//        jsMain {
+//            dependencies {
+//                implementation kotlin("stdlib-js")
+//            }
+//        }
+//        jsTest {
+//            dependencies {
+//                implementation kotlin("test-js")
+//            }
+//        }
 //        mingwMain {
 //        }
 //        mingwTest {

@@ -1,20 +1,19 @@
 package org.nield.kotlinstatistics
 
 import org.nield.kotlinstatistics.range.Range
+import org.nield.kotlinstatistics.range.until
 
 val DoubleArray.descriptiveStatistics: Descriptives
-    get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(
-        ::ApacheDescriptives
-    )
+    get() = asSequence().descriptiveStatistics()
 
 
-fun DoubleArray.geometricMean() = StatUtils.geometricMean(this)
+fun DoubleArray.geometricMean() = ArrayStat.geometricMean(this)
 fun DoubleArray.median() = percentile(50.0)
-fun DoubleArray.percentile(percentile: Double) = StatUtils.percentile(this, percentile)
-fun DoubleArray.variance() = StatUtils.variance(this)
-fun DoubleArray.sumOfSquares() = StatUtils.sumSq(this)
+fun DoubleArray.percentile(percentile: Double) = ArrayStat.percentile(this, percentile)
+fun DoubleArray.variance() = ArrayStat.variance(this)
+fun DoubleArray.sumOfSquares() = ArrayStat.sumSq(this)
 fun DoubleArray.standardDeviation() = descriptiveStatistics.standardDeviation
-fun DoubleArray.normalize() = StatUtils.normalize(this)
+fun DoubleArray.normalize() = ArrayStat.normalize(this)
 val DoubleArray.kurtosis get() = descriptiveStatistics.kurtosis
 val DoubleArray.skewness get() = descriptiveStatistics.skewness
 
@@ -107,17 +106,20 @@ inline fun <T, G> List<T>.binByDouble(
     crossinline groupOp: (List<T>) -> G,
     rangeStart: Double? = null
 ): BinModel<G, Double> {
-    val groupedByC = asSequence().groupBy { BigDecimal.valueOf(valueSelector(it)) }
-    val minC = rangeStart?.let(BigDecimal::valueOf) ?: groupedByC.keys.min()!!
+
+    //FIXME replaced BigDecimal by Double
+
+    val groupedByC = asSequence().groupBy { valueSelector(it) }
+    val minC = rangeStart ?: groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
     val bins = mutableListOf<Range<Double>>().apply {
         var currentRangeStart = minC
         var currentRangeEnd = minC
-        val binSizeBigDecimal = BigDecimal.valueOf(binSize)
+        //val binSizeBigDecimal = BigDecimal.valueOf(binSize)
 
         while (currentRangeEnd < maxC) {
-            currentRangeEnd = currentRangeStart + binSizeBigDecimal
+            currentRangeEnd = currentRangeStart + binSize
             add(currentRangeStart.toDouble() until currentRangeEnd.toDouble())
             currentRangeStart = currentRangeEnd
         }

@@ -3,19 +3,17 @@ package org.nield.kotlinstatistics
 import org.nield.kotlinstatistics.range.XClosedRange
 
 val LongArray.descriptiveStatistics: Descriptives
-    get() = DescriptiveStatistics().apply { forEach { addValue(it.toDouble()) } }.let(
-        ::ApacheDescriptives
-    )
+    get() = asSequence().map { it.toDouble() }.descriptiveStatistics()
 
-fun LongArray.geometricMean() = StatUtils.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun LongArray.geometricMean() = ArrayStat.geometricMean(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 fun LongArray.median() = percentile(50.0)
 fun LongArray.percentile(percentile: Double) =
-    StatUtils.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
+    ArrayStat.percentile(asSequence().map { it.toDouble() }.toList().toDoubleArray(), percentile)
 
-fun LongArray.variance() = StatUtils.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
-fun LongArray.sumOfSquares() = StatUtils.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun LongArray.variance() = ArrayStat.variance(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun LongArray.sumOfSquares() = ArrayStat.sumSq(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 fun LongArray.standardDeviation() = descriptiveStatistics.standardDeviation
-fun LongArray.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun LongArray.normalize() = ArrayStat.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 val LongArray.kurtosis get() = descriptiveStatistics.kurtosis
 val LongArray.skewness get() = descriptiveStatistics.skewness
 

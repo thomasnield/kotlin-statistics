@@ -1,11 +1,13 @@
 package org.nield.kotlinstatistics
 
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+
 
 class ComparableStatisticsTest {
 
     val doubleVector = sequenceOf(1.0, 3.0, 5.0, 11.0)
-    val groups = sequenceOf("A","A","B", "B")
+    val groups = sequenceOf("A", "A", "B", "B")
 
     val grouped = groups.zip(doubleVector)
 
@@ -14,12 +16,12 @@ class ComparableStatisticsTest {
 
         val r = mapOf("A" to 1.0, "B" to 5.0)
 
-        assertTrue(grouped.minBy() == r)
+        assertEquals(grouped.minBy(), r)
 
         grouped.minBy(
-                keySelector = { it.first },
-                valueSelector = {it.second }
-        ).let { assertTrue(it == r)}
+            keySelector = { it.first },
+            valueSelector = { it.second }
+        ).let { assertEquals(it, r) }
 
     }
 
@@ -28,12 +30,12 @@ class ComparableStatisticsTest {
 
         val r = mapOf("A" to 3.0, "B" to 11.0)
 
-        assertTrue(grouped.maxBy() == r)
+        assertEquals(grouped.maxBy(), r)
 
         grouped.maxBy(
-                keySelector = { it.first },
-                valueSelector = {it.second }
-        ).let { assertTrue(it == r)}
+            keySelector = { it.first },
+            valueSelector = { it.second }
+        ).let { assertEquals(it, r) }
 
     }
 }

@@ -1,56 +1,20 @@
 package org.nield.kotlinstatistics
 
 
-//regression
-inline fun <T> Iterable<T>.simpleRegression(
-    crossinline xSelector: (T) -> Number,
-    crossinline ySelector: (T) -> Number
-) = asSequence().simpleRegression(xSelector, ySelector)
 
-typealias ASR = org.apache.commons.math3.stat.regression.SimpleRegression
-
-inline fun <T> Sequence<T>.simpleRegression(
-    crossinline xSelector: (T) -> Number,
-    crossinline ySelector: (T) -> Number
-): SimpleRegression {
-    val r = ASR()
-    forEach { r.addData(xSelector(it).toDouble(), ySelector(it).toDouble()) }
-    return ApacheSimpleRegression(r)
-}
-
-fun Sequence<Pair<Number, Number>>.simpleRegression() = simpleRegression({ it.first }, { it.second })
-fun Iterable<Pair<Number, Number>>.simpleRegression() = simpleRegression({ it.first }, { it.second })
 
 
 // Simple number vector ops
 val <N : Number> Iterable<N>.descriptiveStatistics: Descriptives
-    get() = DescriptiveStatistics().apply {
-        forEach {
-            addValue(
-                it.toDouble()
-            )
-        }
-    }.let(::ApacheDescriptives)
+    get() = asSequence().map { it.toDouble() }.descriptiveStatistics()
 val <N : Number> Sequence<N>.descriptiveStatistics: Descriptives
-    get() = DescriptiveStatistics().apply {
-        forEach {
-            addValue(
-                it.toDouble()
-            )
-        }
-    }.let(::ApacheDescriptives)
+    get() = map { it.toDouble() }.descriptiveStatistics()
 val <N : Number> Array<out N>.descriptiveStatistics: Descriptives
-    get() = DescriptiveStatistics().apply {
-        forEach {
-            addValue(
-                it.toDouble()
-            )
-        }
-    }.let(::ApacheDescriptives)
+    get() = asSequence().map { it.toDouble() }.descriptiveStatistics()
 
 
 fun <N : Number> Iterable<N>.geometricMean() = asSequence().geometricMean()
-fun <N : Number> Sequence<N>.geometricMean() = StatUtils.geometricMean(map { it.toDouble() }.toList().toDoubleArray())
+fun <N : Number> Sequence<N>.geometricMean() = ArrayStat.geometricMean(map { it.toDouble() }.toList().toDoubleArray())
 fun <N : Number> Array<out N>.geometricMean() = asSequence().geometricMean()
 
 
@@ -61,18 +25,18 @@ fun <N : Number> Array<out N>.median() = asSequence().median()
 
 fun <N : Number> Iterable<N>.percentile(percentile: Double) = asSequence().percentile(percentile)
 fun <N : Number> Sequence<N>.percentile(percentile: Double) =
-    StatUtils.percentile(map { it.toDouble() }.toList().toDoubleArray(), percentile)
+    ArrayStat.percentile(map { it.toDouble() }.toList().toDoubleArray(), percentile)
 
 fun <N : Number> Array<out N>.percentile(percentile: Double) = asSequence().percentile(percentile)
 
 
 fun <N : Number> Iterable<N>.variance() = asSequence().variance()
-fun <N : Number> Sequence<N>.variance() = StatUtils.variance(map { it.toDouble() }.toList().toDoubleArray())
+fun <N : Number> Sequence<N>.variance() = ArrayStat.variance(map { it.toDouble() }.toList().toDoubleArray())
 fun <N : Number> Array<out N>.variance() = asSequence().variance()
 
 
 fun <N : Number> Iterable<N>.sumOfSquares() = asSequence().sumOfSquares()
-fun <N : Number> Sequence<N>.sumOfSquares() = StatUtils.sumSq(map { it.toDouble() }.toList().toDoubleArray())
+fun <N : Number> Sequence<N>.sumOfSquares() = ArrayStat.sumSq(map { it.toDouble() }.toList().toDoubleArray())
 fun <N : Number> Array<out N>.sumOfSquares() = asSequence().sumOfSquares()
 
 
@@ -82,7 +46,7 @@ fun <N : Number> Array<out N>.standardDeviation() = descriptiveStatistics.standa
 
 
 fun <N : Number> Iterable<N>.normalize() = asSequence().normalize()
-fun <N : Number> Sequence<N>.normalize() = StatUtils.normalize(map { it.toDouble() }.toList().toDoubleArray())
+fun <N : Number> Sequence<N>.normalize() = ArrayStat.normalize(map { it.toDouble() }.toList().toDoubleArray())
 fun <N : Number> Array<out N>.normalize() = asSequence().normalize()
 
 

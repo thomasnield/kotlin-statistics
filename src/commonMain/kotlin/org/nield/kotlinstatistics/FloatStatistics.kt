@@ -1,16 +1,17 @@
 import org.nield.kotlinstatistics.*
 import org.nield.kotlinstatistics.range.Range
+import org.nield.kotlinstatistics.range.until
 
 val FloatArray.descriptiveStatistics
-    get(): Descriptives = map { it.toDouble() }.descriptiveStatistics()
+    get(): Descriptives = asSequence().map { it.toDouble() }.descriptiveStatistics()
 
 fun FloatArray.geometricMean() = asSequence().geometricMean()
 fun FloatArray.median() = percentile(50.0)
-fun FloatArray.percentile(percentile: Double) = asSequence().percentile(50.0)
+fun FloatArray.percentile(percentile: Double) = asSequence().percentile(percentile)
 fun FloatArray.variance() = asSequence().variance()
 fun FloatArray.sumOfSquares() = asSequence().sumOfSquares()
 fun FloatArray.standardDeviation() = asSequence().standardDeviation()
-fun FloatArray.normalize() = StatUtils.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun FloatArray.normalize() = ArrayStat.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
 val FloatArray.kurtosis get() = descriptiveStatistics.kurtosis
 val FloatArray.skewness get() = descriptiveStatistics.skewness
 
@@ -98,8 +99,10 @@ inline fun <T, G> List<T>.binByFloat(
     rangeStart: Float? = null
 ): BinModel<G, Float> {
 
-    val groupedByC = asSequence().groupBy { BigDecimal.valueOf(valueSelector(it).toDouble()) }
-    val minC = rangeStart?.toDouble()?.let(BigDecimal::valueOf) ?: groupedByC.keys.min()!!
+    //FIXME removed BigDecimal
+
+    val groupedByC = asSequence().groupBy { valueSelector(it).toDouble() }
+    val minC = rangeStart?.toDouble() ?: groupedByC.keys.min()!!
     val maxC = groupedByC.keys.max()!!
 
     val bins = mutableListOf<Range<Float>>().apply {
@@ -107,9 +110,8 @@ inline fun <T, G> List<T>.binByFloat(
         var currentRangeEnd = minC
         // FIXME not used
         //val isFirst = AtomicBoolean(true)
-        val binSizeBigDecimal = BigDecimal.valueOf(binSize.toDouble())
         while (currentRangeEnd < maxC) {
-            currentRangeEnd = currentRangeStart + binSizeBigDecimal
+            currentRangeEnd = currentRangeStart + binSize
             add(currentRangeStart.toFloat() until currentRangeEnd.toFloat())
             currentRangeStart = currentRangeEnd
         }

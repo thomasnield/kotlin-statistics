@@ -1,6 +1,9 @@
 package org.nield.kotlinstatistics
 
-import org.junit.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
 
 class LongStatisticsTest {
 
@@ -12,12 +15,12 @@ class LongStatisticsTest {
     fun sumBy() {
         val r = mapOf("A" to 4L, "B" to 16L)
 
-        groups.zip(longVector).sumBy().let { Assert.assertTrue(it == r) }
+        assertEquals(groups.zip(longVector).sumBy(), r)
 
         groups.zip(longVector).sumBy(
                 keySelector = {it.first},
                 longSelector = {it.second}
-        ).let { Assert.assertTrue(it["A"] == r["A"] && it["B"] == r["B"]) }
+        ).let { assertTrue(it["A"] == r["A"] && it["B"] == r["B"]) }
     }
 
     @Test
@@ -27,7 +30,7 @@ class LongStatisticsTest {
         groups.zip(longVector).averageBy(
                 keySelector = {it.first},
                 longSelector = {it.second}
-        ).let { Assert.assertTrue(it == r) }
+        ).let { assertTrue(it == r) }
     }
 
 
@@ -45,10 +48,10 @@ class LongStatisticsTest {
                 rangeStart = 0L
         )
 
-        Assert.assertTrue(binned.bins.size == 3)
-        Assert.assertTrue(binned[5L]!!.range.let { it.lowerBound == 0L && it.upperBound == 99L })
-        Assert.assertTrue(binned[105L]!!.range.let { it.lowerBound == 100L && it.upperBound == 199L })
-        Assert.assertTrue(binned[205L]!!.range.let { it.lowerBound == 200L && it.upperBound == 299L })
+        assertEquals(binned.bins.size, 3)
+        assertTrue(binned[5L]!!.range.let { it.lowerBound == 0L && it.upperBound == 99L })
+        assertTrue(binned[105L]!!.range.let { it.lowerBound == 100L && it.upperBound == 199L })
+        assertTrue(binned[205L]!!.range.let { it.lowerBound == 200L && it.upperBound == 299L })
     }
     private fun <T> Sequence<T>.repeat() : Sequence<T> = sequence {
         while(true) yieldAll(this@repeat)

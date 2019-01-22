@@ -1,6 +1,9 @@
 package org.nield.kotlinstatistics
 
 import org.junit.Test
+import java.math.BigDecimal
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class BigDecimalStatisticsTest {
 
@@ -12,12 +15,12 @@ class BigDecimalStatisticsTest {
     fun sumBy() {
         val r = mapOf("A" to BigDecimal.valueOf(4.0), "B" to BigDecimal.valueOf(16.0))
 
-        groups.zip(bigDecimalVector).sumBy().let { Assert.assertTrue(it == r) }
+        assertEquals(groups.zip(bigDecimalVector).sumBy(), r)
 
         groups.zip(bigDecimalVector).sumBy(
                 keySelector = {it.first},
                 bigDecimalSelector = {it.second}
-        ).let { Assert.assertTrue(it == r) }
+        ).let { assertEquals(it, r) }
     }
 
     @Test
@@ -26,6 +29,6 @@ class BigDecimalStatisticsTest {
         groups.zip(bigDecimalVector).averageBy(
                 keySelector = {it.first},
                 bigDecimalSelector = {it.second}
-        ).let { Assert.assertTrue(it["A"] == BigDecimal.valueOf(2.0) && it["B"] == BigDecimal.valueOf(8.0)) }
+        ).let { assertTrue(it["A"] == BigDecimal.valueOf(2.0) && it["B"] == BigDecimal.valueOf(8.0)) }
     }
 }
