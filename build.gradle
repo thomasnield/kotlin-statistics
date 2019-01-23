@@ -1,85 +1,104 @@
-buildscript {
-
-  ext.kotlin_version = '1.3.11'
-
-
-  repositories {
-    mavenCentral()
-  }
-  dependencies {
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-  }
+plugins {
+    id "org.jetbrains.kotlin.multiplatform" version "1.3.20-eap-100"
 }
 
-apply plugin: "kotlin"
+group = "org.nield"
+version = "1.2.1-mpp"
 
-repositories {
-  mavenCentral()
-  jcenter()
+repositories{
+    mavenLocal()
+    maven{url "https://dl.bintray.com/kotlin/kotlin-eap"}
+    jcenter()
 }
 
-dependencies {
-  compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-  compile 'org.apache.commons:commons-math3:3.6.1'
+kotlin {
+    jvm {
+        compilations["main"].kotlinOptions.jvmTarget = "1.8"
+        compilations["test"].kotlinOptions.jvmTarget = "1.8"
+    }
+    //js()
 
-  testCompile 'junit:junit:4.12'
-  testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin("test-common")
+                implementation kotlin("test-annotations-common")
+            }
+        }
+        jvmMain {
+            dependencies {
+                implementation kotlin("stdlib-jdk8")
+                implementation "org.apache.commons:commons-math3:3.6.1"
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation kotlin("test")
+                implementation kotlin("test-junit")
+            }
+        }
+//        jsMain {
+//            dependencies {
+//                implementation kotlin("stdlib-js")
+//            }
+//        }
+//        jsTest {
+//            dependencies {
+//                implementation kotlin("test-js")
+//            }
+//        }
+//        mingwMain {
+//        }
+//        mingwTest {
+//        }
+    }
 }
 
-apply plugin: "kotlin"
-apply plugin: 'maven'
 /*
 apply plugin: 'signing'
-
-
 task javadocJar(type: Jar) {
   classifier = 'javadoc'
   from javadoc
 }
-
 task sourcesJar(type: Jar) {
   classifier = 'sources'
   from sourceSets.main.allSource
 }
-
 artifacts {
   archives javadocJar, sourcesJar
 }
-
 signing {
   sign configurations.archives
 }
-
 group = "org.nield"
 archivesBaseName = "kotlin-statistics"
 version = "1.2.1"
-
 uploadArchives {
   repositories {
     mavenDeployer {
       beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
       repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
         authentication(userName: ossrhUsername, password: ossrhPassword)
       }
-
       snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
         authentication(userName: ossrhUsername, password: ossrhPassword)
       }
-
       pom.project {
         name 'kotlin-statistics'
         packaging 'jar'
         // optionally artifactId can be defined here
         description 'Statistical and analytical extensions for Kotlin'
         url 'https://github.com/thomasnield/kotlin-statistics'
-
         scm {
           connection 'scm:git://github.com/thomasnield/kotlin-statistics.git'
           developerConnection 'scm:git:git@github.com:thomasnield/kotlin-statistics.git'
             url 'https://github.com/thomasnield/kotlin-statistics'
         }
-
         licenses {
           license {
             name 'The Apache License, Version 2.0'
