@@ -5,7 +5,6 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.nield.kotlinstatistics.range.Range
 import org.nield.kotlinstatistics.range.until
 import java.math.BigDecimal
-import java.util.concurrent.atomic.AtomicBoolean
 
 val DoubleArray.descriptiveStatistics: Descriptives get() = DescriptiveStatistics().apply { forEach { addValue(it) } }.let(::ApacheDescriptives)
 
@@ -128,3 +127,45 @@ inline fun <T, G> List<T>.binByDouble(binSize: Double,
             .toList()
             .let(::BinModel)
 }
+
+
+fun <K> Map<K, List<Double>>.sum(): Map<K, Double> = entries.map { it.key to it.value.sum() }.toMap()
+fun <K> Map<K, List<Double>>.average(): Map<K, Double> = entries.map { it.key to it.value.average() }.toMap()
+fun <K> Map<K, List<Double>>.intRange(): Map<K, ClosedFloatingPointRange<Double>> = entries.map { it.key to it.value.doubleRange() }.toMap()
+fun <K> Map<K, List<Double>>.geometricMean(): Map<K, Double> = entries.map { it.key to it.value.geometricMean() }.toMap()
+fun <K> Map<K, List<Double>>.median(): Map<K, Double> = entries.map { it.key to it.value.median() }.toMap()
+fun <K> Map<K, List<Double>>.percentile(percentile: Double): Map<K, Double> = entries.map { it.key to it.value.percentile(percentile) }.toMap()
+fun <K> Map<K, List<Double>>.variance(): Map<K, Double> = entries.map { it.key to it.value.variance() }.toMap()
+fun <K> Map<K, List<Double>>.sumOfSquares(): Map<K, Double> = entries.map { it.key to it.value.sumOfSquares() }.toMap()
+fun <K> Map<K, List<Double>>.normalize(): Map<K, DoubleArray> = entries.map { it.key to it.value.normalize() }.toMap()
+fun <K> Map<K, List<Double>>.descriptiveStatistics(): Map<K, Descriptives> = entries.map { it.key to it.value.descriptiveStatistics }.toMap()
+
+fun <K, V> Map<K, List<V>>.sumByDouble(selector: (V) -> Double): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).sum() }.toMap()
+
+fun <K, V> Map<K, List<V>>.averageByDouble(selector: (V) -> Double): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).average() }.toMap()
+
+fun <K, V> Map<K, List<V>>.doubleRangeBy(selector: (V) -> Double): Map<K, ClosedFloatingPointRange<Double>> =
+        entries.map { it.key to it.value.map(selector).doubleRange() }.toMap()
+
+fun <K, V> Map<K, List<V>>.geometricMeanByDouble(selector: (V) -> Double): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).geometricMean() }.toMap()
+
+fun <K, V> Map<K, List<V>>.medianByDouble(selector: (V) -> Double): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).median() }.toMap()
+
+fun <K, V> Map<K, List<V>>.percentileByDouble(selector: (V) -> Double, percentile: Double): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).percentile(percentile) }.toMap()
+
+fun <K, V> Map<K, List<V>>.varianceByDouble(selector: (V) -> Double): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).variance() }.toMap()
+
+fun <K, V> Map<K, List<V>>.sumOfSquaresByDouble(selector: (V) -> Double): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).sumOfSquares() }.toMap()
+
+fun <K, V> Map<K, List<V>>.normalizeByDouble(selector: (V) -> Double): Map<K, DoubleArray> =
+        entries.map { it.key to it.value.map(selector).normalize() }.toMap()
+
+fun <K, V> Map<K, List<V>>.descriptiveStatisticsByDouble(selector: (V) -> Double): Map<K, Descriptives> =
+        entries.map { it.key to it.value.map(selector).descriptiveStatistics }.toMap()

@@ -122,3 +122,45 @@ inline fun <T, G> List<T>.binByInt(binSize: Int,
             .toList()
             .let(::BinModel)
 }
+
+
+fun <K> Map<K, List<Int>>.sum(): Map<K, Int> = entries.map { it.key to it.value.sum() }.toMap()
+fun <K> Map<K, List<Int>>.average(): Map<K, Double> = entries.map { it.key to it.value.average() }.toMap()
+fun <K> Map<K, List<Int>>.intRange(): Map<K, IntRange> = entries.map { it.key to it.value.intRange() }.toMap()
+fun <K> Map<K, List<Int>>.geometricMean(): Map<K, Double> = entries.map { it.key to it.value.geometricMean() }.toMap()
+fun <K> Map<K, List<Int>>.median(): Map<K, Double> = entries.map { it.key to it.value.median() }.toMap()
+fun <K> Map<K, List<Int>>.percentile(percentile: Double): Map<K, Double> = entries.map { it.key to it.value.percentile(percentile) }.toMap()
+fun <K> Map<K, List<Int>>.variance(): Map<K, Double> = entries.map { it.key to it.value.variance() }.toMap()
+fun <K> Map<K, List<Int>>.sumOfSquares(): Map<K, Double> = entries.map { it.key to it.value.sumOfSquares() }.toMap()
+fun <K> Map<K, List<Int>>.normalize(): Map<K, DoubleArray> = entries.map { it.key to it.value.normalize() }.toMap()
+fun <K> Map<K, List<Int>>.descriptiveStatistics(): Map<K, Descriptives> = entries.map { it.key to it.value.descriptiveStatistics }.toMap()
+
+fun <K, V> Map<K, List<V>>.sumByInt(selector: (V) -> Int): Map<K, Int> =
+        entries.map { it.key to it.value.map(selector).sum() }.toMap()
+
+fun <K, V> Map<K, List<V>>.averageByInt(selector: (V) -> Int): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).average() }.toMap()
+
+fun <K, V> Map<K, List<V>>.intRangeBy(selector: (V) -> Int): Map<K, IntRange> =
+        entries.map { it.key to it.value.map(selector).intRange() }.toMap()
+
+fun <K, V> Map<K, List<V>>.geometricMeanByInt(selector: (V) -> Int): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).geometricMean() }.toMap()
+
+fun <K, V> Map<K, List<V>>.medianByInt(selector: (V) -> Int): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).median() }.toMap()
+
+fun <K, V> Map<K, List<V>>.percentileByInt(selector: (V) -> Int, percentile: Double): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).percentile(percentile) }.toMap()
+
+fun <K, V> Map<K, List<V>>.varianceByInt(selector: (V) -> Int): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).variance() }.toMap()
+
+fun <K, V> Map<K, List<V>>.sumOfSquaresByInt(selector: (V) -> Int): Map<K, Double> =
+        entries.map { it.key to it.value.map(selector).sumOfSquares() }.toMap()
+
+fun <K, V> Map<K, List<V>>.normalizeByInt(selector: (V) -> Int): Map<K, DoubleArray> =
+        entries.map { it.key to it.value.map(selector).normalize() }.toMap()
+
+fun <K, V> Map<K, List<V>>.descriptiveStatisticsByInt(selector: (V) -> Int): Map<K, Descriptives> =
+        entries.map { it.key to it.value.map(selector).descriptiveStatistics }.toMap()
