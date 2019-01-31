@@ -1,10 +1,8 @@
 package org.nield.kotlinstatistics
 
 import org.nield.kotlinstatistics.range.ClosedOpenRange
-import org.nield.kotlinstatistics.range.Range
 import org.nield.kotlinstatistics.range.until
 import java.math.BigDecimal
-import java.util.concurrent.atomic.AtomicBoolean
 
 fun Sequence<BigDecimal>.sum() = fold(BigDecimal.ZERO) { x,y -> x + y }!!
 fun Iterable<BigDecimal>.sum() = fold(BigDecimal.ZERO) { x,y -> x + y }!!
@@ -113,5 +111,11 @@ inline fun <T, G> List<T>.binByBigDecimal(binSize: BigDecimal,
 }
 
 
+fun <K> Map<K, List<BigDecimal>>.sum(): Map<K, BigDecimal> = entries.map { it.key to it.value.sum() }.toMap()
+fun <K> Map<K, List<BigDecimal>>.average(): Map<K, BigDecimal> = entries.map { it.key to it.value.average() }.toMap()
 
+fun <K, V> Map<K, List<V>>.sumByBigDecimal(selector: (V) -> BigDecimal): Map<K, BigDecimal> =
+        entries.map { it.key to it.value.map(selector).sum() }.toMap()
 
+fun <K, V> Map<K, List<V>>.averageByBigDecimal(selector: (V) -> BigDecimal): Map<K, BigDecimal> =
+        entries.map { it.key to it.value.map(selector).average() }.toMap()
