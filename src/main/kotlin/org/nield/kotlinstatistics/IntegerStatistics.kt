@@ -123,6 +123,36 @@ inline fun <T, G> List<T>.binByInt(binSize: Int,
             .let(::BinModel)
 }
 
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.sumByInt(selector: (T) -> Int): BinModel<Int, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).sum()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.averageByInt(selector: (T) -> Int): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).average()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.floatRangeBy(selector: (T) -> Int): BinModel<IntRange, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).intRange()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.geometricMeanByInt(selector: (T) -> Int): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).geometricMean()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.medianByInt(selector: (T) -> Int): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).median()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.percentileByInt(selector: (T) -> Int, percentile: Double): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).percentile(percentile)) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.varianceByInt(selector: (T) -> Int): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).variance()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.sumOfSquaresByInt(selector: (T) -> Int): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).sumOfSquares()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.normalizeByInt(selector: (T) -> Int): BinModel<DoubleArray, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).normalize()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.descriptiveStatisticsByInt(selector: (T) -> Int): BinModel<Descriptives, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).descriptiveStatistics) })
+
 
 fun <K> Map<K, List<Int>>.sum(): Map<K, Int> = entries.map { it.key to it.value.sum() }.toMap()
 fun <K> Map<K, List<Int>>.average(): Map<K, Double> = entries.map { it.key to it.value.average() }.toMap()
