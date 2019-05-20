@@ -110,6 +110,11 @@ inline fun <T, G> List<T>.binByBigDecimal(binSize: BigDecimal,
             .let(::BinModel)
 }
 
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.averageByBigDecimal(selector: (T) -> Double) =
+        bins.map { Bin(it.range, it.value.map(selector).average()) }
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.sumByBigDecimal(selector: (T) -> Double) =
+        bins.map { Bin(it.range, it.value.map(selector).sum()) }
 
 fun <K> Map<K, List<BigDecimal>>.sum(): Map<K, BigDecimal> = entries.map { it.key to it.value.sum() }.toMap()
 fun <K> Map<K, List<BigDecimal>>.average(): Map<K, BigDecimal> = entries.map { it.key to it.value.average() }.toMap()

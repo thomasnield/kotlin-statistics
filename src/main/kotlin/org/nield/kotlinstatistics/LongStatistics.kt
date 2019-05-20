@@ -70,7 +70,6 @@ inline fun <T> Sequence<T>.binByLong(binSize: Long,
                                      rangeStart: Long? = null
 ) = toList().binByLong(binSize, valueSelector, rangeStart)
 
-
 inline fun <T, G> Sequence<T>.binByLong(binSize: Long,
                                         crossinline valueSelector: (T) -> Long,
                                         crossinline groupOp: (List<T>) -> G,
@@ -128,6 +127,36 @@ inline fun <T, G> List<T>.binByLong(binSize: Long,
             .toList()
             .let(::BinModel)
 }
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.sumByLong(selector: (T) -> Long): BinModel<Long, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).sum()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.averageByLong(selector: (T) -> Long): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).average()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.doubleRangeBy(selector: (T) -> Long): BinModel<LongRange, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).longRange()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.geometricMeanByLong(selector: (T) -> Long): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).geometricMean()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.medianByLong(selector: (T) -> Long): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).median()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.percentileByLong(selector: (T) -> Long, percentile: Double): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).percentile(percentile)) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.varianceByLong(selector: (T) -> Long): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).variance()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.sumOfSquaresByLong(selector: (T) -> Long): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).sumOfSquares()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.normalizeByLong(selector: (T) -> Long): BinModel<DoubleArray, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).normalize()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.descriptiveStatisticsByLong(selector: (T) -> Long): BinModel<Descriptives, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).descriptiveStatistics) })
 
 
 fun <K> Map<K, List<Long>>.sum(): Map<K, Long> = entries.map { it.key to it.value.sum() }.toMap()

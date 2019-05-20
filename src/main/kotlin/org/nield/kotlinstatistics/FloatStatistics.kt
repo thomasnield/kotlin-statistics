@@ -131,6 +131,36 @@ inline fun <T, G> List<T>.binByFloat(binSize: Float,
             .let(::BinModel)
 }
 
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.sumByFloat(selector: (T) -> Float): BinModel<Float, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).sum()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.averageByFloat(selector: (T) -> Float): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).average()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.floatRangeBy(selector: (T) -> Float): BinModel<ClosedFloatingPointRange<Float>, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).floatRange()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.geometricMeanByFloat(selector: (T) -> Float): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).geometricMean()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.medianByFloat(selector: (T) -> Float): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).median()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.percentileByFloat(selector: (T) -> Float, percentile: Double): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).percentile(percentile)) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.varianceByFloat(selector: (T) -> Float): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).variance()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.sumOfSquaresByFloat(selector: (T) -> Float): BinModel<Double, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).sumOfSquares()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.normalizeByFloat(selector: (T) -> Float): BinModel<DoubleArray, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).normalize()) })
+
+fun <T, C : Comparable<C>> BinModel<List<T>, C>.descriptiveStatisticsByFloat(selector: (T) -> Float): BinModel<Descriptives, C> =
+        BinModel(bins.map { Bin(it.range, it.value.map(selector).descriptiveStatistics) })
+
 
 fun <K> Map<K, List<Float>>.sum(): Map<K, Float> = entries.map { it.key to it.value.sum() }.toMap()
 fun <K> Map<K, List<Float>>.average(): Map<K, Double> = entries.map { it.key to it.value.average() }.toMap()
