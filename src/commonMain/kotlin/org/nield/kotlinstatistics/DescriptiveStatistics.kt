@@ -8,6 +8,7 @@ import kotlin.math.sqrt
  * Implementations partially taken from **commons-math**
  */
 class DescriptiveStatistics(val values: DoubleArray) {
+
     val mean: Double by lazy { values.average() }
 
     val variance: Double by lazy {

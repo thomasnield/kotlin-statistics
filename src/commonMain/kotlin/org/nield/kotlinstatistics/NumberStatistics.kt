@@ -56,7 +56,7 @@ fun <N : Number> Array<out N>.standardDeviation() = descriptiveStatistics.standa
 fun <N : Number> Iterable<N>.normalize() = asSequence().normalize()
 fun <N : Number> Sequence<N>.normalize(): DoubleArray {
     val stats = map { it.toDouble() }.stats()
-    return DoubleArray(stats.size) { i -> (stats[i] - stats.mean) / stats.standardDeviation }
+    return DoubleArray(stats.size) { i -> (stats.values[i] - stats.mean) / stats.standardDeviation }
 }
 
 fun <N : Number> Array<out N>.normalize() = asSequence().normalize()
