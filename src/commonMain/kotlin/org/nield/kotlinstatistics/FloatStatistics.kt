@@ -3,7 +3,7 @@ import org.nield.kotlinstatistics.range.Range
 import org.nield.kotlinstatistics.range.until
 
 val FloatArray.descriptiveStatistics
-    get(): Descriptives = asSequence().map { it.toDouble() }.descriptiveStatistics()
+    get(): DescriptiveStatistics = asSequence().map { it.toDouble() }.stats()
 
 fun FloatArray.geometricMean() = asSequence().geometricMean()
 fun FloatArray.median() = percentile(50.0)
@@ -11,7 +11,7 @@ fun FloatArray.percentile(percentile: Double) = asSequence().percentile(percenti
 fun FloatArray.variance() = asSequence().variance()
 fun FloatArray.sumOfSquares() = asSequence().sumOfSquares()
 fun FloatArray.standardDeviation() = asSequence().standardDeviation()
-fun FloatArray.normalize() = ArrayStat.normalize(asSequence().map { it.toDouble() }.toList().toDoubleArray())
+fun FloatArray.normalize() = asSequence().normalize()
 val FloatArray.kurtosis get() = descriptiveStatistics.kurtosis
 val FloatArray.skewness get() = descriptiveStatistics.skewness
 

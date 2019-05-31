@@ -35,10 +35,10 @@ class NumberStatisticsTest {
         assertEquals(bigDecimalVector.descriptiveStatistics.max, 11.0)
 
 
-        assertEquals(doubleVector.descriptiveStatistics.size, 4L)
-        assertEquals(intVector.descriptiveStatistics.size, 4L)
-        assertEquals(longVector.descriptiveStatistics.size, 4L)
-        assertEquals(bigDecimalVector.descriptiveStatistics.size, 4L)
+        assertEquals(doubleVector.descriptiveStatistics.size, 4)
+        assertEquals(intVector.descriptiveStatistics.size, 4)
+        assertEquals(longVector.descriptiveStatistics.size, 4)
+        assertEquals(bigDecimalVector.descriptiveStatistics.size, 4)
     }
 
     @Test

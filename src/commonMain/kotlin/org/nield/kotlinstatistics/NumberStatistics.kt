@@ -1,20 +1,29 @@
 package org.nield.kotlinstatistics
 
-
-
+import kotlin.math.exp
+import kotlin.math.ln
 
 
 // Simple number vector ops
-val <N : Number> Iterable<N>.descriptiveStatistics: Descriptives
-    get() = asSequence().map { it.toDouble() }.descriptiveStatistics()
-val <N : Number> Sequence<N>.descriptiveStatistics: Descriptives
-    get() = map { it.toDouble() }.descriptiveStatistics()
-val <N : Number> Array<out N>.descriptiveStatistics: Descriptives
-    get() = asSequence().map { it.toDouble() }.descriptiveStatistics()
+val <N : Number> Iterable<N>.descriptiveStatistics: DescriptiveStatistics
+    get() = asSequence().map { it.toDouble() }.stats()
+val <N : Number> Sequence<N>.descriptiveStatistics: DescriptiveStatistics
+    get() = map { it.toDouble() }.stats()
+val <N : Number> Array<out N>.descriptiveStatistics: DescriptiveStatistics
+    get() = asSequence().map { it.toDouble() }.stats()
 
 
 fun <N : Number> Iterable<N>.geometricMean() = asSequence().geometricMean()
-fun <N : Number> Sequence<N>.geometricMean() = ArrayStat.geometricMean(map { it.toDouble() }.toList().toDoubleArray())
+fun <N : Number> Sequence<N>.geometricMean(): Double {
+    var sum = 0.0
+    var counter = 0
+    for (n in this) {
+        sum += ln(n.toDouble())
+        counter++
+    }
+    return exp(sum / counter)
+}
+
 fun <N : Number> Array<out N>.geometricMean() = asSequence().geometricMean()
 
 
@@ -24,19 +33,18 @@ fun <N : Number> Array<out N>.median() = asSequence().median()
 
 
 fun <N : Number> Iterable<N>.percentile(percentile: Double) = asSequence().percentile(percentile)
-fun <N : Number> Sequence<N>.percentile(percentile: Double) =
-    ArrayStat.percentile(map { it.toDouble() }.toList().toDoubleArray(), percentile)
+fun <N : Number> Sequence<N>.percentile(percentile: Double) = map { it.toDouble() }.stats().percentile(percentile)
 
 fun <N : Number> Array<out N>.percentile(percentile: Double) = asSequence().percentile(percentile)
 
 
 fun <N : Number> Iterable<N>.variance() = asSequence().variance()
-fun <N : Number> Sequence<N>.variance() = ArrayStat.variance(map { it.toDouble() }.toList().toDoubleArray())
+fun <N : Number> Sequence<N>.variance() = map { it.toDouble() }.stats().variance
 fun <N : Number> Array<out N>.variance() = asSequence().variance()
 
 
 fun <N : Number> Iterable<N>.sumOfSquares() = asSequence().sumOfSquares()
-fun <N : Number> Sequence<N>.sumOfSquares() = ArrayStat.sumSq(map { it.toDouble() }.toList().toDoubleArray())
+fun <N : Number> Sequence<N>.sumOfSquares() = sumByDouble { it.toDouble() * it.toDouble() }
 fun <N : Number> Array<out N>.sumOfSquares() = asSequence().sumOfSquares()
 
 
@@ -46,7 +54,11 @@ fun <N : Number> Array<out N>.standardDeviation() = descriptiveStatistics.standa
 
 
 fun <N : Number> Iterable<N>.normalize() = asSequence().normalize()
-fun <N : Number> Sequence<N>.normalize() = ArrayStat.normalize(map { it.toDouble() }.toList().toDoubleArray())
+fun <N : Number> Sequence<N>.normalize(): DoubleArray {
+    val stats = map { it.toDouble() }.stats()
+    return DoubleArray(stats.size) { i -> (stats[i] - stats.mean) / stats.standardDeviation }
+}
+
 fun <N : Number> Array<out N>.normalize() = asSequence().normalize()
 
 
