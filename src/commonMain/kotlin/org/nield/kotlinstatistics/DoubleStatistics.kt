@@ -2,18 +2,24 @@ package org.nield.kotlinstatistics
 
 import org.nield.kotlinstatistics.range.Range
 import org.nield.kotlinstatistics.range.until
+import kotlin.math.exp
+import kotlin.math.ln
 
-val DoubleArray.descriptiveStatistics: Descriptives
-    get() = asSequence().descriptiveStatistics()
+val DoubleArray.descriptiveStatistics: DescriptiveStatistics
+    get() = asSequence().stats()
 
 
-fun DoubleArray.geometricMean() = ArrayStat.geometricMean(this)
+fun DoubleArray.geometricMean() = exp(sumByDouble { ln(it) } / size)
 fun DoubleArray.median() = percentile(50.0)
-fun DoubleArray.percentile(percentile: Double) = ArrayStat.percentile(this, percentile)
-fun DoubleArray.variance() = ArrayStat.variance(this)
-fun DoubleArray.sumOfSquares() = ArrayStat.sumSq(this)
+fun DoubleArray.percentile(percentile: Double) = stats().percentile(percentile)
+fun DoubleArray.variance() = stats().variance
+fun DoubleArray.sumOfSquares() = sumByDouble { it * it }
 fun DoubleArray.standardDeviation() = descriptiveStatistics.standardDeviation
-fun DoubleArray.normalize() = ArrayStat.normalize(this)
+fun DoubleArray.normalize(): DoubleArray {
+    val stats = stats()
+    return DoubleArray(size) { i -> (get(i) - stats.mean) / stats.standardDeviation }
+}
+
 val DoubleArray.kurtosis get() = descriptiveStatistics.kurtosis
 val DoubleArray.skewness get() = descriptiveStatistics.skewness
 

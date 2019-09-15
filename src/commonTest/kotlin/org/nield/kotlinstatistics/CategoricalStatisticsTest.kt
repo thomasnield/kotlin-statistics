@@ -2,7 +2,6 @@ package org.nield.kotlinstatistics
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 class CategoricalStatisticsTest {
 
@@ -10,12 +9,12 @@ class CategoricalStatisticsTest {
 
     @Test
     fun testMode1() {
-        assertTrue(listOf(2, 54, 67, 3, 4, 5, 2, 2).mode().toSet() == setOf(2))
+        assertEquals(listOf(2, 54, 67, 3, 4, 5, 2, 2).mode().toSet(), setOf(2))
     }
 
     @Test
     fun testMode2() {
-        assertTrue(listOf(2, 4, 54, 4, 67, 3, 4, 5, 2, 2).mode().toSet() == setOf(2, 4))
+        assertEquals(listOf(2, 4, 54, 4, 67, 3, 4, 5, 2, 2).mode().toSet(), setOf(2, 4))
     }
 
     @Test
@@ -35,7 +34,6 @@ class CategoricalStatisticsTest {
         strings.map { it.length }.countBy()
             .let { it == mapOf(5 to 3, 4 to 1, 7 to 1) }
 
-        strings.countBy { it.length }
-            .let { it == mapOf(5 to 3, 4 to 1, 7 to 1) }
+        strings.countBy { it.length } == mapOf(5 to 3, 4 to 1, 7 to 1)
     }
 }
