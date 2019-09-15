@@ -12,7 +12,7 @@ class DescriptiveStatistics(val values: DoubleArray) {
     val mean: Double by lazy { values.average() }
 
     val variance: Double by lazy {
-        return@lazy when (size) {
+        when (size) {
             0 -> Double.NaN
             1 -> 0.0
             else -> {
@@ -75,20 +75,26 @@ class DescriptiveStatistics(val values: DoubleArray) {
     val sum: Double by lazy { values.sum() }
     val sumSquared: Double by lazy { values.sumByDouble { it * it } }
 
+    /**
+     * Algorithm contributed by https://github.com/pklimai. Performance could be imporoved
+     */
     fun percentile(percentile: Double): Double {
-        TODO("implement algorithm")
-//        if (percentile > 100 || percentile <= 0) error("$percentile is out of (0,100) range")
-//        return when (size) {
-//            0 -> Double.NaN
-//            1 -> values[0] // always return single value for n = 1
-//            else -> {
-//                val work = getWorkArray(values, begin, length)
-//                val pivotsHeap = getPivots(values)
-//                if (work.size == 0) Double.NaN
-//                else
-//                    estimationType.evaluate(work, pivotsHeap, percentile, kthSelector)
-//            }
-//        }
+        val sortedValues = values.sorted()
+        if (percentile > 100 || percentile <= 0) error("$percentile is out of (0,100) range")
+        return when (size) {
+            0 -> Double.NaN
+            1 -> sortedValues[0] // always return single value for n = 1
+            else -> {
+                val kPlusD = (percentile/100) * (size+1)
+                val k: Int = kPlusD.toInt()
+                val d = kPlusD - k  //  d in 0..1
+                when (k) {
+                    0 -> sortedValues[0]
+                    size -> sortedValues[size-1]
+                    else -> sortedValues[k-1] + d*(sortedValues[k]-sortedValues[k-1])
+                }
+            }
+        }
     }
 
     fun get(index: Int): Double = values[index]
