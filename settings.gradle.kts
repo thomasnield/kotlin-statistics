@@ -1,6 +1,6 @@
 pluginManagement {
     repositories {
-        maven { url "https://kotlin.bintray.com/kotlin-eap" }
+        maven("https://kotlin.bintray.com/kotlin-eap")
         gradlePluginPortal()
     }
 }
