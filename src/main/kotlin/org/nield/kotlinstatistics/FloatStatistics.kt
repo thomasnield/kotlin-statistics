@@ -36,6 +36,16 @@ fun <K> Iterable<Pair<K,Float>>.sumBy() = asSequence().sumBy()
 
 
 
+inline fun <T,K> Sequence<T>.medianBy(crossinline keySelector: (T) -> K, crossinline floatSelector: (T) -> Float) =
+        groupApply(keySelector, floatSelector) { it.median() }
+
+inline fun <T,K> Iterable<T>.medianBy(crossinline keySelector: (T) -> K, crossinline floatSelector: (T) -> Float) =
+        asSequence().medianBy(keySelector, floatSelector)
+
+fun <K> Sequence<Pair<K,Float>>.medianBy() =
+        groupApply({it.first}, {it.second}) { it.median() }
+
+fun <K> Iterable<Pair<K,Float>>.medianBy() = asSequence().medianBy()
 
 
 

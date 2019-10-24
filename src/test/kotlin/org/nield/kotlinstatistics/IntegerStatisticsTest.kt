@@ -23,6 +23,18 @@ class IntegerStatisticsTest {
     }
 
     @Test
+    fun medianBy() {
+        val r = mapOf("A" to 2.0, "B" to 8.0)
+
+        groups.zip(intVector).medianBy().let { Assert.assertTrue(it == r) }
+
+        groups.zip(intVector).medianBy(
+                keySelector = {it.first},
+                intSelector = {it.second}
+        ).let { Assert.assertTrue(it == r) }
+    }
+
+    @Test
     fun averageBy() {
         val r = mapOf("A" to 2.0, "B" to 8.0)
 

@@ -6,7 +6,7 @@ import org.junit.Test
 class DoubleStatisticsTest {
 
     val doubleVector = sequenceOf(0.0, 1.0, 3.0, 5.0, 11.0)
-    val groups = sequenceOf("A", "B","B","C", "C")
+    val groups = sequenceOf("A", "B", "B", "C", "C")
 
     @Test
     fun sumBy() {
@@ -18,6 +18,18 @@ class DoubleStatisticsTest {
                 keySelector = {it.first},
                 doubleSelector = {it.second}
         ).let { Assert.assertTrue(it["A"] == r["A"] && it["B"] == r["B"]) }
+    }
+
+    @Test
+    fun medianBy() {
+        val r = mapOf("A" to 0.0, "B" to 2.0, "C" to 8.0)
+
+        groups.zip(doubleVector).medianBy().let { Assert.assertTrue(it == r) }
+
+        groups.zip(doubleVector).medianBy(
+                keySelector = {it.first},
+                doubleSelector = {it.second}
+        ).let { Assert.assertTrue(it == r) }
     }
 
     @Test
